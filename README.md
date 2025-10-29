@@ -7,8 +7,7 @@
 ### 1.โคลน (Clone) Repository
 
 ```bash
-git clone [https://github.com/athiphatsunsit67/CN331_FINAL_PROJECT.git](https://github.com/athiphatsunsit67/CN331_FINAL_PROJECT.git)
-cd CN331_FINAL_PROJECT}
+git clone https://github.com/athiphat67/RorbMore.git [ชื่อ project บนเครื่อง local]
 ```
 
 ### 2.สร้างและเปิดใช้งาน Virtual Environment
