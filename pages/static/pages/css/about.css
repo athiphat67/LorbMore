@@ -1,8 +1,6 @@
-/* เวอร์ชันมือใหม่: มีสีเหลืองบ้าง กรอบแดงบ้าง แต่ยังเรียบง่าย */
-
 body {
-    background-color: #fffbee;       /* เหลืองอ่อน ๆ พื้นหลัง */
-    color: #222;                     /* ตัวหนังสือดำเข้ม */
+    background-color: #fffbee;       
+    color: #222;                    
     font-family: Arial, Helvetica, sans-serif;
     margin: 0;
     padding: 0;
@@ -13,15 +11,9 @@ body {
     width: 80%;
     margin: 30px auto;
     padding: 20px;
-    border: 2px solid #ffcc00;       /* กรอบเหลือง */
+    border: 2px solid #ffcc00;       
     border-radius: 10px;
     background-color: #ffffff;
-  }
-  
-  /* หัวข้อ */
-  h2 {
-    color: #333;                  /* แดง */
-    padding-bottom: 5px;
   }
   
   h3 {
@@ -29,7 +21,7 @@ body {
     margin-top: 20px;
   }
   
-  /* แบ่งซ้ายขวาแบบง่าย */
+  /* แบ่งซ้ายขวา */
   .team {
     float: left;
     width: 45%;
@@ -39,18 +31,61 @@ body {
     float: right;
     width: 45%;
   }
-  
-  /* รายชื่อทีม */
+
+  /* หัวข้อ Team member */
+  .team h2 {
+    color: #180d07; 
+    border-bottom: 2px solid #ffcc00;
+    padding-bottom: 8px; 
+    margin-top: 0; 
+  }
+
+  /* Container ของรายชื่อ  */
   .member-list {
-    padding-left: 20px;
-    line-height: 1.8;
+    display: flex;
+    flex-direction: column; /* เรียงแถวจากบนลงล่าง */
+    gap: 8px; 
+    margin-top: 15px;
+  }
+
+  /* แถวของสมาชิกแต่ละคน */
+  .member-row {
+    display: flex; 
+    justify-content: space-between;
+    align-items: center; /* จัดให้อยู่กลางแนวตั้ง */
+    padding: 8px 4px;
+    border-bottom: 1px solid #f0f0f0; /* เส้นคั่นบางๆ */
+    line-height: 1.6;
+  }
+
+  /* แถวหัวข้อ (ที่เราเพิ่มเข้าไป) */
+  .member-row.header {
+    font-weight: bold;
+    color: #a0522d; 
+    border-bottom: 2px solid #eee;
+    font-size: 0.95em;
   }
   
+  .member-row.header .student-id {
+     color: #180d07;  
+     font-weight:  bold;
+  }
+
+  /* คอลัมน์ชื่อ */
+  .member-name {
+    flex-basis: 60%; /* ให้พื้นที่ชื่อ 60% */
+    color: #180d07; 
+  }
+  
+  /* คอลัมน์รหัส */
   .student-id {
-    color: #777;
-    margin-left: 8px;
+    flex-basis: 40%; /* ให้พื้นที่รหัส 40% */
+    text-align: right; /* จัดชิดขวา */
+    color: #b8860b; 
+    font-weight: 600; 
+    margin-left: 10px;
   }
-  
+
   /* ลิงก์แบบปุ่มเหลือง */
   .container a {
     display: inline-block;
@@ -81,5 +116,21 @@ body {
       width: 100%;
       margin-bottom: 20px;
     }
+
+    /* บนมือถือ ให้เรียงบน-ล่าง แทนซ้าย-ขวา */
+    .member-row {
+      flex-direction: column; 
+      align-items: flex-start; /* จัดชิดซ้าย */
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+    }
+    .member-row.header {
+        flex-direction: row; /* หัวข้อให้คงเดิม */
+        align-items: center;
+    }
+    .student-id {
+      text-align: left; /* กลับมาจัดชิดซ้าย */
+      margin-left: 0;
+      padding-top: 4px;
+    }
   }
-  
