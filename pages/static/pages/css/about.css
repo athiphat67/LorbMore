@@ -1,0 +1,85 @@
+/* เวอร์ชันมือใหม่: มีสีเหลืองบ้าง กรอบแดงบ้าง แต่ยังเรียบง่าย */
+
+body {
+    background-color: #fffbee;       /* เหลืองอ่อน ๆ พื้นหลัง */
+    color: #222;                     /* ตัวหนังสือดำเข้ม */
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* กล่องหลัก */
+  .container {
+    width: 80%;
+    margin: 30px auto;
+    padding: 20px;
+    border: 2px solid #ffcc00;       /* กรอบเหลือง */
+    border-radius: 10px;
+    background-color: #ffffff;
+  }
+  
+  /* หัวข้อ */
+  h2 {
+    color: #333;                  /* แดง */
+    padding-bottom: 5px;
+  }
+  
+  h3 {
+    color: #333;
+    margin-top: 20px;
+  }
+  
+  /* แบ่งซ้ายขวาแบบง่าย */
+  .team {
+    float: left;
+    width: 45%;
+  }
+  
+  .project-info {
+    float: right;
+    width: 45%;
+  }
+  
+  /* รายชื่อทีม */
+  .member-list {
+    padding-left: 20px;
+    line-height: 1.8;
+  }
+  
+  .student-id {
+    color: #777;
+    margin-left: 8px;
+  }
+  
+  /* ลิงก์แบบปุ่มเหลือง */
+  .container a {
+    display: inline-block;
+    background-color: #ffcc00;
+    color: #000;
+    text-decoration: none;
+    padding: 6px 12px;
+    border: 1px solid #b8860b;
+    border-radius: 5px;
+    margin-top: 5px;
+  }
+  
+  .container a:hover {
+    background-color: #ffe45c;
+  }
+  
+  /* ล้าง float */
+  .container::after {
+    content: "";
+    display: block;
+    clear: both;
+  }
+  
+  /* มือถือ */
+  @media (max-width: 768px) {
+    .team, .project-info {
+      float: none;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  }
+  

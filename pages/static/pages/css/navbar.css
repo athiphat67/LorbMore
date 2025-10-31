@@ -1,0 +1,138 @@
+/* ---- Theme ---- */
+:root {
+  --red: #b52b35;
+  --yellow: #f6dd8a;
+  --text: #ffffff;
+  --ink: #272727;
+  --radius-pill: 999px;
+}
+
+/* ---- Reset ---- */
+* { box-sizing: border-box; }
+.navbar ul { list-style: none; margin: 0; padding: 0; }
+.navbar a { text-decoration: none; }
+
+/* ---- Navbar wrapper ---- */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: clamp(10px, 2vw, 24px);
+  padding: 10px clamp(12px, 3vw, 24px);
+  background: var(--red);
+  color: var(--text);
+}
+
+/* ---- Left: home + search ---- */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.2vw, 16px);
+  flex: 1 1 auto;
+  min-width: 220px;
+}
+
+.home-btn {
+  font-size: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--yellow);
+  border-radius: 12px;
+  padding: 4px 10px;
+}
+
+/* Search bar */
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  border-radius: var(--radius-pill);
+  padding: 6px 12px;
+  flex: 1 1 420px;
+  max-width: 560px;
+  min-width: 150px;
+}
+.search-ico { color: var(--ink); font-size: 18px; }
+.search input {
+  border: 0;
+  outline: 0;
+  width: 100%;
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+}
+
+/* ---- Right section ---- */
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2vw, 24px);
+}
+
+/* ปุ่มเหลืองเฉพาะ 2 ปุ่มแรก */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.5vw, 16px);
+}
+.pill {
+  display: inline-block;
+  background: var(--yellow);
+  color: var(--ink);
+  padding: 10px 18px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset;
+  transition: filter 0.2s;
+}
+.pill:hover { filter: brightness(0.95); }
+
+/* เมนูข้อความธรรมดา (About, Contact, Hi!) */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2vw, 28px);
+}
+.nav-links a {
+  color: var(--text);
+  opacity: 0.95;
+  padding: 6px 0;
+  font-weight: 500;
+}
+.nav-links a:hover {
+  text-decoration: underline;
+}
+.greet a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.avatar {
+  font-size: 26px;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+  .nav-right {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .nav-actions, .nav-links {
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .nav-actions .pill {
+    flex: 1 1 160px;
+    text-align: center;
+  }
+}
