@@ -1,0 +1,41 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+
+<nav class="navbar" role="navigation" aria-label="Main">
+  <!-- toggle สำหรับจอเล็ก -->
+  <input id="nav-check" class="nav-check" type="checkbox" aria-hidden="true">
+  <label for="nav-check" class="nav-toggle" aria-label="Toggle menu">☰</label>
+
+  <!-- ซ้าย: home + search -->
+  <div class="nav-left">
+    <!-- หน้าหลักคือ about -->
+    <a href="{% url 'about' %}" class="home-btn" aria-label="Home">🏠</a>
+
+    <form class="search" action="#" method="get" role="search">
+      <span class="search-ico" aria-hidden="true">🔍</span>
+      <input
+        type="text"
+        name="q"
+        placeholder="ค้นหา…"
+        aria-label="Search"
+        autocomplete="off"
+      />
+    </form>
+  </div>
+
+  <!-- ขวา: ปุ่มเหลือง + เมนูข้อความ -->
+  <div id="nav-menu" class="nav-right">
+    <ul class="nav-actions">
+      <li><a class="pill" href="#">ว่าจ้างงาน</a></li>
+      <li><a class="pill" href="#">เช่า-ยืม</a></li>
+    </ul>
+
+    <ul class="nav-links">
+      <li><a href="{% url 'about' %}">About us</a></li>
+      <li><a href="#">Contact us</a></li>
+      <li class="greet"><a href="#">Hi! Athiphat</a></li>
+      <li class="avatar" aria-hidden="true">👤</li>
+    </ul>
+  </div>
+</nav>
