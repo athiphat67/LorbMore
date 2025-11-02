@@ -1,32 +1,32 @@
-# CN331_FINAL_PROJECT
+LorbMore
 
-## ขั้นตอนการติดตั้ง (Setup Steps)
+# 🎓 Project Team Information
 
-ทำตามขั้นตอนเหล่านี้เพื่อตั้งค่าโปรเจคในเครื่องของคุณ (Local Setup)
+## 👥 Team Members
 
-### 1.โคลน (Clone) Repository
+| ชื่อ - นามสกุล | รหัสนักศึกษา |
+|------------------|----------------|
+| นาย ภูริช อัมพะวา | 6710615185 |
+| นาย อธิภัทร ศูนย์สิทธิ์ | 6710615292 |
+| นางสาว ลลิตา ทัศนอนันชัย | 6710615243 |
+| นางสาว ศราลิณี ณ สงขลา | 6710525020 |
+| นางสาว ปณิตา ชิโนวิทย์ | 6710525012 |
 
-```bash
-git clone https://github.com/athiphat67/RorbMore.git [ชื่อ project บนเครื่อง local]
-```
+---
+## 💻 LorbMore Website
+[**LorbMore**](https://lorbmore.onrender.com)
 
-### 2.สร้างและเปิดใช้งาน Virtual Environment
+---
 
-```bash
-# สร้าง venv (แนะนำให้ใช้ชื่อ venv)
-python -m venv venv
+## 🔗 GitHub Repository  
+[**GitHub Link**](https://github.com/athiphat67/LorbMore.git)  
 
-# เปิดใช้งาน (Activate) venv
-# (Windows)
-.\venv\Scripts\activate
+---
 
-# (macOS/Linux)
-source venv/bin/activate
-```
+## 🎬 Project Overview Video  
+[**YouTube Link**](#)  
 
-### 3.ติดตั้ง Dependencies
-```bash
-# ตรวจสอบว่า venv ทำงานอยู่
-# แล้วสั่งติดตั้ง
-pip install -r requirements.txt
-```
+---
+
+## 📄 Project Proposal  
+[**Proposal Document**](https://drive.google.com/file/d/1kjCKJ89woFFzO6xjhrz74esTJHuwXZVd/view?usp=share_link)  
