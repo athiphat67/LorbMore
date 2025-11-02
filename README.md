@@ -1,5 +1,3 @@
-LorbMore
-
 # 🎓 Project Team Information
 
 ## 👥 Team Members
