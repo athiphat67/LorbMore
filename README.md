@@ -27,4 +27,4 @@
 ---
 
 ## 📄 Project Proposal  
-[**Proposal Document**](https://drive.google.com/file/d/1kjCKJ89woFFzO6xjhrz74esTJHuwXZVd/view?usp=share_link)  
+[**Proposal Document**](LorbMore/pages/static/pages/files/LorbMore_iteration0_review%282%29.pdf)  
