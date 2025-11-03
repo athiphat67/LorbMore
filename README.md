@@ -27,4 +27,4 @@
 ---
 
 ## 📄 Project Proposal  
-[**Proposal Document**](LorbMore/pages/static/pages/files/LorbMore_iteration0_review(2).pdf)
+[**Proposal Document**](pages/static/pages/files/LorbMore_iteration0_review(2).pdf)
