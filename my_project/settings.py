@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "pages",
-    'users.apps.UsersConfig',
-    'posts.apps.PostsConfig',
+    "users.apps.UsersConfig",
+    "posts.apps.PostsConfig",
 ]
 
 MIDDLEWARE = [
@@ -60,7 +60,9 @@ ROOT_URLCONF = "my_project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            BASE_DIR / "my_project" / "templates"
+            ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -130,5 +132,5 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Media
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
