@@ -3,12 +3,9 @@
 <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
 
 <nav class="navbar" role="navigation" aria-label="Main">
-  <!-- toggle สำหรับจอเล็ก -->
   <label for="nav-check" class="nav-toggle" aria-label="Toggle menu">☰</label>
 
-  <!-- ซ้าย: home + search -->
   <div class="nav-left">
-    <!-- หน้าหลักคือ about -->
     <a href="{% url 'home' %}" class="home-btn" aria-label="Home">🏠</a>
 
     <form class="search" action="#" method="get" role="search">
@@ -23,11 +20,10 @@
     </form>
   </div>
 
-  <!-- ขวา: ปุ่มเหลือง + เมนูข้อความ -->
   <div id="nav-menu" class="nav-right">
     <ul class="nav-actions">
-      <li><a class="pill" href="#">ว่าจ้างงาน</a></li>
-      <li><a class="pill" href="#">เช่า-ยืม</a></li>
+      <li><a class="pill" href="{% url 'hiring' %}">ว่าจ้างงาน</a></li>
+      <li><a class="pill" href="{% url 'rental' %}">เช่า-ยืม</a></li>
     </ul>
 
     <ul class="nav-links">
