@@ -4,34 +4,83 @@
 {% block content %}
 <div class="container mx-auto px-4 py-8">
 
-    <h1 class="text-3xl font-bold mb-4">{{ post.title }}</h1>
-    
-    <p class="text-lg text-gray-700 mb-6">{{ post.description }}</p>
+    <div class="flex flex-col md:flex-row gap-8">
 
-    {% if post.rentalpost %}
-        <p class="text-2xl font-bold text-blue-600">
-            ราคาเช่า: {{ post.pricePerDay|floatformat:0 }}/วัน
-        </p>
-    {% elif post.hiringpost %}
-        <p class="text-2xl font-bold text-green-600">
-            งบประมาณ: {{ post.budgetMin|floatformat:0 }} - {{ post.budgetMax|floatformat:0 }} บาท
-        </p>
-    {% endif %}
-    
-    <hr class="my-8">
-
-    <h2 class="text-2xl font-semibold mb-4">รูปภาพประกอบ</h2>
-    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-        {% for m in media %}
-            {% if m.image %}
-            <div>
-                <img src="{{ m.image.url }}" alt="Media for {{ post.title }}" class="rounded-lg shadow-md w-full h-auto">
-            </div>
+        <div class="md:w-1/2">
+            
+            {% if media.first.image %}
+                <img src="{{ media.first.image.url }}" alt="Main image for {{ post.title }}" class="rounded-lg shadow-md w-full h-auto mb-4">
+            {% else %}
+                <div class="rounded-lg shadow-md w-full h-96 bg-gray-200 flex items-center justify-center">
+                    <p class="text-gray-500">ไม่มีรูปภาพหลัก</p>
+                </div>
             {% endif %}
-        {% empty %}
-            <p>ไม่มีรูปภาพประกอบสำหรับโพสต์นี้</p>
-        {% endfor %}
-    </div>
 
+            <h2 class="text-2xl font-semibold mt-8 mb-4">รูปภาพประกอบทั้งหมด</h2>
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-4">
+                {% for m in media %}
+                    {% if m.image %}
+                    <div>
+                        <img src="{{ m.image.url }}" alt="Media for {{ post.title }}" class="rounded-lg shadow-md w-full h-auto cursor-pointer">
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <p>ไม่มีรูปภาพประกอบ</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="md:w-1/2">
+
+            <div class="mb-4">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase">Categories:</h3>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {% for cat in categories %}
+                        <span class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-sm">{{ cat.name }}</span>
+                    {% empty %}
+                        <p class="text-gray-500">ไม่มีหมวดหมู่</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <h1 class="text-3xl font-bold mb-4">{{ post.title }}</h1>
+
+            <div class="author-info mb-4">
+                <p class="text-gray-600">
+                    By: 
+                    <span class="font-semibold text-gray-800">
+                        {{ post.author.username }}
+                    </span>
+                    </p>
+            </div>
+
+            {% if post.rentalpost %}
+                <p class="text-2xl font-bold text-blue-600 mb-6">
+                    ราคาเช่า: {{ post.pricePerDay|floatformat:0 }}/วัน
+                </p>
+            {% elif post.hiringpost %}
+                <p class="text-2xl font-bold text-green-600 mb-6">
+                    งบประมาณ: {{ post.budgetMin|floatformat:0 }} - {{ post.budgetMax|floatformat:0 }} บาท
+                </p>
+            {% endif %}
+
+            <h2 class="text-xl font-semibold mb-2">รายละเอียด</h2>
+            <p class="text-lg text-gray-700 mb-6">
+                {{ post.description|linebreaksbr }}
+            </p>
+
+            <div class="skills mt-6">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase">Skills ที่เกี่ยวข้อง:</h3>
+                <div class="flex flex-wrap gap-2 mt-2">
+                    {% for skill in skills %}
+                        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">{{ skill.name }}</span>
+                    {% empty %}
+                        <p class="text-gray-500">ไม่มี Skill ที่ระบุ</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 {% endblock content %}
