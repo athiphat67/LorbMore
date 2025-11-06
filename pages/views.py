@@ -2,7 +2,10 @@ from django.shortcuts import render
 from django.db.models import Prefetch
 from posts.models import Post, HiringPost, RentalPost, Media
 
-# Create your views here.
+
+# ต้อง import Models จาก App ที่เก็บ Models (เปลี่ยน 'services' เป็นชื่อ App ของคุณ)
+from posts.models import RentalPost, HiringPost, Media, Post 
+
 def about_page_view(request):
     return render(request, 'pages/about.html')
 
@@ -10,7 +13,7 @@ def home_page_view(request):
     return render(request, 'pages/home.html')
 
 def hiring_page_view(request):
-posts_with_media = Prefetch(
+    posts_with_media = Prefetch(
         'media', 
         queryset = Media.objects.all(), 
         to_attr = 'images'
@@ -24,7 +27,7 @@ posts_with_media = Prefetch(
     return render(request, 'pages/hiring.html', context)
 
 def rental_page_view(request):
-        posts_with_media = Prefetch(
+    posts_with_media = Prefetch(
         'media', 
         queryset = Media.objects.all(), 
         to_attr = 'images'
@@ -121,3 +124,4 @@ def detail_post_view(request, post_id):
     }
     
     return render(request, 'pages/detail_post.html', context) 
+
