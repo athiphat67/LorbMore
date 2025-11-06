@@ -41,7 +41,7 @@ def rental_page_view(request):
 
     
     
-    return render(request, 'pages/rental.html')
+    return render(request, 'pages/rental.html', context)
 
 # ฟังก์ชันช่วยในการแปลงข้อมูลจาก ORM object เป็น Dict
 def _format_post_data(post):
