@@ -48,7 +48,7 @@
                     
                     <p class="text-base font-bold text-gray-900 mb-2">{{ item.price_detail }}</p>
                     
-                    <a href="" 
+                    <a href="{% url 'posts:detail_post' item.id %}" 
                        class="block w-full text-center py-2 px-4 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50">
                         VIEW
                     </a>
@@ -73,7 +73,7 @@
         <h2 class="text-2xl font-bold text-gray-800 "> Item Rental</h2>
 
         <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {% for item in item_rental_items %}
+            {% for item in rental_items %}
             <div class="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
                 
                 <a href="{% url 'posts:detail_post' item.id %}" class="block">
@@ -96,7 +96,7 @@
                     
                     <p class="text-base font-bold text-gray-900 mb-2">{{ item.price_detail }}</p>
                     
-                    <a href="#" 
+                    <a href="{% url 'posts:detail_post' item.id %}" 
                        class="block w-full text-center py-2 px-4 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50">
                         VIEW
                     </a>

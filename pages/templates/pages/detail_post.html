@@ -1,0 +1,37 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+
+    <h1 class="text-3xl font-bold mb-4">{{ post.title }}</h1>
+    
+    <p class="text-lg text-gray-700 mb-6">{{ post.description }}</p>
+
+    {% if post.rentalpost %}
+        <p class="text-2xl font-bold text-blue-600">
+            ราคาเช่า: {{ post.pricePerDay|floatformat:0 }}/วัน
+        </p>
+    {% elif post.hiringpost %}
+        <p class="text-2xl font-bold text-green-600">
+            งบประมาณ: {{ post.budgetMin|floatformat:0 }} - {{ post.budgetMax|floatformat:0 }} บาท
+        </p>
+    {% endif %}
+    
+    <hr class="my-8">
+
+    <h2 class="text-2xl font-semibold mb-4">รูปภาพประกอบ</h2>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        {% for m in media %}
+            {% if m.image %}
+            <div>
+                <img src="{{ m.image.url }}" alt="Media for {{ post.title }}" class="rounded-lg shadow-md w-full h-auto">
+            </div>
+            {% endif %}
+        {% empty %}
+            <p>ไม่มีรูปภาพประกอบสำหรับโพสต์นี้</p>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock content %}

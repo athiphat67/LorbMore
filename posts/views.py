@@ -71,8 +71,7 @@ def _format_post_data(post):
 
 def detail_post_view(request, post_id):
     
-    # 1. ดึงข้อมูล Post หลัก (เอา comment ออก)
-    # ใช้ get_object_or_404 จะดีกว่า .first() เพราะจะแสดง 404 Page 
+    # ดึงข้อมูล Post หลัก 
     # ถ้า user ใส่ ID มั่วๆ มา
     post = get_object_or_404(
         Post.objects
