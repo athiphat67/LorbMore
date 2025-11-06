@@ -52,13 +52,23 @@
 
 <!-- Demo Pagination -->
 <nav class="pager" aria-label="Pagination">
-    <a class="prev" href="#" aria-label="Previous page">‹</a>
-    <a class="page is-active" href="#">1</a>
-    <a class="page" href="#">2</a>
-    <a class="page" href="#">3</a>
-    <span class="ellipsis" aria-hidden="true">…</span>
-    <a class="page" href="#">19</a>
-    <a class="next" href="#" aria-label="Next page">›</a>
+    
+    {% if page_obj.has_previous %}
+        <a class="prev" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">‹</a>
+    {% else %}
+        <span class="prev" style="color: #ccc; cursor: not-allowed;" aria-label="Previous page">‹</span>
+    {% endif %}
+
+    <span class="current-page" style="padding: 0 15px; font-weight: bold; color: #333;">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a class="next" href="?page={{ page_obj.next_page_number }}" aria-label="Next page">›</a>
+    {% else %}
+        <span class="next" style="color: #ccc; cursor: not-allowed;" aria-label="Next page">›</span>
+    {% endif %}
+
 </nav>
 {% endblock %}
 

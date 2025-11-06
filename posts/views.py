@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Post, HiringPost, RentalPost, Media
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Prefetch
+from django.core.paginator import Paginator
 
 # Create your views here.
 def hiring_page_view(request):
@@ -11,10 +12,22 @@ def hiring_page_view(request):
         to_attr = 'images'
     )
     
-    hiring_posts = HiringPost.objects.prefetch_related(posts_with_media).order_by('-id')
+    # ดึง "QuerySet" ทั้งหมดมา 
+    all_hiring_posts = HiringPost.objects.prefetch_related(posts_with_media).order_by('-id')
     
+    # สร้าง Paginator (ตั้งค่า 6 โพสต์ต่อหน้า)
+    paginator = Paginator(all_hiring_posts, 6) 
+    
+    # ดึงเลขหน้าจาก URL 
+    page_number = request.GET.get('page')
+    
+    # ดึงข้อมูล "หน้า" ที่ถูกต้องมา
+    page_obj = paginator.get_page(page_number)
+    formatted_items = [_format_post_data(post) for post in page_obj]
+
     context = {
-        "hiring_items": [_format_post_data(post) for post in hiring_posts],
+        "hiring_items": formatted_items, 
+        "page_obj": page_obj              # ส่ง 'page_obj' ไปให้ Template
     }
     return render(request, 'pages/hiring.html', context)
 
@@ -25,14 +38,23 @@ def rental_page_view(request):
         to_attr = 'images'
     )
     
-    rental_posts = RentalPost.objects.prefetch_related(posts_with_media).order_by('-id')
+    # ดึง "QuerySet" ทั้งหมดมา
+    all_rental_posts = RentalPost.objects.prefetch_related(posts_with_media).order_by('-id')
+    
+    # สร้าง Paginator (6 โพสต์ต่อหน้า)
+    paginator = Paginator(all_rental_posts, 6) 
+    
+    # ดึงเลขหน้าจาก URL
+    page_number = request.GET.get('page')
+    
+    # ดึงข้อมูล "หน้า" ที่ถูกต้องมา
+    page_obj = paginator.get_page(page_number)
+    formatted_items = [_format_post_data(post) for post in page_obj]
     
     context = {
-        "rental_items": [_format_post_data(post) for post in rental_posts],
+        "rental_items": formatted_items,  
+        "page_obj": page_obj              # ส่ง 'page_obj' ไปให้ Template
     }
-
-    
-    
     return render(request, 'pages/rental.html', context)
 
 # ฟังก์ชันช่วยในการแปลงข้อมูลจาก ORM object เป็น Dict
