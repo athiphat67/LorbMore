@@ -1,7 +1,8 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 {% load static %}
 
 {% block content %}
+
 <link rel="stylesheet" href="{% static 'pages/css/home.css' %}">
 
 <section class="trending-hero" aria-labelledby="trending-title">
@@ -15,4 +16,104 @@
       </p>
     </div>
   </section>
-{% endblock %}
+
+
+<div class="container mx-auto px-4 py-8">
+
+    <!-- Hiring Section -->
+    <section class="mb-16">
+        <h2 class="text-2xl font-bold text-gray-800 "> Hiring Skills</h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for item in hiring_items %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
+                
+                <a href="{% url 'detail_post' item.id %}" class="block">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card-image w-full bg-gray-200">
+                </a>
+
+                <div class="p-3">
+                    <div class="h-10 mb-1">
+                        <p class="text-sm font-semibold text-gray-800 text-truncate-2" title="{{ item.title|striptags }}">
+                            {{ item.title }}
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center text-xs text-gray-600 mb-2">
+                        <span class="text-yellow-500 mr-1">⭐</span> 
+                        <span>{{ item.rating|floatformat:1 }}</span>
+                        <span class="mx-1">•</span>
+                        <span>{{ item.reviews }} reviews</span>
+                    </div>
+                    
+                    <p class="text-base font-bold text-gray-900 mb-2">{{ item.price_detail }}</p>
+                    
+                    <a href="" 
+                       class="block w-full text-center py-2 px-4 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50">
+                        VIEW
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    
+        <div class="text-center mt-8">
+            <a href="{% url 'hiring' %}" 
+               class="inline-block text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                Explore more for hiring →
+            </a>
+        </div>
+    </section>
+
+    <hr class="my-10 border-gray-200" />
+
+    <!-- Rental Section -->
+    <section class="mb-16">
+        <h2 class="text-2xl font-bold text-gray-800 "> Item Rental</h2>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for item in item_rental_items %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
+                
+                <a href="{% url 'detail_post' item.id %}" class="block">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card-image w-full bg-gray-200">
+                </a>
+
+                <div class="p-3">
+                    <div class="h-10 mb-1">
+                        <p class="text-sm font-semibold text-gray-800 text-truncate-2" title="{{ item.title|striptags }}">
+                            {{ item.title }}
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center text-xs text-gray-600 mb-2">
+                        <span class="text-yellow-500 mr-1">⭐</span>
+                        <span>{{ item.rating|floatformat:1 }}</span>
+                        <span class="mx-1">•</span>
+                        <span>{{ item.reviews }} reviews</span>
+                    </div>
+                    
+                    <p class="text-base font-bold text-gray-900 mb-2">{{ item.price_detail }}</p>
+                    
+                    <a href="#" 
+                       class="block w-full text-center py-2 px-4 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50">
+                        VIEW
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        
+        <div class="text-center mt-8">
+            <a href="{% url 'rental' %}" 
+               class="inline-block text-blue-600 hover:text-blue-800 font-semibold text-sm">
+                Explore more for renting →
+            </a>
+        </div>
+    </section>
+
+</div>
+{% endblock content %}
+

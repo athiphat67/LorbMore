@@ -13,35 +13,10 @@ def home_page_view(request):
     return render(request, 'pages/home.html')
 
 def hiring_page_view(request):
-    posts_with_media = Prefetch(
-        'media', 
-        queryset = Media.objects.all(), 
-        to_attr = 'images'
-    )
-    
-    hiring_posts = HiringPost.objects.prefetch_related(posts_with_media).order_by('-id')
-    
-    context = {
-        "hiring_items": [_format_post_data(post) for post in hiring_posts],
-    }
-    return render(request, 'pages/hiring.html', context)
+    return render(request, 'pages/hiring.html')
 
 def rental_page_view(request):
-    posts_with_media = Prefetch(
-        'media', 
-        queryset = Media.objects.all(), 
-        to_attr = 'images'
-    )
-    
-    rental_posts = RentalPost.objects.prefetch_related(posts_with_media).order_by('-id')
-    
-    context = {
-        "rental_items": [_format_post_data(post) for post in rental_posts],
-    }
-
-    
-    
-    return render(request, 'pages/rental.html', context)
+    return render(request, 'pages/rental.html')
 
 # ฟังก์ชันช่วยในการแปลงข้อมูลจาก ORM object เป็น Dict
 def _format_post_data(post):
