@@ -109,8 +109,10 @@ def detail_post_view(request, post_id):
         specific_post = post.rentalpost # ดึงข้อมูลจากตาราง rentalpost
     
     context = {
-        'post': specific_post,      # ตัวนี้จะมี field pricePerDay หรือ budgetMin
-        'media': post.media.all(),  # media ยังคงดึงจาก post หลัก
+        'post': specific_post,      
+        'media': post.media.all(),  
+        'skills': post.skills.all(),     
+        'categories': post.categories.all() 
     }
     
     return render(request, 'pages/detail_post.html', context) 
