@@ -62,10 +62,6 @@ class HiringPost(Post):
 class Media(models.Model):
     # เชื่อมโยงกับ Post ตัวหลัก
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='media')
-    
-    # หมายเหตุ: คุณมี 2 ฟิลด์ที่ดูเหมือนจะเก็บข้อมูลเดียวกัน (source_url และ image)
-    # แนะนำให้เลือกใช้ 'image' (ImageField) เป็นหลัก และลบ 'source_url' ทิ้งครับ
-    source_url = models.CharField(max_length=500) 
     image = models.ImageField(upload_to='media_images/', null=True, blank=True)
 
     def __str__(self):
