@@ -35,7 +35,7 @@
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
     {% for item in hiring_items %}
     <div class="bg-white rounded-lg shadow-md overflow-hidden transition hover:shadow-lg">
-        <a href="{% url 'detail_post' item.id %}">
+        <a href="{% url 'posts:detail_post' item.id %}">
             <img src="{{ item.image_url }}" alt="{{ item.title }}" class="w-full h-40 object-cover">
         </a>
 
@@ -43,7 +43,7 @@
             <p class="text-sm font-semibold text-gray-800">{{ item.title }}</p>
             <p class="text-base font-bold text-gray-900 mt-1">{{ item.price_detail }}</p>
             <p class="text-base font-bold text-gray-900 mt-1">{{ item.categories }}</p>
-            <a href="{% url 'detail_post' item.id %}" class="block text-center mt-2 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-50">
+            <a href="#" class="block text-center mt-2 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-50">
                 VIEW
             </a>
         </div>
