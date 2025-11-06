@@ -1,0 +1,75 @@
+/* ====== Theme variables (ปรับสีได้ตามเว็บของคุณ) ====== */
+:root{
+    --hero-grad-start:#ffcc70;    /* ส้มพีช */
+    --hero-grad-mid:#ffd37a;      /* เหลืองนวล */
+    --hero-grad-end:#ff8fb1;      /* ชมพูพีช */
+    --hero-text:#111;             /* สีตัวอักษรหลักใน hero */
+    --hero-shadow: 0 10px 30px rgba(0,0,0,.08);
+    --hero-radius: 18px;
+  }
+  
+/* ====== Hero block ====== */
+.trending-hero{
+margin: 24px auto 32px;
+padding: 0 20px;               /* เผื่อระยะซ้ายขวา */
+}
+
+.trending-inner{
+max-width: 1200px;
+margin: 0 auto;
+padding: clamp(20px, 3vw, 36px);
+border-radius: var(--hero-radius);
+background: linear-gradient(110deg,
+            var(--hero-grad-start) 0%,
+            var(--hero-grad-mid) 45%,
+            var(--hero-grad-end) 100%);
+box-shadow: var(--hero-shadow);
+position: relative;
+overflow: hidden;
+
+display: flex;
+flex-direction: column;
+align-items: center;
+text-align: center;
+}
+
+/* หัวข้อ */
+.trending-inner h2{
+margin: 0 0 10px 0;
+font-size: clamp(28px, 5vw, 56px);
+line-height: 1.05;
+font-weight: 800;
+color: var(--hero-text);
+letter-spacing: .2px;
+text-shadow: 0 1px 0 rgba(255,255,255,.25);
+}
+.flame{ display:inline-block; transform: translateY(2px); }
+
+/* แคปชัน/คำคม */
+.trending-caption{
+margin: 6px 0 0 2px;
+font-size: clamp(14px, 2.2vw, 18px);
+line-height: 1.6;
+color: rgba(0,0,0,.78);
+background: rgba(255,255,255,.45);
+padding: 10px 14px;
+border-radius: 999px;         /* เม็ดแคปซูล */
+display: inline-flex;
+backdrop-filter: blur(2px);
+}
+
+/* ====== Responsive tweaks ====== */
+@media (max-width: 768px) {
+body {
+    font-size: 14px;
+    padding: 10px;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}
+.container, .page-hero, .market-toolbar {
+    padding: 0 10px;
+}
+}
+  

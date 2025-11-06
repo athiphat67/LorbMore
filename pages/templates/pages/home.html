@@ -2,7 +2,17 @@
 {% load static %}
 
 {% block content %}
-    <h1>นี่คือหน้าแรก (Home Page)</h1>
-    <p>ยินดีต้อนรับสู่เว็บไซต์ RorbMore!</p>
+<link rel="stylesheet" href="{% static 'pages/css/home.css' %}">
 
-    {% endblock %}
+<section class="trending-hero" aria-labelledby="trending-title">
+    <div class="trending-inner">
+      <h2 id="trending-title">
+        Trending <span class="flame" aria-hidden="true">🔥</span>
+      </h2>
+
+      <p class="trending-caption">
+        “Everything you need, whenever you need it — hire or rent today.”
+      </p>
+    </div>
+  </section>
+{% endblock %}

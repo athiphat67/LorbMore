@@ -2,6 +2,43 @@
 {% load static %}
 
 {% block content %}
-    <h1>นี่คือหน้าว่าจ้างงาน (Hiring Page)</h1>
-    <p>เนื้อหาสำหรับหน้าว่าจ้างงานจะอยู่ที่นี่</p>
-    {% endblock %}
+<link rel="stylesheet" href="{% static 'pages/css/market_space.css' %}">
+
+<section class="page-hero">
+  <h1>Hiring Skills <span class="th">(รับจ้างงาน)</span></h1>
+  <p class="sub">Find the right talent — fast, easy, reliable.</p>
+</section>
+
+<!-- Toolbar -->
+<section class="market-toolbar" data-page="hiring" aria-label="Hiring tools">
+    <div class="mt-left">
+      <form class="searchbar" role="search" action="#" method="get">
+        <span class="search-ico" aria-hidden="true">🔍</span>
+        <input type="search" name="q" placeholder="searching…" aria-label="Search hiring">
+      </form>
+      <!--
+      <a class="icon-btn" href="#" aria-label="Sort results">
+        <img src="{% static 'pages/image/sorting_btn.svg' %}" alt="">
+      </a>
+      <a class="icon-btn" href="#" aria-label="Open filters">
+        <img src="{% static 'pages/image/filter.svg' %}" alt="">
+      </a>
+        -->
+    </div>
+  
+    <div class="mt-right">
+      <a class="quick" href="#"><span aria-hidden="true">＋</span> create your hiring post</a>
+    </div>
+</section>
+  
+<!-- Demo Pagination -->
+<nav class="pager" aria-label="Pagination">
+    <a class="prev" href="#" aria-label="Previous page">‹</a>
+    <a class="page is-active" href="#">1</a>
+    <a class="page" href="#">2</a>
+    <a class="page" href="#">3</a>
+    <span class="ellipsis" aria-hidden="true">…</span>
+    <a class="page" href="#">19</a>
+    <a class="next" href="#" aria-label="Next page">›</a>
+</nav>
+{% endblock %}

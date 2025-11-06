@@ -1,4 +1,33 @@
 * {
     margin: 0;
   }
+
+:root {
+  --font-sans: "Noto Sans Thai", "Inter", system-ui, -apple-system,
+                "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html, body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: #222;
+  background-color: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+    padding: 10px;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  .container, .page-hero, .market-toolbar {
+    padding: 0 10px;
+  }
+}
+
   
