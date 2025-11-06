@@ -10,7 +10,25 @@ def about_page_view(request):
     return render(request, 'pages/about.html')
 
 def home_page_view(request):
-    return render(request, 'pages/home.html')
+
+    posts_with_media = Prefetch(
+        'media', 
+        queryset=Media.objects.all(), 
+        to_attr='images'
+    )
+    
+    # ดึงข้อมูล 3 โพสต์ล่าสุดของแต่ละประเภท
+    latest_hiring = HiringPost.objects.prefetch_related(posts_with_media).order_by('-id')[:3]
+    latest_rental = RentalPost.objects.prefetch_related(posts_with_media).order_by('-id')[:3]
+    
+    #  context เพื่อส่งไปให้ HTML
+    context = {
+        # แปลงข้อมูลโดยใช้ฟังก์ชัน _format_post_data ของคุณเอง
+        "hiring_items": [_format_post_data(post) for post in latest_hiring],
+        "rental_items": [_format_post_data(post) for post in latest_rental],
+    }
+    
+    return render(request, 'pages/home.html', context)
 
 def hiring_page_view(request):
     posts_with_media = Prefetch(
@@ -77,50 +95,27 @@ def _format_post_data(post):
         "price_detail": price_detail,
     }
 
-# --- Views Functions ---
-def home_page_view(request):
-    
-    # ใช้ Prefetch เพื่อดึง media ของโพสต์แต่ละรายการใน query เดียว
-    posts_with_media = Prefetch(
-        'media', 
-        queryset = Media.objects.all(), 
-        to_attr = 'images'
-    )
-    
-    # ดึง Hiring Posts (ล่าสุด 3 โพสต์) ตอนนี้ยังไม่มีคะแนน
-    hiring_posts = HiringPost.objects.prefetch_related(posts_with_media).order_by('-id')[:3]
-    rental_posts = RentalPost.objects.prefetch_related(posts_with_media).order_by('-id')[:3]
-
-    context = {
-        "hiring_items": [_format_post_data(post) for post in hiring_posts],
-        "item_rental_items": [_format_post_data(post) for post in rental_posts],
-    }
-    
-    return render(request, 'pages/home.html', context) 
-
 def detail_post_view(request, post_id):
     
-    # Logic เพื่อดึงข้อมูลเฉพาะจากโมเดลลูก
-    if hasattr(post, 'hiringpost'):
-        specific_post = post.hiringpost
-    elif hasattr(post, 'rentalpost'):
-        specific_post = post.rentalpost
-
-    #รายละเอียดโพสต์
-    # post = (
-    # Post.objects
-    # .select_related('author')
-    # .prefetch_related('media', 'skills', 'categories')
-    # .filter(pk=post_id)
-    # .first()
-    # )
+    # 1. ดึงข้อมูล Post หลัก (เอา comment ออก)
+    # ใช้ get_object_or_404 จะดีกว่า .first() เพราะจะแสดง 404 Page 
+    # ถ้า user ใส่ ID มั่วๆ มา
+    post = get_object_or_404(
+        Post.objects
+        .select_related('author') # ใช้ select_related กับ ForeignKey (author)
+        .prefetch_related('media', 'skills', 'categories'), # prefetch สำหรับ M2M และ Reverse FK
+        pk=post_id
+    )
     
-    #dic ที่จะส่งข้อมูลไปหน้า html
+    specific_post = post # เริ่มต้นให้เป็น post หลักไว้ก่อน
+    if hasattr(post, 'hiringpost'):
+        specific_post = post.hiringpost # ดึงข้อมูลจากตาราง hiringpost
+    elif hasattr(post, 'rentalpost'):
+        specific_post = post.rentalpost # ดึงข้อมูลจากตาราง rentalpost
+    
     context = {
-        #ส่งรายโพสต์ hiring or rent
-        'post': specific_post,
-        #ส่งชุดรูปภาพทั้งหมด
-        'media': post.media.all(), 
+        'post': specific_post,      # ตัวนี้จะมี field pricePerDay หรือ budgetMin
+        'media': post.media.all(),  # media ยังคงดึงจาก post หลัก
     }
     
     return render(request, 'pages/detail_post.html', context) 
