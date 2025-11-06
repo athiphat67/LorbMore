@@ -2,6 +2,26 @@
 {% load static %}
 
 {% block content %}
-    <h1>นี่คือหน้าเช่า-ยืม (Rental Page)</h1>
-    <p>เนื้อหาสำหรับหน้าเช่า-ยืมจะอยู่ที่นี่</p>
-    {% endblock %}
+<div class="container mx-auto px-4 py-8">
+    <h2 class="text-3xl font-bold mb-6 text-gray-800">Item Rental</h2>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        {% for item in rental_items %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden transition hover:shadow-lg">
+            <a href="{% url 'detail_post' item.id %}">
+                <img src="{{ item.image_url }}" alt="{{ item.title }}" class="w-full h-40 object-cover">
+            </a>
+
+            <div class="p-3">
+                <p class="text-sm font-semibold text-gray-800">{{ item.title }}</p>
+                <p class="text-base font-bold text-gray-900 mt-1">{{ item.price_detail }}</p>
+                <p class="text-base font-bold text-gray-900 mt-1">{{ item.categories }}</p>
+                <a href="{% url 'detail_post' item.id %}" class="block text-center mt-2 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-50">
+                    VIEW
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
