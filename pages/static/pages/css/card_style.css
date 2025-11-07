@@ -1,0 +1,122 @@
+.page-container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.vertical-spacing {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.card-grid {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(1, 1fr);
+}
+
+@media (min-width: 640px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.card {
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.card__image {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    background-color: #fcfcfc;
+}
+
+.card__body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.card__title-wrapper {
+    height: 48px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.card__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.card__info {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.card__price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #000;
+    margin-bottom: 16px;
+    margin-top: auto;
+}
+
+.card__button {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+
+    background-color: #FFD95A;
+    color: #4C3D0E;
+    border: none;
+}
+
+.card__button:hover {
+    background-color: #FBCB0A;
+}
+
+.trending-section__title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.trending-section__footer {
+    text-align: left;
+    margin-top: 24px;
+}
+
+.trending-section__explore-link {
+    color: #4B5563;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+
+    text-decoration-color: #9CA3AF;
+}
+
+.section-divider {
+    margin: 40px 0;
+    border-color: #e5e7eb;
+}
