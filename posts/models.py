@@ -27,7 +27,6 @@ class Post(models.Model):
     description = models.TextField(blank=True, null=True)
     type = models.CharField(max_length=50) # เช่น "rental" หรือ "hiring"
 
-    skills = models.ManyToManyField(Skill, related_name='posts', blank=True)
     categories = models.ManyToManyField(Category, related_name='posts', blank=True)
 
     def __str__(self):
@@ -51,6 +50,7 @@ class HiringPost(Post):
     budgetMin = models.IntegerField()
     budgetMax = models.IntegerField()
     workType = models.CharField(max_length=100) # เช่น "Full-time", "Part-time"
+    skills = models.ManyToManyField(Skill, related_name='hiring_posts', blank=True)
 
     def __str__(self):
         # กำหนดการแสดงผลในหน้า Admin
