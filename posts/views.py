@@ -104,11 +104,13 @@ def detail_post_view(request, post_id):
     )
 
     specific_post = post
-    skills_list = None  
+    skills_list = None
+    is_hiring = False
 
     if hasattr(post, "hiringpost"):
         specific_post = post.hiringpost
         skills_list = post.hiringpost.skills.all()
+        is_hiring = True
 
     elif hasattr(post, "rentalpost"):
         specific_post = post.rentalpost
@@ -117,7 +119,8 @@ def detail_post_view(request, post_id):
         "post": specific_post,  
         "media": post.media.all(), 
         "skills": skills_list,  
-        "categories": post.categories.all(),  
+        "categories": post.categories.all(), 
+        "is_hiring" : is_hiring, 
     }
 
     return render(request, "pages/detail_post.html", context)
