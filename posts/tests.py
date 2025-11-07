@@ -1,6 +1,8 @@
 from django.test import TestCase, Cient
 from django.urls import reverse
+from django.contrib.auth.models import User
 from .models import RentalPost, HiringPost, Media, Skill, Category
+from django.core.files.uploadedfile import SimpleUploadedFile
 
 # Create your tests here.
 class PostIntegrationTestCase(TestCase):
@@ -65,7 +67,7 @@ class PostIntegrationTestCase(TestCase):
         # ตรวจสอบว่า expected_keys ที่เรากำหนดตรงกับ formatted_item เปล่า
         expected_keys = ['id', 'image_url', 'title', 'reviews', 'rating', 'price_detail']
         for key in expected_keys:
-        self.assertIn(key, formatted_item)
+            self.assertIn(key, formatted_item)
         
         # ตรวจสอบว่า price_detail มี "/วัน" สำหรับ RentalPost
         self.assertIn('เริ่มต้น', formatted_item['price_detail'])    
@@ -135,13 +137,4 @@ class PostIntegrationTestCase(TestCase):
         # ตรวจสอบ categories
         categories = list(response.context['categories'])
         self.assertIn(self.category, categories)
-        
-    
-    
-    
-    
-
-    
-        
-        
         
