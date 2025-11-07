@@ -8,8 +8,7 @@
     --radius:16px;
     --shadow:0 8px 22px rgba(0,0,0,.06);
   }
-  
-/* header เล็กๆ ของหน้า */
+
 .page-hero{
   max-width:1200px; margin:28px auto 18px; padding:0 20px;
 }
@@ -20,7 +19,6 @@
 .page-hero .th{ font-weight:700; color:var(--red); }
 .page-hero .sub{ color:#333; opacity:.75; margin:0; }
 
-/* ===== Toolbar (ใช้ได้ทั้ง Hiring และ Rental) ===== */
 .market-toolbar{
   max-width:1200px; margin:18px auto 8px; padding:0 20px;
   display:flex; align-items:center; justify-content:space-between; gap:16px;
@@ -30,7 +28,6 @@
 .market-toolbar .mt-left{ display:flex; align-items:center; gap:10px; flex:1 1 520px; }
 .market-toolbar .mt-right{ display:flex; align-items:center; gap:16px; }
 
-/* Search pill */
 .market-toolbar .searchbar{
   display:flex; align-items:center; gap:8px;
   background:#f1f1f1; border-radius:999px; padding:10px 14px;
@@ -42,16 +39,6 @@
 }
 .market-toolbar .searchbar input::placeholder{ color:#8e8e8e; }
 
-/* Icon buttons (sorting / filter / add_post as link elsewhere)
-.market-toolbar .icon-btn{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:38px; height:38px; border-radius:10px;
-  background:#f6f6f6; border:1px solid #e7e7e7;
-  transition:transform .15s ease, filter .15s ease, background .15s ease;
-}
-*/
-
-/* Quick links (right side) */
 .market-toolbar .quick{
   display:inline-flex; align-items:center; gap:8px;
   text-decoration: none;
@@ -61,7 +48,6 @@
 }
 .market-toolbar .inline-ico{ width:18px; height:18px; display:block; }
 
-/* ===== Pagination (เรียบง่าย ไม่มีกรอบ) ===== */
 .pager {
   max-width: 1200px;
   margin: 18px auto 32px;
@@ -111,4 +97,106 @@
   .container, .page-hero, .market-toolbar {
     padding: 0 10px;
   }
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto 18px;
+  padding: 0 20px; 
+}
+
+.card-grid-market {
+  display: grid;
+  gap: 72px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+  .card-grid-market {
+    grid-template-columns: repeat(1, 1fr); 
+  }
+}
+
+@media (min-width: 1024px) { /* lg breakpoint */
+  .card-grid-market {
+    /* จอใหญ่ (lg): 4 คอลัมน์ (ตามโค้ดเดิมของคุณ)
+    */
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+/* ===== SHARED CARD STYLE ===== */
+/* (นี่คือโค้ดจากหน้า Home ที่เรานำมาใช้ซ้ำ) */
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.card__image {
+  width: 100%;
+  height: 360px; 
+  object-fit: cover;
+  background-color: #f0f0f0;
+}
+
+.card__body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; 
+}
+
+.card__title-wrapper {
+  height: 48px; 
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* นี่คือคลาสใหม่สำหรับ Categories */
+.card__categories {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+  font-style: italic;
+  /* ทำให้มันตัด ... ถ้าขนาดยาวไป */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card__price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 16px;
+  margin-top: auto; /* ดันราคาลงล่างสุด */
+}
+
+.card__button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  background-color: #FFD95A;
+  color: #4C3D0E;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.card--rental .card__button {
+  background-color: #22c55e; /* 👈 สีเขียว */
+  color: #ffffff;            /* 👈 ตัวอักษรสีขาว */
 }

@@ -4,52 +4,52 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'pages/css/home.css' %}">
+<link rel="stylesheet" href="{% static 'pages/css/card_style.css' %}">
 
 <section class="trending-hero" aria-labelledby="trending-title">
     <div class="trending-inner">
-      <h2 id="trending-title">
-        Trending <span class="flame" aria-hidden="true">🔥</span>
-      </h2>
+        <h2 id="trending-title">
+            Trending <span class="flame" aria-hidden="true">🔥</span>
+        </h2>
 
-      <p class="trending-caption">
-        “Everything you need, whenever you need it — hire or rent today.”
-      </p>
+        <p class="trending-caption">
+            “Everything you need, whenever you need it — hire or rent today.”
+        </p>
     </div>
-  </section>
+</section>
 
 
-<div class="container mx-auto px-4 py-8">
+<div class="page-container vertical-spacing">
 
     <!-- Hiring Section -->
-    <section class="mb-16">
-        <h2 class="text-2xl font-bold text-gray-800 "> Hiring Skills</h2>
+    <section class="trending_section">
+        <h2 class="trending-section__title">Hiring Skills</h2>
+        <div class="card-grid">
 
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {% for item in hiring_items %}
-            <div class="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
+
+            <div class="card">
                 
-                <a href="{% url 'posts:detail_post' item.id %}" class="block">
-                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card-image w-full bg-gray-200">
+                <a href="{% url 'posts:detail_post' item.id %}" class="card__image-link">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card__image">
                 </a>
 
-                <div class="p-3">
-                    <div class="h-10 mb-1">
-                        <p class="text-sm font-semibold text-gray-800 text-truncate-2" title="{{ item.title|striptags }}">
+                <div class="card__body">
+                    <div class="card__title-wrapper">
+                        <p class="card__title" title="{{ item.title|striptags }}">
                             {{ item.title }}
                         </p>
                     </div>
                     
-                    <div class="flex items-center text-xs text-gray-600 mb-2">
-                        <span class="text-yellow-500 mr-1">⭐</span> 
-                        <span>{{ item.rating|floatformat:1 }}</span>
-                        <span class="mx-1">•</span>
-                        <span>{{ item.reviews }} reviews</span>
+                    <div class="card__info">
+                        <span class="card__rating">⭐ {{ item.rating|floatformat:1 }}</span>
+                        <span class="mx-1">{{ item.reviews }} reviews </span>
                     </div>
                     
-                    <p class="text-base font-bold text-gray-900 mb-2">{{ item.price_detail }}</p>
+                    <p class="card__price">{{ item.price_detail }}</p>
                     
                     <a href="{% url 'posts:detail_post' item.id %}" 
-                       class="block w-full text-center py-2 px-4 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50">
+                       class="card__button">
                         VIEW
                     </a>
                 </div>
@@ -58,57 +58,49 @@
         </div>
 
     
-        <div class="text-center mt-8">
-            <a href="{% url 'posts:hiring' %}" 
-               class="inline-block text-blue-600 hover:text-blue-800 font-semibold text-sm">
+        <div class="trending-section__footer">
+            <a href="{% url 'posts:hiring' %}" class="trending-section__explore-link">
                 Explore more for hiring →
             </a>
         </div>
     </section>
 
-    <hr class="my-10 border-gray-200" />
+    <hr class="section-divider" />
 
     <!-- Rental Section -->
-    <section class="mb-16">
-        <h2 class="text-2xl font-bold text-gray-800 "> Item Rental</h2>
-
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    <section class="trending-section">
+        <h2 class="trending-section__title">Item Rental</h2>
+        <div class="card-grid">
             {% for item in rental_items %}
-            <div class="bg-white rounded-lg shadow-md overflow-hidden transition duration-300 hover:shadow-lg">
-                
-                <a href="{% url 'posts:detail_post' item.id %}" class="block">
-                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card-image w-full bg-gray-200">
+            <div class="card">
+                <a href="{% url 'posts:detail_post' item.id %}" class="card__image-link">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card__image">
                 </a>
 
-                <div class="p-3">
-                    <div class="h-10 mb-1">
-                        <p class="text-sm font-semibold text-gray-800 text-truncate-2" title="{{ item.title|striptags }}">
+                <div class="card__body">
+                    <div class="card__title-wrapper">
+                        <p class="card__title" title="{{ item.title|striptags }}">
                             {{ item.title }}
                         </p>
                     </div>
                     
-                    <div class="flex items-center text-xs text-gray-600 mb-2">
-                        <span class="text-yellow-500 mr-1">⭐</span>
-                        <span>{{ item.rating|floatformat:1 }}</span>
-                        <span class="mx-1">•</span>
-                        <span>{{ item.reviews }} reviews</span>
+                    <div class="card__info">
+                        <span class="card__rating">⭐ {{ item.rating|floatformat:1 }}</span>
+                        <span class="mx-1">{{ item.reviews }} reviews</span>
                     </div>
                     
-                    <p class="text-base font-bold text-gray-900 mb-2">{{ item.price_detail }}</p>
+                    <p class="card__price">{{ item.price_detail }}</p>
                     
                     <a href="{% url 'posts:detail_post' item.id %}" 
-                       class="block w-full text-center py-2 px-4 border border-blue-500 text-blue-500 rounded-lg hover:bg-blue-50">
+                       class="card__button">
                         VIEW
                     </a>
                 </div>
             </div>
             {% endfor %}
         </div>
-
-        
-        <div class="text-center mt-8">
-            <a href="{% url 'posts:rental' %}" 
-               class="inline-block text-blue-600 hover:text-blue-800 font-semibold text-sm">
+        <div class="trending-section__footer">
+            <a href="{% url 'posts:rental' %}" class="trending-section__explore-link">
                 Explore more for renting →
             </a>
         </div>

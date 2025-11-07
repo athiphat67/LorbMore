@@ -4,59 +4,72 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'pages/css/market_space.css' %}">
+<link rel="stylesheet" href="{% static 'pages/css/card_style.css' %}">
 
 <section class="page-hero">
-  <h1>Hiring Skills <span class="th">(รับจ้างงาน)</span></h1>
-  <p class="sub">Find the right talent — fast, easy, reliable.</p>
+    <h1>Hiring Skills <span class="th">(รับจ้างงาน)</span></h1>
+    <p class="sub">Find the right talent — fast, easy, reliable.</p>
 </section>
 
-<!-- Toolbar -->
 <section class="market-toolbar" data-page="hiring" aria-label="Hiring tools">
     <div class="mt-left">
-      <form class="searchbar" role="search" action="#" method="get">
-        <span class="search-ico" aria-hidden="true">🔍</span>
-        <input type="search" name="q" placeholder="searching…" aria-label="Search hiring">
-      </form>
-      <!--
-      <a class="icon-btn" href="#" aria-label="Sort results">
-        <img src="{% static 'pages/image/sorting_btn.svg' %}" alt="">
-      </a>
-      <a class="icon-btn" href="#" aria-label="Open filters">
-        <img src="{% static 'pages/image/filter.svg' %}" alt="">
-      </a>
-        -->
+        <form class="searchbar" role="search" action="#" method="get">
+            <span class="search-ico" aria-hidden="true">🔍</span>
+            <input type="search" name="q" placeholder="searching…" aria-label="Search hiring">
+        </form>
     </div>
-  
     <div class="mt-right">
-      <a class="quick" href="#"><span aria-hidden="true">＋</span> create your hiring post</a>
+        <a class="quick" href="#"><span aria-hidden="true">＋</span> create your hiring post</a>
     </div>
 </section>
 
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-    {% for item in hiring_items %}
-    <div class="bg-white rounded-lg shadow-md overflow-hidden transition hover:shadow-lg">
-        <a href="{% url 'posts:detail_post' item.id %}">
-            <img src="{{ item.image_url }}" alt="{{ item.title }}" class="w-full h-40 object-cover">
-        </a>
-
-        <div class="p-3">
-            <p class="text-sm font-semibold text-gray-800">{{ item.title }}</p>
-            <p class="text-base font-bold text-gray-900 mt-1">{{ item.price_detail }}</p>
-            <p class="text-base font-bold text-gray-900 mt-1">{{ item.categories }}</p>
-            <a href="{% url 'posts:detail_post' item.id %}" class="block text-center mt-2 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-50">
-                VIEW
+<div class="page-container">
+    <div class="card-grid-market">
+        {% for item in hiring_items %}
+        <div class="card card--hiring">
+            <a href="{% url 'posts:detail_post' item.id %}" class="card__image-link">
+                <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card__image">
             </a>
+
+            <div class="card__body">
+                <div class="card__header">
+                    <p class="card__title" title="{{ item.title|striptags }}">{{ item.title }}</p>
+                    <div class="card__rating-info">
+                        {{ item.reviews }} รีวิว / {{ item.rating|floatformat:1 }} <span aria-hidden="true">⭐</span>
+                    </div>
+                </div>
+
+                <div class="card__tags">
+                    {% for tag in item.tags %}
+                    <span class="card__tag-item">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card__footer">
+                <div class="card__price-section">
+                    {% if item.original_price %}
+                    <span class="card__price--original">{{ item.original_price }}฿</span>
+                    {% endif %}
+                    <span class="card__price--final">{{ item.price_detail }}</span>
+                </div>
+
+                <a href="{% url 'posts:detail_post' item.id %}" class="card__button">
+                    VIEW
+                </a>
+            </div>
         </div>
         {% endfor %}
     </div>
+</div>
 
 <!-- Demo Pagination -->
 <nav class="pager" aria-label="Pagination">
-    
+
     {% if page_obj.has_previous %}
-        <a class="prev" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">‹</a>
+    <a class="prev" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">‹</a>
     {% else %}
-        <span class="prev" style="color: #ccc; cursor: not-allowed;" aria-label="Previous page">‹</span>
+    <span class="prev" style="color: #ccc; cursor: not-allowed;" aria-label="Previous page">‹</span>
     {% endif %}
 
     <span class="current-page" style="padding: 0 15px; font-weight: bold; color: #333;">
@@ -64,11 +77,10 @@
     </span>
 
     {% if page_obj.has_next %}
-        <a class="next" href="?page={{ page_obj.next_page_number }}" aria-label="Next page">›</a>
+    <a class="next" href="?page={{ page_obj.next_page_number }}" aria-label="Next page">›</a>
     {% else %}
-        <span class="next" style="color: #ccc; cursor: not-allowed;" aria-label="Next page">›</span>
+    <span class="next" style="color: #ccc; cursor: not-allowed;" aria-label="Next page">›</span>
     {% endif %}
 
 </nav>
 {% endblock %}
-
