@@ -1,13 +1,11 @@
-/* ---- Theme ---- */
 :root {
-  --red: #b52b35;
-  --yellow: #f6dd8a;
+  --red: #c3002f;
+  --yellow:#f6dd8a;
   --text: #ffffff;
   --ink: #272727;
   --radius-pill: 999px;
 }
 
-/* ---- Reset ---- */
 * { box-sizing: border-box; }
 .navbar ul { list-style: none; margin: 0; padding: 0; }
 .navbar a { text-decoration: none; }
@@ -34,13 +32,23 @@
 }
 
 .home-btn {
-  font-size: 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--yellow);
-  border-radius: 12px;
-  padding: 4px 10px;
+  background: transparent;    /* ไม่มีพื้นหลังเหลือง */
+  border: none;
+  padding: 0;                 /* ไม่มีขอบใน */
+  border-radius: 0;
+  cursor: pointer;
+  line-height: 0;             /* ลบช่องว่างแนวตั้งของ <a> */
+}
+
+/* รูปไอคอน */
+.home-btn img {
+  width: 30px;                /* ขนาดไอคอน */
+  height: 30px;
+  display: block;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 /* Search bar */
@@ -110,29 +118,34 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.avatar {
-  font-size: 26px;
+.avatar{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
 }
 
-/* ---- Responsive ---- */
+.avatar img{
+  width: 28px;
+  height: 28px;
+  display: block;
+  transition: transform .2s ease, filter .2s ease;
+}
+
+
 @media (max-width: 768px) {
-  .navbar {
-    flex-wrap: wrap;
+  body {
+    font-size: 14px;
+    padding: 10px;
   }
-  .nav-right {
-    width: 100%;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
+  img {
+    max-width: 100%;
+    height: auto;
   }
-  .nav-actions, .nav-links {
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .nav-actions .pill {
-    flex: 1 1 160px;
-    text-align: center;
+  .container, .page-hero, .market-toolbar {
+    padding: 0 10px;
   }
 }

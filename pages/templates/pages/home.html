@@ -1,8 +1,111 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} 
 {% load static %}
 
 {% block content %}
-    <h1>นี่คือหน้าแรก (Home Page)</h1>
-    <p>ยินดีต้อนรับสู่เว็บไซต์ RorbMore!</p>
 
-    {% endblock %}
+<link rel="stylesheet" href="{% static 'pages/css/home.css' %}">
+<link rel="stylesheet" href="{% static 'pages/css/card_style.css' %}">
+
+<section class="trending-hero" aria-labelledby="trending-title">
+    <div class="trending-inner">
+        <h2 id="trending-title">
+            Trending <span class="flame" aria-hidden="true">🔥</span>
+        </h2>
+
+        <p class="trending-caption">
+            “Everything you need, whenever you need it — hire or rent today.”
+        </p>
+    </div>
+</section>
+
+
+<div class="page-container vertical-spacing">
+
+    <!-- Hiring Section -->
+    <section class="trending_section">
+        <h2 class="trending-section__title">Hiring Skills</h2>
+        <div class="card-grid">
+
+            {% for item in hiring_items %}
+
+            <div class="card">
+                
+                <a href="{% url 'posts:detail_post' item.id %}" class="card__image-link">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card__image">
+                </a>
+
+                <div class="card__body">
+                    <div class="card__title-wrapper">
+                        <p class="card__title" title="{{ item.title|striptags }}">
+                            {{ item.title }}
+                        </p>
+                    </div>
+                    
+                    <div class="card__info">
+                        <span class="card__rating">⭐ {{ item.rating|floatformat:1 }}</span>
+                        <span class="mx-1">{{ item.reviews }} reviews </span>
+                    </div>
+                    
+                    <p class="card__price">{{ item.price_detail }}</p>
+                    
+                    <a href="{% url 'posts:detail_post' item.id %}" 
+                       class="card__button">
+                        VIEW
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    
+        <div class="trending-section__footer">
+            <a href="{% url 'posts:hiring' %}" class="trending-section__explore-link">
+                Explore more for hiring →
+            </a>
+        </div>
+    </section>
+
+    <hr class="section-divider" />
+
+    <!-- Rental Section -->
+    <section class="trending-section">
+        <h2 class="trending-section__title">Item Rental</h2>
+        <div class="card-grid">
+            {% for item in rental_items %}
+            <div class="card">
+                <a href="{% url 'posts:detail_post' item.id %}" class="card__image-link">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card__image">
+                </a>
+
+                <div class="card__body">
+                    <div class="card__title-wrapper">
+                        <p class="card__title" title="{{ item.title|striptags }}">
+                            {{ item.title }}
+                        </p>
+                    </div>
+                    
+                    <div class="card__info">
+                        <span class="card__rating">⭐ {{ item.rating|floatformat:1 }}</span>
+                        <span class="mx-1">{{ item.reviews }} reviews</span>
+                    </div>
+                    
+                    <p class="card__price">{{ item.price_detail }}</p>
+                    
+                    <a href="{% url 'posts:detail_post' item.id %}" 
+                       class="card__button">
+                        VIEW
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="trending-section__footer">
+            <a href="{% url 'posts:rental' %}" class="trending-section__explore-link">
+                Explore more for renting →
+            </a>
+        </div>
+    </section>
+
+</div>
+{% endblock content %}
+

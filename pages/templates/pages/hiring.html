@@ -2,6 +2,85 @@
 {% load static %}
 
 {% block content %}
-    <h1>นี่คือหน้าว่าจ้างงาน (Hiring Page)</h1>
-    <p>เนื้อหาสำหรับหน้าว่าจ้างงานจะอยู่ที่นี่</p>
-    {% endblock %}
+
+<link rel="stylesheet" href="{% static 'pages/css/market_space.css' %}">
+<link rel="stylesheet" href="{% static 'pages/css/card_style.css' %}">
+
+<section class="page-hero">
+    <h1>Hiring Skills <span class="th">(รับจ้างงาน)</span></h1>
+    <p class="sub">Find the right talent — fast, easy, reliable.</p>
+</section>
+
+<section class="market-toolbar" data-page="hiring" aria-label="Hiring tools">
+    <div class="mt-left">
+        <form class="searchbar" role="search" action="#" method="get">
+            <span class="search-ico" aria-hidden="true">🔍</span>
+            <input type="search" name="q" placeholder="searching…" aria-label="Search hiring">
+        </form>
+    </div>
+    <div class="mt-right">
+        <a class="quick" href="#"><span aria-hidden="true">＋</span> create your hiring post</a>
+    </div>
+</section>
+
+<div class="page-container">
+    <div class="card-grid-market">
+        {% for item in hiring_items %}
+        <div class="card card--hiring">
+            <a href="{% url 'posts:detail_post' item.id %}" class="card__image-link">
+                <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card__image">
+            </a>
+
+            <div class="card__body">
+                <div class="card__header">
+                    <p class="card__title" title="{{ item.title|striptags }}">{{ item.title }}</p>
+                    <div class="card__rating-info">
+                        {{ item.reviews }} รีวิว / {{ item.rating|floatformat:1 }} <span aria-hidden="true">⭐</span>
+                    </div>
+                </div>
+
+                <div class="card__tags">
+                    {% for tag in item.tags %}
+                    <span class="card__tag-item">{{ tag }}</span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="card__footer">
+                <div class="card__price-section">
+                    {% if item.original_price %}
+                    <span class="card__price--original">{{ item.original_price }}฿</span>
+                    {% endif %}
+                    <span class="card__price--final">{{ item.price_detail }}</span>
+                </div>
+
+                <a href="{% url 'posts:detail_post' item.id %}" class="card__button">
+                    VIEW
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Demo Pagination -->
+<nav class="pager" aria-label="Pagination">
+
+    {% if page_obj.has_previous %}
+    <a class="prev" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">‹</a>
+    {% else %}
+    <span class="prev" style="color: #ccc; cursor: not-allowed;" aria-label="Previous page">‹</span>
+    {% endif %}
+
+    <span class="current-page" style="padding: 0 15px; font-weight: bold; color: #333;">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+    <a class="next" href="?page={{ page_obj.next_page_number }}" aria-label="Next page">›</a>
+    {% else %}
+    <span class="next" style="color: #ccc; cursor: not-allowed;" aria-label="Next page">›</span>
+    {% endif %}
+
+</nav>
+{% endblock %}

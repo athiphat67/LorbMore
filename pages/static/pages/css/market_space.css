@@ -1,0 +1,202 @@
+:root{
+    --red:#b80f2d;          /* โทนเดียวกับ navbar */
+    --yellow:#f6dd8a;
+    --ink:#111;
+    --muted:#6b6b6b;
+    --card:#fff;
+    --border:#eee;
+    --radius:16px;
+    --shadow:0 8px 22px rgba(0,0,0,.06);
+  }
+
+.page-hero{
+  max-width:1200px; margin:28px auto 18px; padding:0 20px;
+}
+.page-hero h1{
+  font-weight:800; font-size:clamp(24px,3.6vw,40px); color:var(--ink);
+  margin:0 0 6px;
+}
+.page-hero .th{ font-weight:700; color:var(--red); }
+.page-hero .sub{ color:#333; opacity:.75; margin:0; }
+
+.market-toolbar{
+  max-width:1200px; margin:18px auto 8px; padding:0 20px;
+  display:flex; align-items:center; justify-content:space-between; gap:16px;
+  flex-wrap:wrap;
+}
+
+.market-toolbar .mt-left{ display:flex; align-items:center; gap:10px; flex:1 1 520px; }
+.market-toolbar .mt-right{ display:flex; align-items:center; gap:16px; }
+
+.market-toolbar .searchbar{
+  display:flex; align-items:center; gap:8px;
+  background:#f1f1f1; border-radius:999px; padding:10px 14px;
+  flex:1; min-width:280px;
+}
+.market-toolbar .searchbar input{
+  border:0; outline:0; background:transparent;
+  width:100%; font:inherit; color:#222;
+}
+.market-toolbar .searchbar input::placeholder{ color:#8e8e8e; }
+
+.market-toolbar .quick{
+  display:inline-flex; align-items:center; gap:8px;
+  text-decoration: none;
+  padding:8px 14px; border-radius:999px; border:1px dashed #d9d9d9;
+  background:#fff; color:#333; font-weight:600;
+  transition:transform .15s ease, border-color .15s ease, filter .15s ease;
+}
+.market-toolbar .inline-ico{ width:18px; height:18px; display:block; }
+
+.pager {
+  max-width: 1200px;
+  margin: 18px auto 32px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #333;
+  font-size: 15px;
+}
+
+.pager .page,
+.pager .prev,
+.pager .next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  text-decoration: none;
+  color: #333;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.pager .page.is-active {
+  font-weight: 700;
+}
+
+.pager .ellipsis {
+  padding: 0 6px;
+  color: #777;
+}
+
+
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+    padding: 10px;
+  }
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+  .container, .page-hero, .market-toolbar {
+    padding: 0 10px;
+  }
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto 18px;
+  padding: 0 20px; 
+}
+
+.card-grid-market {
+  display: grid;
+  gap: 72px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 640px) { /* sm breakpoint */
+  .card-grid-market {
+    grid-template-columns: repeat(1, 1fr); 
+  }
+}
+
+@media (min-width: 1024px) { /* lg breakpoint */
+  .card-grid-market {
+    /* จอใหญ่ (lg): 4 คอลัมน์ (ตามโค้ดเดิมของคุณ)
+    */
+    grid-template-columns: repeat(2, 1fr); 
+  }
+}
+
+/* ===== SHARED CARD STYLE ===== */
+/* (นี่คือโค้ดจากหน้า Home ที่เรานำมาใช้ซ้ำ) */
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.card__image {
+  width: 100%;
+  height: 360px; 
+  object-fit: cover;
+  background-color: #f0f0f0;
+}
+
+.card__body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; 
+}
+
+.card__title-wrapper {
+  height: 48px; 
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.card__title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* นี่คือคลาสใหม่สำหรับ Categories */
+.card__categories {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 12px;
+  font-style: italic;
+  /* ทำให้มันตัด ... ถ้าขนาดยาวไป */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card__price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  margin-bottom: 16px;
+  margin-top: auto; /* ดันราคาลงล่างสุด */
+}
+
+.card__button {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  background-color: #FFD95A;
+  color: #4C3D0E;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.card--rental .card__button {
+  background-color: #22c55e; /* 👈 สีเขียว */
+  color: #ffffff;            /* 👈 ตัวอักษรสีขาว */
+}

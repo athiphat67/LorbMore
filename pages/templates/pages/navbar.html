@@ -1,12 +1,12 @@
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+<link rel="stylesheet" href="{% static 'pages/css/navbar.css' %}">
 
 <nav class="navbar" role="navigation" aria-label="Main">
-  <label for="nav-check" class="nav-toggle" aria-label="Toggle menu">☰</label>
-
   <div class="nav-left">
-    <a href="{% url 'home' %}" class="home-btn" aria-label="Home">🏠</a>
+    <a href="{% url 'home' %}" class="home-btn" aria-label="Home">
+      <img src="{% static 'pages/image/home_button.svg' %}" alt="Home">
+    </a>
 
     <form class="search" action="#" method="get" role="search">
       <span class="search-ico" aria-hidden="true">🔍</span>
@@ -22,15 +22,18 @@
 
   <div id="nav-menu" class="nav-right">
     <ul class="nav-actions">
-      <li><a class="pill" href="{% url 'hiring' %}">ว่าจ้างงาน</a></li>
-      <li><a class="pill" href="{% url 'rental' %}">เช่า-ยืม</a></li>
+      <li><a class="pill" href="{% url 'posts:hiring' %}">ว่าจ้างงาน</a></li>
+      
+      <li><a class="pill" href="{% url 'posts:rental' %}">เช่า-ยืม</a></li>
     </ul>
 
     <ul class="nav-links">
       <li><a href="{% url 'about' %}">About us</a></li>
       <li><a href="#">Contact us</a></li>
       <li class="greet"><a href="#">Hi! Athiphat</a></li>
-      <li class="avatar" aria-hidden="true">👤</li>
+      <li class="avatar" aria-hidden="true">
+        <img src="{% static 'pages/image/avatar.svg' %}" alt="">
+      </li>
     </ul>
   </div>
 </nav>

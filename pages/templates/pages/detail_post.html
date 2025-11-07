@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'pages/css/market_space.css' %}">
+<link rel="stylesheet" href="{% static 'pages/css/detail_post.css' %}">
+
+<div class="page-container vertical-spacing">
+
+    <div class="post-detail">
+
+        <div class="post-detail__gallery">
+
+            {% if media.first.image %}
+            <img src="{{ media.first.image.url }}" alt="Main image for {{ post.title }}"
+                class="rounded-lg shadow-md w-full h-auto mb-4">
+            {% else %}
+            <div class="gallery__main-image gallery__placeholder">
+                <p>ไม่มีรูปภาพหลัก</p>
+            </div>
+            {% endif %}
+
+            <h2 class="gallery__title">รูปภาพประกอบทั้งหมด</h2>
+            <div class="gallery__thumbnails">
+                {% for m in media %}
+                {% if m.image %}
+                <div>
+                    <img src="{{ m.image.url }}" alt="Media for {{ post.title }}"
+                        class="rounded-lg shadow-md w-full h-auto cursor-pointer">
+                </div>
+                {% endif %}
+                {% empty %}
+                <p classs="gallery__no-thumbs">ไม่มีรูปภาพประกอบ</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="post-detail__content">
+
+            <div class="post-detail__categories">
+                {% for cat in categories %}
+                <span class="card__tag-item">{{ cat.name }}</span>
+                {% empty %}
+                <p class="post-detail__no-items">ไม่มีหมวดหมู่</p>
+                {% endfor %}
+            </div>
+
+            <h1 class="post-detail__title">{{ post.title }}</h1>
+
+            <div class="post-detail__author">
+                By: <span>{{ post.author.username }}</span>
+            </div>
+
+            {% if post.rentalpost %}
+            <p class="post-detail__price price--rental">
+                ราคาเช่า: {{ post.pricePerDay|floatformat:0 }}/วัน
+            </p>
+            {% elif post.hiringpost %}
+            <p class="post-detail__price price--hiring">
+                งบประมาณ: {{ post.budgetMin|floatformat:0 }} - {{ post.budgetMax|floatformat:0 }} บาท
+            </p>
+            {% endif %}
+
+            <h2 class="post-detail__subtitle">รายละเอียด</h2>
+            <p class="post-detail__description">
+                {{ post.description|linebreaksbr }}
+            </p>
+
+            <h2 class="post-detail__subtitle">Skills ที่เกี่ยวข้อง:</h2>
+            <div class="post-detail__skills-list">
+                {% for skill in skills %}
+                <span class="card__tag-item">{{ skill.name }}</span>
+                {% empty %}
+                <p class="post-detail__no-items">ไม่มี Skill ที่ระบุ</p>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
