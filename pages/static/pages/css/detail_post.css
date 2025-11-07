@@ -169,9 +169,12 @@
 }
 
 .post-detail__skills-list .card__tag-item {
-    background: #fff7d6;
-    border: 1px solid #ffe27b;
-    color: #3c2f0b;
+    background: #a0ffc6;
+    color: #3c2f0b;   
+    padding: 5px 10px;    
+    border-radius: 15px;
+    display: inline-block; 
+    margin: 4px;
 }
 
 .post-detail__no-items {

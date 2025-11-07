@@ -66,14 +66,16 @@
                 {{ post.description|linebreaksbr }}
             </p>
 
+            {% if is_hiring %}
             <h2 class="post-detail__subtitle">Skills ที่เกี่ยวข้อง:</h2>
             <div class="post-detail__skills-list">
-                {% for skill in skills %}
+              {% for skill in skills %}
                 <span class="card__tag-item">{{ skill.name }}</span>
-                {% empty %}
+              {% empty %}
                 <p class="post-detail__no-items">ไม่มี Skill ที่ระบุ</p>
-                {% endfor %}
+              {% endfor %}
             </div>
+            {% endif %}
 
         </div>
     </div>
