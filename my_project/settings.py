@@ -167,7 +167,7 @@ if not DEBUG:
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         "OPTIONS": {
             "location": AWS_LOCATION,
-            "default_acl": "public-read",  # ตั้งค่าให้ไฟล์ที่อัปโหลดเป็น Public
+            # "default_acl": "public-read",  # ตั้งค่าให้ไฟล์ที่อัปโหลดเป็น Public
             "region_name": AWS_S3_REGION_NAME,
             "object_parameters": {
                 "CacheControl": "max-age=86400",  # Cache 1 วัน
