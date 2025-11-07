@@ -78,7 +78,7 @@ def _format_post_data(post):
     if isinstance(post, HiringPost):
         price_detail = f"เริ่มต้น {post.budgetMin:,}฿"
     elif isinstance(post, RentalPost):
-        price_detail = f"เริ้มต้น {post.pricePerDay:,}฿/วัน"
+        price_detail = f"เริ่มต้น {post.pricePerDay:,}฿/วัน"
     
     # ส่งค่าในรูป Dic กลับไป
     return {

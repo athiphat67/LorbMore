@@ -4,7 +4,7 @@ from .models import Post, RentalPost, HiringPost, Media, Skill, Category
 # Inline class สำหรับ Media
 class MediaInline(admin.TabularInline):
     model = Media
-    extra = 1  # ให้มีช่องอัปโหลดว่างๆ 1 ช่องรอไว้
+    extra = 1  
 
 # Admin class สำหรับ Post ที่จะใช้ Inline
 class RentalPostAdmin(admin.ModelAdmin):
