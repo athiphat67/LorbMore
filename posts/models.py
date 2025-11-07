@@ -49,7 +49,6 @@ class RentalPost(Post):
 class HiringPost(Post):
     budgetMin = models.IntegerField()
     budgetMax = models.IntegerField()
-    workType = models.CharField(max_length=100) # เช่น "Full-time", "Part-time"
     skills = models.ManyToManyField(Skill, related_name='hiring_posts', blank=True)
 
     def __str__(self):
