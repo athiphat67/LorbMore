@@ -67,9 +67,8 @@ def _format_post_data(post):
     first_image_url = None
     if hasattr(post, "images") and post.images:
         first_media = post.images[0]
-        first_image_url = (
-            first_media.image.url if first_media.image else first_media.source_url
-        )
+        if first_media.image:
+            first_image_url = first_media.image.url
 
     # กำหนดชื่อและราคาตามประเภทโพสต์
     price_detail = ""

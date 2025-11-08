@@ -1,8 +1,15 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import RentalPost, HiringPost, Media, Skill, Category
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
+
+# Override storage ให้เป็น local filesystem สำหรับ test
+@override_settings(
+    DEFAULT_FILE_STORAGE='django.core.files.storage.FileSystemStorage',
+    MEDIA_ROOT='test_media/'
+)
 
 # Create your tests here.
 class PostIntegrationTestCase(TestCase):
@@ -38,7 +45,7 @@ class PostIntegrationTestCase(TestCase):
                     post=post,
                     image=SimpleUploadedFile(
                         name=f"hiring_{i}_{j}.jpg",
-                        content=b"",
+                        content=b"cake",
                         content_type="image/jpeg"
                     )
                 )
@@ -67,7 +74,7 @@ class PostIntegrationTestCase(TestCase):
                     post=post,
                     image=SimpleUploadedFile(
                         name=f"rental_{i}_{j}.jpg",
-                        content=b"",
+                        content=b"cookie",
                         content_type="image/jpeg"
                     )
                 )
