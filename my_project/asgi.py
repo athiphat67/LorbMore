@@ -7,7 +7,7 @@ For more information on this file, see
 https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 """
 
-# Unit tests รันผ่าน WSGI/manage.py test ไม่ได้ใช้ ASGI server → get_asgi_application() ไม่ถูก execute
+# unit tests รันผ่าน WSGI/manage.py test ไม่ได้ใช้ ASGI server จึงไม่ถูก execute(ไม่ได้เอาไปใช้ตอนรัน unit test)
 import os # pragma: no cover
 
 from django.core.asgi import get_asgi_application # pragma: no cover
