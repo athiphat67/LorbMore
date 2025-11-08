@@ -82,6 +82,7 @@ def _format_post_data(post):
     return {
         "id": post.id,
         "image_url": first_image_url or "/static/img/default.png",
+        # "images": images,
         "title": post.title,
         # ตอนนี้มันยังไม่มีระบบให้คะแนน เลยสมมติค่านี้ไปก่อนนะ
         "reviews": 27 if isinstance(post, HiringPost) else 13,
