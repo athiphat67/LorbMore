@@ -27,7 +27,7 @@ class PagesViewTests(TestCase):
                     post=post,
                     image=SimpleUploadedFile(
                         name=f"hiring_{i}_{j}.jpg",
-                        content=b"แฟาำ",
+                        content=b"",
                         content_type="image/jpeg"
                     )
                 )
