@@ -1,15 +1,8 @@
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import RentalPost, HiringPost, Media, Skill, Category
+from .models import Post, RentalPost, HiringPost, Media, Skill, Category
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
-
-# Override storage ให้เป็น local filesystem สำหรับ test
-@override_settings(
-    DEFAULT_FILE_STORAGE='django.core.files.storage.FileSystemStorage',
-    MEDIA_ROOT='test_media/'
-)
 
 # Create your tests here.
 class PostIntegrationTestCase(TestCase):
@@ -198,19 +191,35 @@ class PostIntegrationTestCase(TestCase):
         rental = RentalPost.objects.create(author=self.user, title="Rent", pricePerDay=100)
         hiring = HiringPost.objects.create(author=self.user, title="Hire", budgetMin=100, budgetMax=200)
         media = Media.objects.create(post=rental)  # ไม่มี image
+        post = Post.objects.create(author=self.user, title="Base Post")
 
+        self.assertEqual(str(post), "Base Post")
         self.assertEqual(str(skill), "TestSkill")
         self.assertEqual(str(category), "TestCat")
         self.assertEqual(str(rental), "[Rental] Rent")
         self.assertEqual(str(hiring), "[Hiring] Hire")
         self.assertEqual(str(media), f"Media for Post ID: {rental.id}"),
-        
-    # def test_media_str_with_image(self):
-    #     self.assertEqual(str(self.media_file)),
-        
-    # def test_media_str_without_image(self):
-    #     media_without_image = Media.objects.create(post=self.hiring_posts[0])
-    #     # จะรัน branch else ของ Media.__str__()
-    #     self.assertEqual(str(media_without_image), f"Media for Post ID: {self.hiring_posts[0].id}")
+    
+    # ใส่รูปภาพ    
+    def test_media_str_with_image(self):
+        post = self.hiring_posts[0]
+        # สร้าง Media ที่มี image
+        media_with_image = Media.objects.create(
+            post=post,
+            image=SimpleUploadedFile(
+                name="test_image.jpg",
+                content=b"test data",
+                content_type="image/jpeg"
+            )
+        )
+        self.assertEqual(str(media_with_image), "media_images/test_image.jpg")
+
+    # ไม่ใส่รูปภาพ   
+    def test_media_str_without_image(self):
+        post = self.hiring_posts[0]
+        # สร้าง Media ที่ไม่มี image
+        media_without_image = Media.objects.create(post=post)
+        self.assertEqual(str(media_without_image), f"Media for Post ID: {post.id}")
+
         
         

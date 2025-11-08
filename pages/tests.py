@@ -4,14 +4,10 @@ from django.contrib.auth.models import User
 from posts.models import HiringPost, RentalPost, Media
 from posts.views import _format_post_data
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
-
 
 # Create your tests here.
 class PagesViewTests(TestCase):
     def setUp(self):
-        settings.DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-        
         self.user = User.objects.create_user(username = 'minnie', password = 'minn9149')
     
         #สร้าง hiring post 5 โพสต์
@@ -27,7 +23,7 @@ class PagesViewTests(TestCase):
                     post=post,
                     image=SimpleUploadedFile(
                         name=f"hiring_{i}_{j}.jpg",
-                        content=b"แฟาำ",
+                        content=b"",
                         content_type="image/jpeg"
                     )
                 )
