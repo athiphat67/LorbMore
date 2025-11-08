@@ -7,12 +7,14 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 # Create your tests here.
 class PostIntegrationTestCase(TestCase):
     def setUp(self):
+        
+        # สร้าง Skill
         self.skills = Skill.objects.create(name = 'Photoshop')
         
         # สร้างผู้ใช้งาน
         self.user = User.objects.create_user(username = 'minnie', password = 'minn9149')
         
-        # สร้าง Skill & Category
+        # สร้าง Category
         self.categories = Category.objects.create(name = 'Photo', kind = 'hiring')
         
         # สร้าง list ที่ใช้เก็บโพสต์แต่ละหมวด
@@ -28,7 +30,7 @@ class PostIntegrationTestCase(TestCase):
                 budgetMax = 1500,
             )
             
-            # เพิ่ม skill ลงใน post
+            # เพิ่ม skill & catagories ลงใน post
             post.skills.add(self.skills)
             post.categories.add(self.categories)
             
@@ -46,10 +48,6 @@ class PostIntegrationTestCase(TestCase):
             # เพิ่ม post ลงใน list ของ hiring_post
             self.hiring_posts.append(post)
             
-            # ถ้าหากไม่มีรูป จะทดสอบโดยการดึงรูปนี้ไป
-            #media_without_image = Media.objects.create(post=post_for_test)
-            #self.assertEqual(str(media_without_image), f"Media for Post ID: {post_for_test.id}")
-
         # สร้างโพสต์ไว้ 8 โพสต์
         for i in range(8):
             post = RentalPost.objects.create(
@@ -59,7 +57,7 @@ class PostIntegrationTestCase(TestCase):
                 deposit = 2,
             )
             
-             # เพิ่ม skill ลงใน post
+            # เพิ่ม skill ลงใน post
             post.categories.add(self.categories)
             
             for j in range(4):
@@ -75,27 +73,29 @@ class PostIntegrationTestCase(TestCase):
             # เพิ่ม post ลงใน list ของ rental_post
             self.rental_posts.append(post)
         
+    # hiring page โหลดสำเร็จ และจำกัดเพียง 6 โพสต์   
     def test_hiring_page_status_and_paginator(self):
+        
+        # สร้าง URL ของหน้า hiring จากชื่อ route
         url = reverse('posts:hiring')
+        
+        # จำลองการเข้าเว็บเหมือนผู้ใช้จริง โดยไม่ต้องรันเซิร์ฟเวอร์
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('hiring_items', response.context)
     
         # หน้า hiring page จะต้องมี post มากสุด 6 โพสต์
-        # หน้าแรห ต้องมี 6 โพสต์
+        # หน้าแรกมี 6 โพสต์
         response = self.client.get(url)
         self.assertEqual(len(response.context['page_obj'].object_list), 6)
 
-        # หน้าสอง ต้องมี 2 โพสต์ (8-6=2)
-        # response_page2 = self.client.get(url + '?page=2')
-        # self.assertEqual(len(response.context['page_obj'].object_list), 2)
-    
+    # hiring page มีโพสต์ที่ข้อมูลตรงกับ formatted_item
     def test_hiring_items_format(self):
         url = reverse('posts:hiring')
         response = self.client.get(url)
         formatted_item = response.context['hiring_items'][0]
     
-        # ตรวจสอบว่า expected_keys ที่เรากำหนดตรงกับ formatted_item เปล่า
+        # ตรวจสอบว่า expected_keys ที่เรากำหนดตรงกับ formatted_item 
         expected_keys = ['id', 'image_url', 'title', 'reviews', 'rating', 'price_detail']
         for key in expected_keys:
             self.assertIn(key, formatted_item)
@@ -103,6 +103,7 @@ class PostIntegrationTestCase(TestCase):
         # ตรวจสอบว่า price_detail มี "/วัน" สำหรับ RentalPost
         self.assertIn('เริ่มต้น', formatted_item['price_detail'])    
     
+    # rental page โหลดสำเร็จ และจำกัดเพียง 6 โพสต์   
     def test_rental_page_status_and_paginator(self):
         url = reverse('posts:rental')
         response = self.client.get(url)
@@ -110,13 +111,10 @@ class PostIntegrationTestCase(TestCase):
         self.assertIn('rental_items', response.context)
     
         # หน้า rental page จะต้องมี post มากสุด 6 โพสต์
-        # หน้าแรห ต้องมี 6 โพสต์
+        # หน้าแรกมี 6 โพสต์
         response = self.client.get(url)
         self.assertEqual(len(response.context['page_obj'].object_list), 6)
 
-        # หน้าสอง ต้องมี 2 โพสต์ (8-6=2)
-        # response_page2 = self.client.get(url + '?page=2')
-        # self.assertEqual(len(response.context['page_obj'].object_list), 2)
     
     def test_rental_items_format(self):
         url = reverse('posts:rental')
@@ -131,16 +129,22 @@ class PostIntegrationTestCase(TestCase):
         # ตรวจสอบว่า price_detail มี "/วัน" สำหรับ RentalPost
         self.assertIn('/วัน', formatted_item['price_detail'])
     
+    # ข้อมูลของโพสต์ hiring page ครบถ้วน 
     def test_detail_post_hiring(self):
         post = self.hiring_posts[0]
+        
+        # ใช้ reverse() เพื่อสร้าง URL สำหรับหน้าแสดงรายละเอียดโพสต์ (detail_post) 
+        # ส่ง post.id ใส่ใน URL pattern
         url = reverse('posts:detail_post', args=[post.id])
+        
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
     
-        # ตรวจสอบ is_hiring
+        # ตรวจสอบว่าส่ง is_hiring ใน context ไปยัง template
         self.assertTrue(response.context['is_hiring'])
     
-        # ตรวจสอบ media
+        # ตรวจสอบ media 
+        # ดึง media ที่ผูกกับโพสต์
         media = list(response.context['media'])
         self.assertEqual(len(media), 4)
         
@@ -150,10 +154,8 @@ class PostIntegrationTestCase(TestCase):
         self.assertEqual(post.title, self.hiring_posts[0].title)
         self.assertEqual(post.budgetMin, self.hiring_posts[0].budgetMin)
         self.assertEqual(post.budgetMax, self.hiring_posts[0].budgetMax)
-        
-        #นับจำนวนรูปด้วย ว่ามีครบตามที่ระบุจำนวนรูปไปมั้ย 
-        #self.assertEqual(len(formatted["images"]), 2)
-        
+    
+    # ข้อมูลของโพสต์ rental page ครบถ้วน     
     def test_detail_post_rental(self):
         post = self.rental_posts[0]
         url = reverse('posts:detail_post', args=[post.id])
@@ -181,10 +183,7 @@ class PostIntegrationTestCase(TestCase):
         self.assertEqual(post.title, self.rental_posts[0].title)
         self.assertEqual(post.pricePerDay, self.rental_posts[0].pricePerDay)
         
-        #นับจำนวนรูปด้วย ว่ามีครบตามที่ระบุจำนวนรูปไปมั้ย 
-        #self.assertEqual(len(formatted["images"]), 2)
-        
-    # ถ้าไม่มีแล้วไม่ได้ 100  
+    # ตรวจว่าการแปลง object ของแต่ละโมเดลเป็นข้อความ (__str__) ทำงานถูกต้องตามที่ตั้งใจไว้
     def test_model_str_methods(self):
         skill = Skill.objects.create(name="TestSkill")
         category = Category.objects.create(name="TestCat")
@@ -203,9 +202,11 @@ class PostIntegrationTestCase(TestCase):
     # ใส่รูปภาพ    
     def test_media_str_with_image(self):
         post = self.hiring_posts[0]
-        # สร้าง Media ที่มี image
+        
+        # สร้าง Media 
         media_with_image = Media.objects.create(
             post=post,
+            # มีรูปภาพจริงๆ จำลองด้วย SimpleUploadedFile
             image=SimpleUploadedFile(
                 name="test_image.jpg",
                 content=b"test data",
@@ -217,6 +218,7 @@ class PostIntegrationTestCase(TestCase):
     # ไม่ใส่รูปภาพ   
     def test_media_str_without_image(self):
         post = self.hiring_posts[0]
+        
         # สร้าง Media ที่ไม่มี image
         media_without_image = Media.objects.create(post=post)
         self.assertEqual(str(media_without_image), f"Media for Post ID: {post.id}")
