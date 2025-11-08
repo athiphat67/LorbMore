@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "default-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-# IS_TESTING = os.environ.get("DJANGO_TESTING", "False") == "True" or any("test" in arg.lower() for arg in sys.argv)
+
 
 ALLOWED_HOSTS = ["*"]
 
@@ -84,13 +84,7 @@ WSGI_APPLICATION = "my_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# if IS_TESTING:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": ":memory:",
-#         }
-#     }
+
     
 if not DEBUG:
     DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
@@ -151,17 +145,22 @@ AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
-AWS_LOCATION = "media"
+# AWS_LOCATION = os.environ.get("AWS_LOCATION", "media")
+# AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "ap-southeast-1")
+# AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_S3_CUSTOM_DOMAIN", "my-bucket.s3.amazonaws.com")
+# AWS_LOCATION = "media"
 
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+# AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
 }
+AWS_LOCATION = os.environ.get("AWS_LOCATION", "media")
+AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "ap-southeast-1")
+AWS_S3_CUSTOM_DOMAIN = os.environ.get(
+    "AWS_S3_CUSTOM_DOMAIN", f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+)
 
-# if IS_TESTING:
-#     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-#     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-#     MEDIA_ROOT = BASE_DIR / "test_media"
+
 
 DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
@@ -174,45 +173,37 @@ STORAGES = {
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 
-if not DEBUG :
+
+
+# ส่วนนี้จะรันก็ต่อเมื่อ DEFAULT = false 
+# ใน test กำหนดเป็น DEBUG=True หรือ IS_TESTING=True
+if not DEBUG:
     STORAGES["default"] = {
         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
         "OPTIONS": {
             "location": AWS_LOCATION,
             "region_name": AWS_S3_REGION_NAME,
-            "object_parameters": {
-                "CacheControl": "max-age=86400",
-            },
+            "object_parameters": AWS_S3_OBJECT_PARAMETERS,
         },
     }
-   
-# STORAGES = {
-#     "default": {
-#         "BACKEND": "django.core.files.storage.FileSystemStorage",
-#     },
-#     "staticfiles": {
-#         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+# if not DEBUG:
+    
+#     options = {
+#     "location": AWS_LOCATION,
+#     # "default_acl": "public-read",  # ตั้งค่าให้ไฟล์ที่อัปโหลดเป็น Public
+#     "region_name": AWS_S3_REGION_NAME,
+#     "object_parameters": {
+#         "CacheControl": "max-age=86400", # Cache 1 วัน
 #     },
 # }
+#     STORAGES["default"] = {
+#     "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+#     "OPTIONS": options,
+# }
 
-# ส่วนนี้จะรันก็ต่อเมื่อ DEFAULT = false 
-# ใน test กำหนดเป็น DEBUG=True หรือ IS_TESTING=True
-if not DEBUG:
-    
-    options = {
-    "location": AWS_LOCATION,
-    # "default_acl": "public-read",  # ตั้งค่าให้ไฟล์ที่อัปโหลดเป็น Public
-    "region_name": AWS_S3_REGION_NAME,
-    "object_parameters": {
-        "CacheControl": "max-age=86400", # Cache 1 วัน
-    },
-}
-    STORAGES["default"] = {
-    "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    "OPTIONS": options,
-}
-
-    # แยก MEDIA_URL ออกเป็น statement
-    media_url = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
-    MEDIA_URL = media_url
+#     # แยก MEDIA_URL ออกเป็น statement
+#     media_url = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+#     MEDIA_URL = media_url
     
