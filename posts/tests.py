@@ -9,14 +9,16 @@ class PostIntegrationTestCase(TestCase):
     def setUp(self):
         # สร้างผู้ใช้งาน
         user = User.object.create_user(username = 'minnie', password = 'minn9149')
-        client = Client()
         
         # สร้าง Skill & Category
         skills = Skill.object.create(name = 'Photoshop')
         categories = Category.object.create(name = 'Photo', kind = 'hiring')
         
-        #สร้าง hiring post ที่มีอย่างน้อย 8 โพสต์
+        # สร้าง list ที่ใช้เก็บโพสต์แต่ละหมวด
         hiring_post = []
+        rental_post = []
+        
+        # สร้างโพสต์ไว้ 8 โพสต์
         for i in range(8):
             post = HiringPost.objects.create(
                 author = user,
@@ -25,38 +27,61 @@ class PostIntegrationTestCase(TestCase):
                 budgetMax = 1500,
             )
             
-        post.skills.add(self.skill)
-        post.categories.add(self.catrgory)
+            # เพิ่ม skill ลงใน post
+            post.skills.add(self.skill)
+            post.categories.add(self.catrgory)
+            
+            # สร้างรูปภาพ 4 รูปภาพ
+            for j in range(4):
+                Media.objects.create(
+                    post=post,
+                    image=SimpleUploadedFile(
+                        name=f"hiring_{i}_{j}.jpg",
+                        content=b"",
+                        content_type="image/jpeg"
+                    )
+                )
         
-        Media.objects.create(
-            post = post,
-            image=SimpleUploadedFile(name=f'test{i}.jpg', content=b'', content_type='image/jpeg'),
-        )
-        self.hiring_post.append(post)
+        # เพิ่ม post ลงใน list ของ hiring_post
+        self.hiring_posts.append(post)
         
-        #สร้าง rental post ที่มีอย่างน้อย 8 โพสต์
-        rental_post = []
-        for i in range(8):
+        # สร้างโพสต์ไว้ 8 โพสต์
+        for i in range(5):
             post = RentalPost.objects.create(
                 author = user,
                 title = f"post {i}: ให้เช่ายืมกล้องถ่ายรูป",
                 pricePerDay = 100,
                 deposit = 2,
             )
-        post.categories.add(self.category)
-        self.rental_post.append(post)
+            
+             # เพิ่ม skill ลงใน post
+            post.skills.add(self.skill)
+            post.categories.add(self.catrgory)
+            
+            for j in range(4):
+                Media.objects.create(
+                    post=post,
+                    image=SimpleUploadedFile(
+                        name=f"rental_{i}_{j}.jpg",
+                        content=b"",
+                        content_type="image/jpeg"
+                    )
+                )
+        
+        # เพิ่ม post ลงใน list ของ rental_post
+        self.rental_posts.append(post)
         
     def test_hiring_page_status_and_paginator(self):
-        # หน้า hiring page จะต้องมี post มากสุดหกอัน
         url = reverse('posts:hiring')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('hiring_items', response.context)
     
-        # หน้าหนึ่ง ต้องมี 6 โพสต์
+        # หน้า hiring page จะต้องมี post มากสุด 6 โพสต์
+        # หน้าแรห ต้องมี 6 โพสต์
         self.assertEqual(len(response.context['page_obj'].object_list), 6)
 
-        # หน้าหนึ่ง ต้องมี 2 โพสต์ (8-6=2)
+        # หน้าสอง ต้องมี 2 โพสต์ (8-6=2)
         self.assertEqual(len(response.context['page_obj'].object_list), 2)
     
     def test_hiring_items_format(self):
@@ -73,16 +98,16 @@ class PostIntegrationTestCase(TestCase):
         self.assertIn('เริ่มต้น', formatted_item['price_detail'])    
     
     def test_rental_page_status_and_paginator(self):
-        # หน้า rental page จะต้องมี post มากสุดหกอัน
         url = reverse('posts:rental')
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertIn('rental_items', response.context)
     
-        # หน้าหนึ่ง ต้องมี 6 โพสต์
+        # หน้า rental page จะต้องมี post มากสุด 6 โพสต์
+        # หน้าแรห ต้องมี 6 โพสต์
         self.assertEqual(len(response.context['page_obj'].object_list), 6)
 
-        # หน้าหนึ่ง ต้องมี 2 โพสต์ (8-6=2)
+        # หน้าสอง ต้องมี 2 โพสต์ (8-6=2)
         self.assertEqual(len(response.context['page_obj'].object_list), 2)
     
     def test_rental_items_format(self):
@@ -117,6 +142,13 @@ class PostIntegrationTestCase(TestCase):
         # ตรวจสอบ categories
         categories = list(response.context['categories'])
         self.assertIn(self.category, categories)
+        
+        # ตรวจสอบข้อมูล post
+        post = response.context['post']
+        self.assertEqual(post.id, self.hiring_post.id)
+        self.assertEqual(post.title, self.hiring_post.title)
+        self.assertEqual(post.budgetMin, self.hiring_post.budgetMin)
+        self.assertEqual(post.budgetMax, self.hiring_post.budgetMax)
     
     def test_detail_post_rental(self):
         post = self.hiring_posts[0]
@@ -137,4 +169,10 @@ class PostIntegrationTestCase(TestCase):
         # ตรวจสอบ categories
         categories = list(response.context['categories'])
         self.assertIn(self.category, categories)
+        
+        # ตรวจสอบว่าข้อมูล post ตรงกับที่สร้าง
+        post = response.context['post']
+        self.assertEqual(post.id, self.rental_post.id)
+        self.assertEqual(post.title, self.rental_post.title)
+        self.assertEqual(post.pricePerDay, self.rental_post.pricePerDay)
         
