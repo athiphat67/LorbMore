@@ -107,26 +107,16 @@
 
 .card-grid-market {
   display: grid;
-  gap: 72px;
-  grid-template-columns: repeat(2, 1fr);
+  gap: 24px; /* ลด gap ลงเล็กน้อยเพื่อให้ดูทันสมัย */
+  grid-template-columns: repeat(1, 1fr); /* 1. มือถือ: 1 คอลัมน์ */
 }
 
 @media (min-width: 640px) { /* sm breakpoint */
   .card-grid-market {
-    grid-template-columns: repeat(1, 1fr); 
+    grid-template-columns: repeat(2, 1fr); /* 2. Tablet: 2 คอลัมน์ */
   }
 }
 
-@media (min-width: 1024px) { /* lg breakpoint */
-  .card-grid-market {
-    /* จอใหญ่ (lg): 4 คอลัมน์ (ตามโค้ดเดิมของคุณ)
-    */
-    grid-template-columns: repeat(2, 1fr); 
-  }
-}
-
-/* ===== SHARED CARD STYLE ===== */
-/* (นี่คือโค้ดจากหน้า Home ที่เรานำมาใช้ซ้ำ) */
 .card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -136,11 +126,24 @@
   flex-direction: column;
 }
 
+.card__image-link {
+  display: block;
+  background-color: #f9f9f9;
+}
+
 .card__image {
   width: 100%;
-  height: 360px; 
+  height: 280px; 
   object-fit: cover;
   background-color: #f0f0f0;
+}
+
+.card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .card__body {
@@ -162,16 +165,37 @@
   color: #333;
 }
 
-/* นี่คือคลาสใหม่สำหรับ Categories */
-.card__categories {
+.card__rating-info {
+  font-size: 13px;
+  color: #555;
+  flex-shrink: 0; /* ไม่ให้มันหด */
+  padding-top: 2px;
+}
+
+.card__tags {
   font-size: 13px;
   color: #888;
   margin-bottom: 12px;
   font-style: italic;
-  /* ทำให้มันตัด ... ถ้าขนาดยาวไป */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.card__footer {
+  margin-top: auto; /* ⭐️ สำคัญ: ดัน footer ลงล่างสุดเสมอ */
+  padding-top: 16px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.card__price-section {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
 }
 
 .card__price {
@@ -196,7 +220,16 @@
   transition: background-color 0.3s ease;
 }
 
+.card--hiring .card__button {
+  background-color: #FFD95A;
+  color: #4C3D0E;
+}
+
 .card--rental .card__button {
   background-color: #22c55e; /* 👈 สีเขียว */
   color: #ffffff;            /* 👈 ตัวอักษรสีขาว */
+}
+
+.card--rental .card__button:hover {
+  background-color: #1da34e; /* 👈 สีเขียวเข้มขึ้น */
 }
