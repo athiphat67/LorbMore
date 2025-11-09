@@ -4,17 +4,13 @@ from django.contrib.auth.models import User
 from posts.models import HiringPost, RentalPost, Media
 from posts.views import _format_post_data
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
 
-
-# Create your tests here.
 class PagesViewTests(TestCase):
+    # กำหนดข้อมูลโพสต์ขึ้นมาเอง
     def setUp(self):
-        settings.DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-        
         self.user = User.objects.create_user(username = 'minnie', password = 'minn9149')
     
-        #สร้าง hiring post 5 โพสต์
+        # สร้าง hiring post 5 โพสต์
         for i in range(5):
             post = HiringPost.objects.create(
                 author = self.user,
@@ -22,6 +18,7 @@ class PagesViewTests(TestCase):
                 budgetMin = 600,
                 budgetMax = 1500,
             )
+        # สร้างรูปมา 2 รูป ในแต่ละโพสต์
             for j in range(1, 3):
                 Media.objects.create(
                     post=post,
@@ -31,7 +28,8 @@ class PagesViewTests(TestCase):
                         content_type="image/jpeg"
                     )
                 )
-        
+                
+        # สร้าง rental post 5 โพสต์
         for i in range(5):
             post = RentalPost.objects.create(
                 author = self.user,
@@ -39,6 +37,7 @@ class PagesViewTests(TestCase):
                 pricePerDay = 100,
                 deposit = 2,
             )
+            # สร้างรูปมา 2 รูป ในแต่ละโพสต์
             for j in range(1, 3):
                 Media.objects.create(
                     post=post,
@@ -48,15 +47,22 @@ class PagesViewTests(TestCase):
                         content_type="image/jpeg"
                     )
                 )
-                
+    
+    
     def test_about_page_status(self):
+        # สร้าง URL จากชื่อของ path name
         url = reverse("about")
+        
+        # จำลองการเปิดหน้าเว็บด้วย HTTP GET เช่นเดียวกับที่ browser ทำจริง
         response = self.client.get(url)
+        
+        # ตรวจสอบว่า status code ของ response เท่ากับ 200 หรือโหลดหน้าเว็บสำเร็จ
         self.assertEqual(response.status_code, 200)
         
         # ตรวจสอบ template ที่ใช้ถูกต้องหรือไม่
         self.assertTemplateUsed(response, "pages/about.html")
 
+    
     def test_home_page_status_context_and_template(self):
         url = reverse("home")
         response = self.client.get(url)
@@ -71,7 +77,8 @@ class PagesViewTests(TestCase):
         # จำกัดมีโพสต์มากสุด 3 โพสต์
         self.assertLessEqual(len(response.context["hiring_items"]), 3)
         self.assertLessEqual(len(response.context["rental_items"]), 3)
-        
+    
+    
     def test_home_page_latest_items_order(self):
         url = reverse("home")
         response = self.client.get(url)
@@ -87,6 +94,7 @@ class PagesViewTests(TestCase):
         self.assertEqual(hiring_ids, sorted(hiring_ids, reverse=True))
         self.assertEqual(rental_ids, sorted(rental_ids, reverse=True))
     
+    
     # ทดสอบ prefetch media  
     def test_home_page_prefetch_media(self):
         url = reverse("home")
@@ -97,8 +105,14 @@ class PagesViewTests(TestCase):
 
         # ตรวจว่ารูปแรกของแต่ละโพสต์ถูกเอาใช้งาน
         for item in hiring_items:
+            
+            # ดึงข้อมูลโพสต์ตัวจริงจากฐานข้อมูลที่มี id เดียวกับใน item
             post_obj = HiringPost.objects.get(id=item["id"])
+            
+            # ดึง URL ของรูปแรกของโพสต์ในฐานข้อมูล เพื่อใช้เป็นตัวทดสอบ
             expected_image = post_obj.media.first().image.url
+            
+            # ตรวจสอบว่า "image_url" ที่ view ส่งออกมาตรงกับ URL ของรูปจริงในฐานข้อมูล
             self.assertEqual(item["image_url"], expected_image)
 
         for item in rental_items:
@@ -109,10 +123,14 @@ class PagesViewTests(TestCase):
         # ตรวจว่า index 0 = โพสต์ล่าสุด
         hiring_ids = [item["id"] for item in hiring_items]
         rental_ids = [item["id"] for item in rental_items]
+        
+        #ตรวจสอบว่า hiring_items ถูกเรียงจากโพสต์ใหม่ไปโพสต์เก่าสุด 
         self.assertEqual(hiring_ids, sorted(hiring_ids, reverse=True))
         self.assertEqual(rental_ids, sorted(rental_ids, reverse=True))
     
-    # ทดสอบ _format_post_data แยกเดี่ยว (unit test)
+    
+    # ทดสอบ format ว่าตรงกับโพสต์ 
+    # เอา hiring post โพสต์ 1 เป็นทดสอบ
     def test_format_post_data_function(self):
         post = HiringPost.objects.first()
         post.images = list(post.media.all())  # จำลอง prefetch

@@ -7,9 +7,10 @@ import sys
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'my_project.settings')
+    # ปกติ เพราะบรรทัด error handling มักไม่ถูก execute ในการทดสอบปกติ
     try:
         from django.core.management import execute_from_command_line
-    except ImportError as exc:
+    except ImportError as exc: # pragma: no cover
         raise ImportError(
             "Couldn't import Django. Are you sure it's installed and "
             "available on your PYTHONPATH environment variable? Did you "
@@ -17,6 +18,6 @@ def main():
         ) from exc
     execute_from_command_line(sys.argv)
 
-
-if __name__ == '__main__':
+#Coverage ไม่เต็มเพราะ if __name__ == "__main__": ไม่ถูก execute ใน unit tests (รันผ่าน manage.py test หรือ pytest)
+if __name__ == '__main__':  # pragma: no cover
     main()

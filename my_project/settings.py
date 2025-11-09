@@ -30,7 +30,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "default-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-IS_TESTING = os.environ.get("DJANGO_TESTING", "False") == "True" or any("test" in arg.lower() for arg in sys.argv)
+
 
 ALLOWED_HOSTS = ["*"]
 
@@ -84,47 +84,18 @@ WSGI_APPLICATION = "my_project.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-if IS_TESTING:
+
+    
+if not DEBUG:
+    DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
+else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": ":memory:",
+            "NAME": "db.sqlite3",
         }
     }
-    
-else:
-    if not DEBUG and not IS_TESTING:
-        DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
-    elif DEBUG and not IS_TESTING:
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.sqlite3",
-                "NAME": "db.sqlite3",
-            }
-        }
         
-       
-# if not os.environ.get("DEBUG", "False") == "True":
-#     DATABASES = {"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))}
-# elif "test" in sys.argv:
-#     # อยู่ในโหมด test
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": ":memory:",
-#         }
-#     }
-#     # ปิด storages ใน test
-#     INSTALLED_APPS = [app for app in INSTALLED_APPS if app != "storages"]
-# else:
-#     DATABASES = {
-#         "default": {
-#             "ENGINE": "django.db.backends.sqlite3",
-#             "NAME": "db.sqlite3",
-#         }
-#     }
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -174,38 +145,25 @@ AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
 AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
-AWS_LOCATION = "media"
+######
+AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME", "ap-southeast-1")
+AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_S3_CUSTOM_DOMAIN", "my-bucket.s3.amazonaws.com")
+# AWS_LOCATION = "media"
 
-AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
+# AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com"
 AWS_S3_OBJECT_PARAMETERS = {
     "CacheControl": "max-age=86400",
 }
 
-if IS_TESTING:
-    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-    STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-    MEDIA_ROOT = BASE_DIR / "test_media"
-else:
-    if not DEBUG:
-        DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-        MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
-    else:
-        DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-        STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-        MEDIA_ROOT = BASE_DIR / "mediafiles"
-# if IS_TESTING:
-#     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-#     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-#     MEDIA_ROOT = BASE_DIR / "test_media"
-# else:
-#     if not DEBUG and not IS_TESTING:
-#         DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-#         AWS_LOCATION = "media"
-#         MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
-#     elif DEBUG and not IS_TESTING:
-#         DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-#         STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-#         MEDIA_ROOT = BASE_DIR / "mediafiles"
+AWS_LOCATION = os.environ.get("AWS_LOCATION", "media")
+######
+
+
+
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+
+
 
 # STORAGES กำหนดเฉพาะกรณี production ที่ใช้ S3
 STORAGES = {
@@ -213,53 +171,37 @@ STORAGES = {
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 
-if not DEBUG and not IS_TESTING:
-    STORAGES["default"] = {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-        "OPTIONS": {
-            "location": AWS_LOCATION,
-            "region_name": AWS_S3_REGION_NAME,
-            "object_parameters": {
-                "CacheControl": "max-age=86400",
-            },
-        },
-    }
-    
-# if IS_TESTING:
-#     DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-#     STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-#     MEDIA_ROOT = BASE_DIR / "test_media"
-# else:
-#     if not DEBUG :
-#         DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-#         AWS_LOCATION = "media"  # จะเก็บไฟล์ใน S3 ภายใต้โฟลเดอร์ /media/
-#         MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
-#     else:
-#         DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
-#         STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
-#         MEDIA_ROOT = BASE_DIR / "mediafiles"
 
-STORAGES = {
-    "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
-    },
-    "staticfiles": {
-        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+
+# ส่วนนี้จะรันก็ต่อเมื่อ DEFAULT = false 
+# ใน test กำหนดเป็น DEBUG=True หรือ IS_TESTING=True
+# if not DEBUG:
+#     STORAGES["default"] = {
+#         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+#         "OPTIONS": {
+#             "location": AWS_LOCATION,
+#             "region_name": AWS_S3_REGION_NAME,
+#             "object_parameters": AWS_S3_OBJECT_PARAMETERS,
+#         },
+#     }
+
+#     MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+if not DEBUG:
+    
+    options = {
+    "location": AWS_LOCATION,
+    # "default_acl": "public-read",  # ตั้งค่าให้ไฟล์ที่อัปโหลดเป็น Public
+    "region_name": AWS_S3_REGION_NAME,
+    "object_parameters": {
+        "CacheControl": "max-age=86400", # Cache 1 วัน
     },
 }
-
-if not DEBUG:
-
     STORAGES["default"] = {
-        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-        "OPTIONS": {
-            "location": AWS_LOCATION,
-            # "default_acl": "public-read",  # ตั้งค่าให้ไฟล์ที่อัปโหลดเป็น Public
-            "region_name": AWS_S3_REGION_NAME,
-            "object_parameters": {
-                "CacheControl": "max-age=86400",  # Cache 1 วัน
-            },
-        },
-    }
+    "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+    "OPTIONS": options,
+}
 
-    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+    # แยก MEDIA_URL ออกเป็น statement
+    media_url = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+    MEDIA_URL = media_url
+    
