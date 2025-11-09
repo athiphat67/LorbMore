@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "pages",
     "users.apps.UsersConfig",
     "posts.apps.PostsConfig",
+    "storages",
     
 ]
 
@@ -181,7 +182,7 @@ STORAGES = {
 #         },
 #     }
 
-#     MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+# MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 if not DEBUG:
     
     options = {
