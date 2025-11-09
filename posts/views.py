@@ -67,9 +67,8 @@ def _format_post_data(post):
     first_image_url = None
     if hasattr(post, "images") and post.images:
         first_media = post.images[0]
-        first_image_url = (
-            first_media.image.url if first_media.image else first_media.source_url
-        )
+        if first_media.image:
+            first_image_url = first_media.image.url
 
     # กำหนดชื่อและราคาตามประเภทโพสต์
     price_detail = ""
@@ -82,6 +81,7 @@ def _format_post_data(post):
     return {
         "id": post.id,
         "image_url": first_image_url or "/static/img/default.png",
+        # "images": images,
         "title": post.title,
         # ตอนนี้มันยังไม่มีระบบให้คะแนน เลยสมมติค่านี้ไปก่อนนะ
         "reviews": 27 if isinstance(post, HiringPost) else 13,
