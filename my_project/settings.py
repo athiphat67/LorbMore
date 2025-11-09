@@ -170,35 +170,20 @@ STORAGES = {
 
 
 
-# ส่วนนี้จะรันก็ต่อเมื่อ DEFAULT = false 
-# ใน test กำหนดเป็น DEBUG=True หรือ IS_TESTING=True
-# if not DEBUG:
-#     STORAGES["default"] = {
-#         "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-#         "OPTIONS": {
-#             "location": AWS_LOCATION,
-#             "region_name": AWS_S3_REGION_NAME,
-#             "object_parameters": AWS_S3_OBJECT_PARAMETERS,
-#         },
-#     }
-
-# MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 if not DEBUG:
-    
-    options = {
-    "location": AWS_LOCATION,
-    # "default_acl": "public-read",  # ตั้งค่าให้ไฟล์ที่อัปโหลดเป็น Public
-    "region_name": AWS_S3_REGION_NAME,
-    "object_parameters": {
-        "CacheControl": "max-age=86400", # Cache 1 วัน
-    },
-}
-    STORAGES["default"] = {
-    "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
-    "OPTIONS": options,
-}
 
-    # แยก MEDIA_URL ออกเป็น statement
-    media_url = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
-    MEDIA_URL = media_url
+    STORAGES["default"] = {
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
+        "OPTIONS": {
+            "location": AWS_LOCATION,
+            # "default_acl": "public-read",  # ตั้งค่าให้ไฟล์ที่อัปโหลดเป็น Public
+            "region_name": AWS_S3_REGION_NAME,
+            "object_parameters": {
+                "CacheControl": "max-age=86400",  # Cache 1 วัน
+            },
+        },
+    }
+
+    MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+
     
