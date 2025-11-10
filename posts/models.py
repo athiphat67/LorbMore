@@ -15,9 +15,17 @@ class Skill(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    kind = models.CharField(
-        max_length=100, blank=True, null=True
-    )  # เช่น "rental", "hiring"
+    
+    is_hiring_category = models.BooleanField(
+        "hiring", 
+        default=True
+    )
+    
+    # เปลี่ยนป้ายกำกับ และลบ help_text
+    is_rental_category = models.BooleanField(
+        "rental", 
+        default=True
+    )
 
     def __str__(self):
         # กำหนดให้ Django Admin แสดงผลด้วยฟิลด์ 'name'
