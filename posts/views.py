@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Post, HiringPost, RentalPost, Media
-from django.shortcuts import render, get_object_or_404
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
-
+from django.contrib.auth.decorators import login_required
+from .forms import HiringPostForm, RentalPostForm
 
 # Create your views here.
 def hiring_page_view(request):
@@ -124,3 +124,73 @@ def detail_post_view(request, post_id):
     }
 
     return render(request, "pages/detail_post.html", context)
+
+
+def createpost(request):
+    return render(request, "pages/createposts.html")
+
+@login_required
+def create_hiring_view(request):
+    if request.method == 'POST':
+        form = HiringPostForm(request.POST, request.FILES) 
+        if form.is_valid():
+            # บันทึกฟอร์มหลัก แต่ยังไม่ commit ลง DB
+            new_post = form.save(commit=False)
+            
+            # กำหนด 'author' ให้เป็น user ที่ login อยู่
+            new_post.author = request.user 
+            
+            # บันทึก post หลักลง DB (ตอนนี้ post จะมี id แล้ว)
+            new_post.save()
+            
+            # บันทึก M2M (categories, skills)
+            form.save_m2m() 
+            
+            files = request.FILES.getlist('images')
+            for f in files:
+                # สร้าง Media object ที่เชื่อมโยงกับ new_post
+                Media.objects.create(post=new_post, image=f)
+            
+            # ส่งผู้ใช้ไปยังหน้า detail ของโพสต์ที่เพิ่งสร้าง
+            return redirect('posts:detail_post', post_id=new_post.id) 
+    else:
+        form = HiringPostForm()
+
+    context = {
+        'form': form,
+        'form_title': 'สร้างโพสต์จ้างงาน'
+    }
+    return render(request, 'pages/create_form_template.html', context)
+
+@login_required
+def create_rental_view(request):
+    if request.method == 'POST':
+        form = RentalPostForm(request.POST, request.FILES) 
+        if form.is_valid():
+            # บันทึกฟอร์มหลัก แต่ยังไม่ commit ลง DB
+            new_post = form.save(commit=False)
+            
+            # กำหนด 'author' ให้เป็น user ที่ login อยู่
+            new_post.author = request.user 
+            
+            # บันทึก post หลักลง DB (ตอนนี้ post จะมี id แล้ว)
+            new_post.save()
+            
+            # บันทึก M2M (categories, skills)
+            form.save_m2m() 
+            
+            files = request.FILES.getlist('images')
+            for f in files:
+                # สร้าง Media object ที่เชื่อมโยงกับ new_post
+                Media.objects.create(post=new_post, image=f)
+            
+            # ส่งผู้ใช้ไปยังหน้า detail ของโพสต์ที่เพิ่งสร้าง
+            return redirect('posts:detail_post', post_id=new_post.id) 
+    else:
+        form = RentalPostForm()
+
+    context = {
+        'form': form,
+        'form_title': 'สร้างโพสต์ให้เช่า'
+    }
+    return render(request, 'pages/create_form_template.html', context)
