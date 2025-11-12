@@ -194,3 +194,19 @@ def create_rental_view(request):
         'form_title': 'สร้างโพสต์ให้เช่า'
     }
     return render(request, 'pages/create_form_template.html', context)
+
+    def test_createpost_view_status_and_template(self):
+        # ✅ เรียกดูหน้าผ่านชื่อ route (ต้องมีใน urls.py เช่น path('create/', views.createpost, name='createpost'))
+        url = reverse('posts:createpost')
+        response = self.client.get(url)
+
+        # ✅ ตรวจว่าหน้าโหลดสำเร็จ
+        self.assertEqual(response.status_code, 200)
+
+        # ✅ ตรวจว่าใช้ template ถูก
+        self.assertTemplateUsed(response, 'pages/createposts.html')
+
+        # ✅ ตรวจว่า context ไม่ต้องมีอะไรก็ได้
+        self.assertIn('text/html', response['Content-Type'])
+        
+    
