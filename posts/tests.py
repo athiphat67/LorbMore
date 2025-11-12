@@ -2,6 +2,7 @@ from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.contrib.auth.models import User
 from .models import Post, RentalPost, HiringPost, Media, Skill, Category
+from posts.forms import HiringPostForm, RentalPostForm
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 # Create your tests here.
@@ -222,6 +223,221 @@ class PostIntegrationTestCase(TestCase):
         # สร้าง Media ที่ไม่มี image
         media_without_image = Media.objects.create(post=post)
         self.assertEqual(str(media_without_image), f"Media for Post ID: {post.id}")
+        
+class PostCreationTests(TestCase):
+    def setUp(self):
+        # สร้าง user
+        self.user = User.objects.create_user(username="minnie", password="123456")
+        self.client = Client()
+        self.client.force_login(self.user)
 
+        # สร้าง Category และ Skill สำหรับใช้ใน M2M
+        self.category = Category.objects.create(name='Photo')
+        self.skill = Skill.objects.create(name='Photoshop')
+
+
+    # GET หน้า create hiring post
+    def test_create_hiring_post_get(self):
+        url = reverse('posts:create_hiring')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'สร้างโพสต์จ้างงาน')
+        self.assertIsInstance(response.context['form'], HiringPostForm)
+
+    # POST valid hiring post
+    def test_create_hiring_post_post_valid(self):
+        url = reverse('posts:create_hiring')
+        data = {
+            'title': 'Test Hiring',
+            'description': 'Test description',
+            'categories': [self.category.id],
+            'skills': [self.skill.id],
+        }
+        file_data = [
+        SimpleUploadedFile("img1.jpg", b"test data1", content_type="image/jpeg"),
+        SimpleUploadedFile("img2.jpg", b"test data2", content_type="image/jpeg")
+        ]
+
+        # POST form + files
+        response = self.client.post(url, data=data, files=[('images', f) for f in file_data])
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(HiringPost.objects.filter(title='Test Hiring').exists())
+        post = HiringPost.objects.get(title='Test Hiring')
+        self.assertEqual(post.author, self.user)
+        self.assertTrue(Media.objects.filter(post=post).exists())
+
+    # POST invalid hiring post (missing title)
+    def test_create_hiring_post_post_invalid(self):
+        url = reverse('posts:create_hiring')
+        data = {
+            'title': '',  # invalid
+            'description': 'Test description',
+            'categories': [self.category.id],
+            'skills': [self.skill.id],
+        }
+        file_data = [
+        SimpleUploadedFile("img1.jpg", b"test data1", content_type="image/jpeg"),
+        SimpleUploadedFile("img2.jpg", b"test data2", content_type="image/jpeg")
+        ]
+
+        # POST form + files
+        response = self.client.post(url, data=data, files=[('images', f) for f in file_data])
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'title', 'This field is required.')
+
+    # GET หน้า create rental post
+    def test_create_rental_post_get(self):
+        url = reverse('posts:create_rental')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'สร้างโพสต์ให้เช่า')
+        self.assertIsInstance(response.context['form'], RentalPostForm)
+
+    # POST valid rental post
+    def test_create_rental_post_post_valid(self):
+        url = reverse('posts:create_rental')
+        data = {
+            'title': 'Test Rental',
+            'description': 'Test rental description',
+            'categories': [self.category.id],
+            'skills': [],  # rental ไม่มี skills
+            'pricePerDay': 100,
+            'deposit': 0
+        }
+        file_data = [
+        SimpleUploadedFile("img1.jpg", b"test data1", content_type="image/jpeg"),
+        SimpleUploadedFile("img2.jpg", b"test data2", content_type="image/jpeg")
+        ]
+
+        # POST form + files
+        response = self.client.post(url, data=data, files=[('images', f) for f in file_data])
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(RentalPost.objects.filter(title='Test Rental').exists())
+        post = RentalPost.objects.get(title='Test Rental')
+        self.assertEqual(post.author, self.user)
+        self.assertTrue(Media.objects.filter(post=post).exists())
+
+    # POST invalid rental post (missing title)
+    def test_create_rental_post_post_invalid(self):
+        url = reverse('posts:create_rental')
+        data = {
+            'title': '',
+            'description': 'Test rental description',
+            'categories': [self.category.id],
+            'skills': [],
+            'pricePerDay': 100,
+        }
+        file_data = [
+        SimpleUploadedFile("img1.jpg", b"test data1", content_type="image/jpeg"),
+        SimpleUploadedFile("img2.jpg", b"test data2", content_type="image/jpeg")
+        ]
+
+        # POST form + files
+        response = self.client.post(url, data=data, files=[('images', f) for f in file_data])
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'title', 'This field is required.')
+
+    # ตรวจว่า login required redirect
+    def test_login_required_redirect(self):
+        self.client.logout()
+        url_hiring = reverse('posts:create_hiring')
+        url_rental = reverse('posts:create_rental')
+        response_hiring = self.client.get(url_hiring)
+        response_rental = self.client.get(url_rental)
+        self.assertEqual(response_hiring.status_code, 302)
+        self.assertIn('/accounts/login/', response_hiring.url)
+        self.assertEqual(response_rental.status_code, 302)
+        self.assertIn('/accounts/login/', response_rental.url)
+# class PostCreationTests(TestCase):
+#     def setUp(self):
+#         self.user = User.objects.create(username = "minnie")
+#         self.client = Client()  
+        
+#         self.client.force_login(self.user)
+#         # self.client.login(username = "minnie", password = 'minnie12345')
+        
+        
+        
+#         # สร้าง Category และ Skill สำหรับใช้ใน M2M
+#         self.category = Category.objects.create(name='Photo')
+#         self.skill = Skill.objects.create(name='Photoshop')
+        
+#     def test_create_hiring_post_get(self):
+#         url = reverse('posts:create_hiring')
+#         response = self.client.get(url)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertContains(response, 'สร้างโพสต์จ้างงาน')
+#         self.assertIsInstance(response.context['form'], HiringPostForm)
+        
+#     def test_create_hiring_post_postdetail(self):
+#         url = reverse('posts:create_hiring')
+        
+#         # สร้างไฟล์จำลอง
+#         image = SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")
+        
+#         data = {
+#             'title': 'Test Hiring',
+#             'description': 'Test description',
+#             'categories': [self.category.id],  
+#             'skills': [self.skill.id],
+#         }
+#         # รวมไฟล์ใน data
+#         file_data = {
+#             'images': [SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")]
+#         }
+#         response = self.client.post(url, data={**data}, files=file_data)
+        
+#         # ตรวจสอบว่ามี redirect ไป detail_post
+#         self.assertEqual(response.status_code, 302)
+#         self.assertTrue(HiringPost.objects.filter(title='Test Hiring').exists())
+#         post = HiringPost.objects.get(title='Test Hiring')
+#         self.assertEqual(post.author, self.user)
+#         self.assertTrue(Media.objects.filter(post=post).exists())    
+        
+#     def test_create_rental_post_get(self):
+#         url = reverse('posts:create_rental')
+#         response = self.client.get(url)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertContains(response, 'สร้างโพสต์ให้เช่า')
+#         self.assertIsInstance(response.context['form'], RentalPostForm)
+
+#     def test_create_rental_post_postdetail(self):
+#         url = reverse('posts:create_rental')
+        
+#         # สร้างไฟล์จำลอง
+#         image = SimpleUploadedFile("rental_image.jpg", b"file_content", content_type="image/jpeg")
+        
+#         data = {
+#             'title': 'Test Rental',
+#             'description': 'Test rental description',
+#             'categories': [self.category.id],
+#             'skills': [], # RentalPost ไม่มี skills
+#         }
+#         # รวมไฟล์ใน data
+#         file_data = {
+#             'images': [SimpleUploadedFile("test_image.jpg", b"file_content", content_type="image/jpeg")]
+#         }
+#         response = self.client.post(url, data={**data}, files=file_data)
+        
+#         self.assertEqual(response.status_code, 302)
+#         self.assertTrue(RentalPost.objects.filter(title='Test Rental').exists())
+#         post = RentalPost.objects.get(title='Test Rental')
+#         self.assertEqual(post.author, self.user)
+#         self.assertTrue(Media.objects.filter(post=post).exists())
+
+#     def test_login_required_redirect(self):
+#         self.client.logout()
+#         url_hiring = reverse('posts:create_hiring')
+#         url_rental = reverse('posts:create_rental')
+        
+#         # ต้อง redirect ไป login page
+#         response_hiring = self.client.get(url_hiring)
+#         response_rental = self.client.get(url_rental)
+#         self.assertEqual(response_hiring.status_code, 302)
+#         self.assertIn('/accounts/login/', response_hiring.url)
+#         self.assertEqual(response_rental.status_code, 302)
+#         self.assertIn('/accounts/login/', response_rental.url)
+        
+        
         
         
