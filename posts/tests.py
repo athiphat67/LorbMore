@@ -224,7 +224,8 @@ class PostIntegrationTestCase(TestCase):
         # สร้าง Media ที่ไม่มี image
         media_without_image = Media.objects.create(post=post)
         self.assertEqual(str(media_without_image), f"Media for Post ID: {post.id}")
-        
+
+# class แยกสำหรับทดสอบเวลาสร้างโพสต์     
 class PostCreationTests(TestCase):
     def setUp(self):
         # สร้าง user
@@ -232,10 +233,11 @@ class PostCreationTests(TestCase):
         self.client = Client()
         self.client.force_login(self.user)
 
-        # สร้าง Category และ Skill สำหรับใช้ใน M2M
+        # สร้าง Category และ Skill 
         self.category = Category.objects.create(name='Photo')
         self.skill = Skill.objects.create(name='Photoshop')
 
+    # ทดสอบหน้า create post สามารถโหลดได้สำเร็จ
     def test_createpost_view_status_and_template(self):
         # สร้าง URL ของ view
         url = reverse('posts:createposts')  # ต้องมีชื่อ route 'createpost' ใน urls.py
@@ -248,8 +250,9 @@ class PostCreationTests(TestCase):
         self.assertTemplateUsed(response, 'pages/createposts.html')
 
 
-    # GET หน้า create hiring post
+    # ทดสอบหน้า หน้า create hiring post
     def test_create_hiring_post_get(self):
+        # บังคับ login เลย
         self.client.force_login(self.user)
         
         url = reverse('posts:create_hiring')
@@ -258,11 +261,11 @@ class PostCreationTests(TestCase):
         self.assertContains(response, 'สร้างโพสต์จ้างงาน')
         self.assertIsInstance(response.context['form'], HiringPostForm)
 
-    # POST valid hiring post
+    # ทดสอบ 
     def test_create_hiring_post_post_valid(self):
         url = reverse('posts:create_hiring')
         
-        # สร้างไฟล์จำลอง
+        # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
             name="test_image.jpg",
             content=b"test image content",
@@ -282,23 +285,18 @@ class PostCreationTests(TestCase):
         response = self.client.post(url, data, FILES={"images": [test_image]})
         self.assertEqual(response.status_code, 302)
         post = HiringPost.objects.get(title='Test Hiring')
-
-        
-    #    # ตรวจว่ามี HiringPost สร้างจริง
-    #     post = HiringPost.objects.first()
-    #     self.assertIsNotNone(post)
         self.assertEqual(post.author, self.user)
 
         media = Media.objects.filter(post=post)
+        # สร้างรูปแค่รูปเดียว
         self.assertEqual(media.count(), 1)
-        # ✅ ตรวจสอบชื่อไฟล์แบบปลอดภัย
         self.assertIn("test_image", media.first().image.name)
         
-    # POST invalid hiring post (missing title)
+    
     def test_create_hiring_post_post_invalid(self):
         url = reverse('posts:create_hiring')
         
-        #สร้างไฟล์จำลอง
+        # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
             name="test_image.jpg",
             content=b"test image content",
@@ -320,7 +318,7 @@ class PostCreationTests(TestCase):
         self.assertTemplateUsed(response, "pages/create_form_template.html")
 
 
-    # GET หน้า create rental post
+    
     def test_create_rental_post_get(self):
         self.client.force_login(self.user)
         
@@ -330,11 +328,11 @@ class PostCreationTests(TestCase):
         self.assertContains(response, 'สร้างโพสต์ให้เช่า')
         self.assertIsInstance(response.context['form'], RentalPostForm)
 
-    # POST valid rental post
+   
     def test_create_rental_post_post_valid(self):
         url = reverse('posts:create_rental')
         
-        #สร้างไฟล์จำลอง
+         # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
             name="test_image.jpg",
             content=b"test image content",
@@ -360,9 +358,9 @@ class PostCreationTests(TestCase):
 
         media = Media.objects.filter(post=post)
         self.assertEqual(media.count(), 1)
-        # ✅ ตรวจสอบชื่อไฟล์แบบปลอดภัย
         self.assertIn("test_image", media.first().image.name)
-    # POST invalid rental post (missing title)
+        
+    
     def test_create_rental_post_post_invalid(self):
         url = reverse('posts:create_rental')
         
@@ -381,7 +379,7 @@ class PostCreationTests(TestCase):
             'images': [test_image],
         }
         
-        # สร้างไฟล์จำลอง
+        
         response = self.client.post(url, data, FILES={"images": [test_image]})
 
         self.assertEqual(response.status_code, 200)
@@ -403,14 +401,14 @@ class PostCreationTests(TestCase):
     def test_create_hiring_post_with_image(self):
         url = reverse('posts:create_hiring')
 
-        # จำลองไฟล์รูป
+        # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
             name="test_image.jpg",
             content=b"dummy_image_content",
             content_type="image/jpeg"
         )
 
-        # POST data
+        
         data = {
             'title': 'Test Hiring',
             'description': 'Test description',
@@ -424,21 +422,17 @@ class PostCreationTests(TestCase):
 
         response = self.client.post(url, data, FILES={'images': [test_image]})
 
-
-        # ✅ ตรวจว่า redirect ไปหน้า detail
         self.assertEqual(response.status_code, 302)
+        
+        # ตรวจว่ามีโพสต์สร้างขึ้น
         post = HiringPost.objects.get(title='Test Hiring')
-
-
-        # ✅ ตรวจว่ามีโพสต์สร้างขึ้น
-        # post = HiringPost.objects.get(title='Test Hiring')
         self.assertEqual(post.author, self.user)
 
         media = Media.objects.filter(post=post)
         self.assertEqual(media.count(), 1)
-        # ✅ ตรวจสอบชื่อไฟล์แบบปลอดภัย
+        
+        # ตรวจสอบชื่อไฟล์แบบปลอดภัย
         self.assertIn("test_image",media[0].image.name)
-        # self.assertIn("test_image", media.first().image.name)
         
     def test_create_rental_post_without_image(self):
         url = reverse('posts:create_rental')
@@ -452,7 +446,7 @@ class PostCreationTests(TestCase):
             'deposit': 0
         }
 
-         # ✅ ไม่ต้องมี FILES, เพราะเราไม่ได้แนบรูป
+        
         response = self.client.post(url, data, follow=True)
 
 
