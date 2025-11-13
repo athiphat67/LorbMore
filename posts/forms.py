@@ -35,8 +35,21 @@ class HiringPostForm(forms.ModelForm):
             "budgetMin",
             "budgetMax",
         ]
+        labels = {
+            "title": "ชื่อโพสต์",
+            "description" : "รายละเอียด",
+            "categories": "เลือกหมวดหมู่(ประเภท)บริการของคุณ",
+            "skills": "เลือกทักษะการบริการของคุณ",
+            "budgetMin": "งบประมาณ (ต่ำสุด)",
+            "budgetMax": "งบประมาณ (สูงสุด)",
+        }
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 5}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"rows": 5, "class": "form-control"}),
+            "categories": forms.SelectMultiple(attrs={"class": "form-select", "size": "5"}),
+            "skills": forms.SelectMultiple(attrs={"class": "form-select", "size": "5"}),
+            "budgetMin": forms.NumberInput(attrs={"class": "form-control"}),
+            "budgetMax": forms.NumberInput(attrs={"class": "form-control"}),
         }
 
 
@@ -57,5 +70,16 @@ class RentalPostForm(forms.ModelForm):
         model = RentalPost
         fields = ["title", "description", "categories", "pricePerDay", "deposit"]
         widgets = {
-            "description": forms.Textarea(attrs={"rows": 5}),
+            "title": forms.TextInput(attrs={"class": "form-control"}),
+            "description": forms.Textarea(attrs={"rows": 5, "class": "form-control"}),
+            "categories": forms.SelectMultiple(attrs={"class": "form-select", "size": "5"}),
+            "pricePerDay": forms.NumberInput(attrs={"class": "form-control"}),
+            "deposit": forms.NumberInput(attrs={"class": "form-control"}),
+        }
+        labels = {
+            "title": "ชื่อโพสต์",
+            "description" : "รายละเอียด",
+            "categories": "เลือกหมวดหมู่(ประเภท)สินค้าของคุณ",
+            "pricePerDay": "ราคาเช่าต่อวัน/ครั้ง",
+            "deposit": "ราคามัดจำการเช่า",
         }

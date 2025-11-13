@@ -1,35 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
-
+{% block title %}Create Post - Lorb More{% endblock title %}
 {% block content %}
-<div class="container mt-5 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
+<link rel="stylesheet" href="{% static 'pages/css/createposts.css' %}">
+<main class="create-post-container">
+    <div class="content-box">
+        <h1 class="page-title">Create your own Post</h1>
+        <p class="page-subtitle">you need to create</p>
 
-            <h2 class="mb-4 text-center">คุณต้องการสร้างโพสต์ประเภทใด?</h2>
+        <div class="choice-wrapper">
 
-            <div class="row">
+            <a href="{% url 'posts:create_hiring' %}" class="choice-button choice-hiring">
+                hiring
+            </a>
 
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <i class="fas fa-briefcase fa-3x mb-3 text-primary"></i> <h5 class="card-title">สร้างโพสต์จ้างงาน</h5>
-                            <a href="{% url 'posts:create_hiring' %}" class="btn btn-primary">create hiring post</a>
-                        </div>
-                    </div>
-                </div>
+            <span class="choice-separator">
+                or
+            </span>
 
-                <div class="col-md-6 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center p-4">
-                            <i class="fas fa-camera-retro fa-3x mb-3 text-success"></i> <h5 class="card-title">สร้างโพสต์ให้เช่า</h5>
-                            <a href="{% url 'posts:create_rental' %}" class="btn btn-success">create rental post</a>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
+            <a href="{% url 'posts:create_rental' %}" class="choice-button choice-rental">
+                rental
+            </a>
         </div>
     </div>
-</div>
+</main>
 {% endblock content %}

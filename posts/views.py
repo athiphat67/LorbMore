@@ -158,9 +158,9 @@ def create_hiring_view(request):
 
     context = {
         'form': form,
-        'form_title': 'สร้างโพสต์จ้างงาน'
+        'form_title': 'Create your hiring post'
     }
-    return render(request, 'pages/create_form_template.html', context)
+    return render(request, 'pages/create_hiring.html', context)
 
 @login_required
 def create_rental_view(request):
@@ -191,8 +191,6 @@ def create_rental_view(request):
 
     context = {
         'form': form,
-        'form_title': 'สร้างโพสต์ให้เช่า'
+        'form_title': 'Create your rental post'
     }
-    return render(request, 'pages/create_form_template.html', context)
-        
-    
+    return render(request, 'pages/create_rental.html', context)

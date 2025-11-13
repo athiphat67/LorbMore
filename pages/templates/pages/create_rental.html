@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'pages/css/createpost_form.css' %}">
+
+<div class="page-wrapper">
+    <div class="page-container">
+        <div class="form-card">
+            <h2 class="form-title">{{ form_title|default:'Create rental post' }}</h2>
+
+            <form class="post-form" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="form-alert">{{ form.non_field_errors }}</div>
+                {% endif %}
+
+                <div class="form-grid">
+                    <div class="main-column">
+
+                        <div class="form-field">
+                            {{ form.title.label_tag }}
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="field-error">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field">
+                            {{ form.description.label_tag }}
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="field-error">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-field two-col">
+                            <div class="field-half">
+                                {{ form.pricePerDay.label_tag }}
+                                {{ form.pricePerDay }}
+                                {% if form.pricePerDay.errors %}
+                                    <div class="field-error">{{ form.pricePerDay.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="field-half">
+                                {{ form.deposit.label_tag }}
+                                {{ form.deposit }}
+                                {% if form.deposit.errors %}
+                                    <div class="field-error">{{ form.deposit.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            {{ form.images.label_tag }}
+                            {{ form.images }}
+                            {% if form.images.errors %}
+                                <div class="field-error">{{ form.images.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="side-column">
+                        <div class="form-field">
+                            {{ form.categories.label_tag }}
+                            {{ form.categories }}
+                            {% if form.categories.errors %}
+                                <div class="field-error">{{ form.categories.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="form-sep">
+
+                <div class="form-actions">
+                    <a href="{% url 'posts:createposts' %}" class="btn btn-cancel">Cancel</a>
+                    <button type="submit" class="btn btn-save">Save</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
