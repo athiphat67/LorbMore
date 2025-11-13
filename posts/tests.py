@@ -237,32 +237,40 @@ class PostCreationTests(TestCase):
         self.category = Category.objects.create(name='Photo')
         self.skill = Skill.objects.create(name='Photoshop')
 
-    # ทดสอบหน้า create post สามารถโหลดได้สำเร็จ
+    # ตรวจสอบหน้า create post สามารถโหลดได้สำเร็จ
     def test_createpost_view_status_and_template(self):
-        # สร้าง URL ของ view
-        url = reverse('posts:createposts')  # ต้องมีชื่อ route 'createpost' ใน urls.py
+        url = reverse('posts:createposts') 
         response = self.client.get(url)
-
-        # ตรวจสอบว่าโหลดหน้าได้สำเร็จ (status 200)
         self.assertEqual(response.status_code, 200)
-
-        # ตรวจสอบว่าใช้ template ถูกต้อง
         self.assertTemplateUsed(response, 'pages/createposts.html')
 
-
-    # ทดสอบหน้า หน้า create hiring post
+    # ตรวจสอบหน้า create hiring post แสดงแบบฟอร์มถูกหรือไม่
     def test_create_hiring_post_get(self):
-        # บังคับ login เลย
+        # จำลองผู้ใช้ที่ล็อกอินแล้ว
         self.client.force_login(self.user)
-        
         url = reverse('posts:create_hiring')
+        
+        # จำลองการเปิดหน้าเว็บ
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
+        
+        # ยืนยันเปิดหน้า hiring และใช้ form ที่ถูกต้อง
         self.assertContains(response, 'สร้างโพสต์จ้างงาน')
         self.assertIsInstance(response.context['form'], HiringPostForm)
 
-    # ทดสอบ 
-    def test_create_hiring_post_post_valid(self):
+    # ตรวจสอบหน้า create rental post แสดงแบบฟอร์มถูกหรือไม่
+    def test_create_rental_post_get(self):
+        self.client.force_login(self.user)
+        url = reverse('posts:create_rental')
+        
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertContains(response, 'สร้างโพสต์ให้เช่า')
+        self.assertIsInstance(response.context['form'], RentalPostForm)
+    
+    # ตรวจสอบการสร้างโพสต์ hiring ในกรณีที่ข้อมูลครบ
+    def test_create_hiring_post__valid_post(self):
         url = reverse('posts:create_hiring')
         
         # สร้างข้อมูลทดสอบและรูปภาพ
@@ -282,18 +290,24 @@ class PostCreationTests(TestCase):
             'images': [test_image],
         }
         
+        # จำลองการกรอกฟอร์มในหน้าเว็บจริง โดยมีทั้ง data และ files รูป
         response = self.client.post(url, data, FILES={"images": [test_image]})
+        
+        # สร้างโพสต์สำเร็จและระบบเปลี่ยนหน้าให้ถูกต้อง
         self.assertEqual(response.status_code, 302)
+        
+        # ยืนยันว่ามีโพสต์จริง ไม่เป็น none และข้อมูลถูกบันทึกจริงและผูกกับผู้ใช้ถูกคน
         post = HiringPost.objects.get(title='Test Hiring')
+        self.assertIsNotNone(post)
         self.assertEqual(post.author, self.user)
 
+        # ดึง media และเช็คจำนวนรูป, ยืนยันว่าชื่อไฟล์ของรูปตรงกับรูปที่เราอัปโหลด
         media = Media.objects.filter(post=post)
-        # สร้างรูปแค่รูปเดียว
         self.assertEqual(media.count(), 1)
         self.assertIn("test_image", media.first().image.name)
-        
     
-    def test_create_hiring_post_post_invalid(self):
+    # ตรวจสอบการสร้างโพสต์ hiring ในกรณีที่ข้อมูลไม่ครบ (title) 
+    def test_create_hiring_post__invalid_post(self):
         url = reverse('posts:create_hiring')
         
         # สร้างข้อมูลทดสอบและรูปภาพ
@@ -312,24 +326,16 @@ class PostCreationTests(TestCase):
             'budgetMax': 2000,
         }
         
-        
         response = self.client.post(url, data)
+        
+        # ระบบ render หน้าเดิม แทนการ redirect
         self.assertEqual(response.status_code, 200)
+        
+        # ตรวจว่าหน้า template ที่ใช้คือหน้าเดิมของฟอร์ม
         self.assertTemplateUsed(response, "pages/create_form_template.html")
 
-
-    
-    def test_create_rental_post_get(self):
-        self.client.force_login(self.user)
-        
-        url = reverse('posts:create_rental')
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, 'สร้างโพสต์ให้เช่า')
-        self.assertIsInstance(response.context['form'], RentalPostForm)
-
-   
-    def test_create_rental_post_post_valid(self):
+    # ตรวจสอบการสร้างโพสต์ rental ในกรณีที่ข้อมูลครบ
+    def test_create_rental_post_valid_post(self):
         url = reverse('posts:create_rental')
         
          # สร้างข้อมูลทดสอบและรูปภาพ
@@ -349,9 +355,11 @@ class PostCreationTests(TestCase):
             'images': [test_image],
         }
         
+        
         response = self.client.post(url, data, FILES={"images": [test_image]})
-        self.assertEqual(response.status_code, 302)  # redirect → detail_post
+        self.assertEqual(response.status_code, 302) 
 
+        # ยืนยันว่ามีโพตส์จริง ไม่เป็น none และข้อมูลถูกบันทึกจริงและผูกกับผู้ใช้ถูกคน 
         post = RentalPost.objects.first()
         self.assertIsNotNone(post)
         self.assertEqual(post.author, self.user)
@@ -360,8 +368,8 @@ class PostCreationTests(TestCase):
         self.assertEqual(media.count(), 1)
         self.assertIn("test_image", media.first().image.name)
         
-    
-    def test_create_rental_post_post_invalid(self):
+    # ตรวจสอบการสร้างโพสต์ rental ในกรณีที่ข้อมูลไม่ครบ
+    def test_create_rental_post__invalid_post(self):
         url = reverse('posts:create_rental')
         
         test_image = SimpleUploadedFile(
@@ -371,7 +379,7 @@ class PostCreationTests(TestCase):
         )
         
         data = {
-            'title': '',
+            'title': '',  # invalid
             'description': 'Test rental description',
             'categories': [self.category.id],
             'skills': [],
@@ -379,25 +387,30 @@ class PostCreationTests(TestCase):
             'images': [test_image],
         }
         
-        
         response = self.client.post(url, data, FILES={"images": [test_image]})
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "pages/create_form_template.html")
 
-
-    # ตรวจว่า login required redirect
+    # ตรวจสอบว่า login required redirect
     def test_login_required_redirect(self):
         self.client.logout()
+        
+        # สร้างหน้า create hiring กับ rental
         url_hiring = reverse('posts:create_hiring')
         url_rental = reverse('posts:create_rental')
+        
+        # จำลองผู้ใช้ถ้าไม่ log in
         response_hiring = self.client.get(url_hiring)
         response_rental = self.client.get(url_rental)
+        
+        # ไม่สามารถเข้าหน้านั้นได้
         self.assertEqual(response_hiring.status_code, 302)
         self.assertIn('/accounts/login/', response_hiring.url)
         self.assertEqual(response_rental.status_code, 302)
         self.assertIn('/accounts/login/', response_rental.url)
-        
+    
+    # ตรวจสอบกรณีมีรูป
     def test_create_hiring_post_with_image(self):
         url = reverse('posts:create_hiring')
 
@@ -408,7 +421,6 @@ class PostCreationTests(TestCase):
             content_type="image/jpeg"
         )
 
-        
         data = {
             'title': 'Test Hiring',
             'description': 'Test description',
@@ -422,18 +434,17 @@ class PostCreationTests(TestCase):
 
         response = self.client.post(url, data, FILES={'images': [test_image]})
 
+
         self.assertEqual(response.status_code, 302)
-        
-        # ตรวจว่ามีโพสต์สร้างขึ้น
         post = HiringPost.objects.get(title='Test Hiring')
         self.assertEqual(post.author, self.user)
 
+        # ดึง media และเช็คจำนวนรูป, ยืนยันว่าชื่อไฟล์ของรูปตรงกับรูปที่เราอัปโหลด
         media = Media.objects.filter(post=post)
         self.assertEqual(media.count(), 1)
-        
-        # ตรวจสอบชื่อไฟล์แบบปลอดภัย
         self.assertIn("test_image",media[0].image.name)
         
+    # ตรวจสอบกรณีไม่มีรูป    
     def test_create_rental_post_without_image(self):
         url = reverse('posts:create_rental')
 
@@ -446,17 +457,12 @@ class PostCreationTests(TestCase):
             'deposit': 0
         }
 
-        
         response = self.client.post(url, data, follow=True)
-
-
-         # ✅ ตรวจว่า redirect แล้วได้หน้า detail (200)
+        
         self.assertEqual(response.status_code, 200)
-
         post = RentalPost.objects.get(title='Test Rental No Image')
         self.assertEqual(post.author, self.user)
 
+        # มีจำนวนรูป 0
         media_objects = Media.objects.filter(post=post)
         self.assertEqual(media_objects.count(), 0)
-
-        

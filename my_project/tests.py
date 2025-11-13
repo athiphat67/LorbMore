@@ -39,12 +39,14 @@ class StorageSettingsTest(SimpleTestCase):
             "AWS_LOCATION": "test-location",
             "AWS_S3_REGION_NAME": "ap-southeast-1",
             "AWS_S3_CUSTOM_DOMAIN": "test-bucket.s3.amazonaws.com",
+            "AWS_STORAGE_BUCKET_NAME": "test-bucket",
         }
 
         with mock.patch.dict(os.environ, env_vars), \
              mock.patch("my_project.settings.AWS_LOCATION", "test-location"), \
              mock.patch("my_project.settings.AWS_S3_REGION_NAME", "ap-southeast-1"), \
-             mock.patch("my_project.settings.AWS_S3_CUSTOM_DOMAIN", "test-bucket.s3.amazonaws.com"):
+             mock.patch("my_project.settings.AWS_S3_CUSTOM_DOMAIN", "test-bucket.s3.amazonaws.com"), \
+             mock.patch("my_project.settings.AWS_STORAGE_BUCKET_NAME", "test-bucket"):
 
             import my_project.settings as settings_module
             importlib.reload(settings_module)
