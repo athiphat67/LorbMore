@@ -9,3 +9,4 @@ class ProfileModelTest(TestCase):
 
         # ตรวจสอบ __str__() คืนค่า username
         self.assertEqual(str(profile), "minnie")
+        

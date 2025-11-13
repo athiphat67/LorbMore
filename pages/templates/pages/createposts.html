@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Create Post - Lorb More{% endblock title %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'pages/css/createposts.css' %}">
+<main class="create-post-container">
+    <div class="content-box">
+        <h1 class="page-title">Create your own Post</h1>
+        <p class="page-subtitle">you need to create</p>
+
+        <div class="choice-wrapper">
+
+            <a href="{% url 'posts:create_hiring' %}" class="choice-button choice-hiring">
+                hiring
+            </a>
+
+            <span class="choice-separator">
+                or
+            </span>
+
+            <a href="{% url 'posts:create_rental' %}" class="choice-button choice-rental">
+                rental
+            </a>
+        </div>
+    </div>
+</main>
+{% endblock content %}
