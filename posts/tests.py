@@ -255,7 +255,7 @@ class PostCreationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         
         # ยืนยันเปิดหน้า hiring และใช้ form ที่ถูกต้อง
-        self.assertContains(response, 'สร้างโพสต์จ้างงาน')
+        self.assertContains(response, 'Create your hiring post')
         self.assertIsInstance(response.context['form'], HiringPostForm)
 
     # ตรวจสอบหน้า create rental post แสดงแบบฟอร์มถูกหรือไม่
@@ -266,7 +266,7 @@ class PostCreationTests(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         
-        self.assertContains(response, 'สร้างโพสต์ให้เช่า')
+        self.assertContains(response, 'Create your rental post')
         self.assertIsInstance(response.context['form'], RentalPostForm)
     
     # ตรวจสอบการสร้างโพสต์ hiring ในกรณีที่ข้อมูลครบ
@@ -332,7 +332,7 @@ class PostCreationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         
         # ตรวจว่าหน้า template ที่ใช้คือหน้าเดิมของฟอร์ม
-        self.assertTemplateUsed(response, "pages/createposts.html")
+        self.assertTemplateUsed(response, "pages/create_hiring.html")
 
     # ตรวจสอบการสร้างโพสต์ rental ในกรณีที่ข้อมูลครบ
     def test_create_rental_post_valid_post(self):
@@ -390,7 +390,7 @@ class PostCreationTests(TestCase):
         response = self.client.post(url, data, FILES={"images": [test_image]})
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "pages/createposts.html")
+        self.assertTemplateUsed(response, "pages/create_rental.html")
 
     # ตรวจสอบว่า login required redirect
     def test_login_required_redirect(self):
