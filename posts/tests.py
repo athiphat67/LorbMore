@@ -332,7 +332,7 @@ class PostCreationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         
         # ตรวจว่าหน้า template ที่ใช้คือหน้าเดิมของฟอร์ม
-        self.assertTemplateUsed(response, "pages/create_form_template.html")
+        self.assertTemplateUsed(response, "pages/createposts.html")
 
     # ตรวจสอบการสร้างโพสต์ rental ในกรณีที่ข้อมูลครบ
     def test_create_rental_post_valid_post(self):
@@ -390,7 +390,7 @@ class PostCreationTests(TestCase):
         response = self.client.post(url, data, FILES={"images": [test_image]})
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "pages/create_form_template.html")
+        self.assertTemplateUsed(response, "pages/createposts.html")
 
     # ตรวจสอบว่า login required redirect
     def test_login_required_redirect(self):
