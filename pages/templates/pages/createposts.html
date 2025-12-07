@@ -6,20 +6,31 @@
 <main class="create-post-container">
     <div class="content-box">
         <h1 class="page-title">Create your own Post</h1>
-        <p class="page-subtitle">you need to create</p>
+        <p class="page-subtitle">เลือกประเภทโพสต์ที่คุณต้องการสร้าง</p>
 
         <div class="choice-wrapper">
 
-            <a href="{% url 'posts:create_hiring' %}" class="choice-button choice-hiring">
-                hiring
-            </a>
+            {% if user.is_superuser or "@dome.tu.ac.th" in user.email %}
+                <a href="{% url 'posts:create_hiring' %}" class="choice-button choice-hiring">
+                    Hiring (รับจ้างงาน)
+                </a>
+                <a href="{% url 'posts:create_rental' %}" class="choice-button choice-hiring">
+                    Rental (เช่า-ยืม)
+                </a>
+            {% else %}
+                <div class="choice-button choice-hiring" style="background-color: #ccc; cursor: not-allowed; opacity: 0.6; pointer-events: none;">
+                    Hiring (รับจ้างงาน)
+                    <br>
+                    <span style="font-size: 0.7rem; display: block; margin-top: 5px;">(เฉพาะนักศึกษา TU เท่านั้น)</span>
+                </div>
+                    <div class="choice-button choice-hiring" style="background-color: #ccc; cursor: not-allowed; opacity: 0.6; pointer-events: none;">
+                    Rental (เช่า-ยืม)
+                    <br>
+                    <span style="font-size: 0.7rem; display: block; margin-top: 5px;">(เฉพาะนักศึกษา TU เท่านั้น)</span>
+                </div>
+            {% endif %}
 
             <span class="choice-separator">
-                or
-            </span>
-
-            <a href="{% url 'posts:create_rental' %}" class="choice-button choice-rental">
-                rental
             </a>
         </div>
     </div>

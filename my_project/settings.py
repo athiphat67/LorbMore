@@ -168,8 +168,6 @@ STORAGES = {
     "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},
 }
 
-
-
 if not DEBUG:
 
     STORAGES["default"] = {
@@ -186,4 +184,6 @@ if not DEBUG:
 
     MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "/"
     

@@ -4,6 +4,7 @@ from django.db.models import Prefetch
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from .forms import HiringPostForm, RentalPostForm
+from .decorators import student_required 
 
 # Create your views here.
 def hiring_page_view(request):
@@ -129,7 +130,7 @@ def detail_post_view(request, post_id):
 def createpost(request):
     return render(request, "pages/createposts.html")
 
-@login_required
+@student_required
 def create_hiring_view(request):
     if request.method == 'POST':
         form = HiringPostForm(request.POST, request.FILES) 
@@ -162,7 +163,7 @@ def create_hiring_view(request):
     }
     return render(request, 'pages/create_hiring.html', context)
 
-@login_required
+@student_required
 def create_rental_view(request):
     if request.method == 'POST':
         form = RentalPostForm(request.POST, request.FILES) 

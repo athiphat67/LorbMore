@@ -1,7 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.db.models import Prefetch
 from posts.models import Post, HiringPost, RentalPost, Media
 from posts.views import _format_post_data
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import login
+from .forms import StudentRegisterForm
 
 def about_page_view(request):
     return render(request, 'pages/about.html')
@@ -27,3 +30,14 @@ def home_page_view(request):
     
     return render(request, 'pages/home.html', context)
 
+def register_view(request):
+    if request.method == 'POST':
+        form = StudentRegisterForm(request.POST) 
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = StudentRegisterForm()
+    
+    return render(request, 'registration/register.html', {'form': form})
