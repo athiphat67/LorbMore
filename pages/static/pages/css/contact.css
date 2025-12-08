@@ -3,7 +3,7 @@
    ========================================= */
    body {
     background-color: #F9FAFB;
-    color: #333;
+    color: #565656;
 }
 
 .contact-hero {
@@ -27,14 +27,6 @@
     margin: 0;
     letter-spacing: 2px;
     text-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.hero-line {
-    width: 60px;
-    height: 4px;
-    background: rgba(255,255,255,0.8);
-    margin: 15px auto;
-    border-radius: 2px;
 }
 
 .hero-subtitle {
@@ -66,7 +58,7 @@
    3. Left Side: Contact Info Card
    ========================================= */
 .contact-info-card {
-    background: linear-gradient(135deg, #2D3748 0%, #1A202C 100%); /* สีเข้มดูหรู */
+    background: linear-gradient(135deg, #3d485b 0%, #313845 100%); /* สีเข้มดูหรู */
     color: white;
     padding: 40px;
     border-radius: 20px;

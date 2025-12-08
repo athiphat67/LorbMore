@@ -26,6 +26,7 @@
     position: relative;
     /* เพิ่ม Animation ให้ดูแพง */
     animation: fadeInUp 0.6s ease-out;
+    margin-bottom: 150px;
 }
 
 @keyframes fadeInUp {

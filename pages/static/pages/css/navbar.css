@@ -1,151 +1,141 @@
 :root {
-  --red: #c3002f;
-  --yellow:#f6dd8a;
-  --text: #ffffff;
-  --ink: #272727;
-  --radius-pill: 999px;
+  --nav-bg: #ffffff;
+  --active-bg: #C3002F;
+  /* สีแดงเข้มตามที่ขอ */
+  --text-color: #222222;
+  --white: #ffffff;
+  --border-color: #000000;
+  --navbar-height: 72px;
+  /* กำหนดความสูงบาร์ให้แน่นอน เพื่อทำแถบคาด */
 }
 
-* { box-sizing: border-box; }
-.navbar ul { list-style: none; margin: 0; padding: 0; }
-.navbar a { text-decoration: none; }
-
-/* ---- Navbar wrapper ---- */
 .navbar {
+  background: var(--nav-bg);
+  /* 1. แก้ Padding: เอาแนวตั้งออก (0) ให้เหลือแค่แนวนอน (32px) */
+  padding: 0 32px;
+
+  /* 2. กำหนดความสูงให้ Navbar */
+  height: var(--navbar-height);
+
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: clamp(10px, 2vw, 24px);
-  padding: 10px clamp(12px, 3vw, 24px);
-  background: var(--red);
-  color: var(--text);
+  border-bottom: 1px solid #eee;
 }
 
-/* ---- Left: home + search ---- */
+/* บังคับขนาดโลโก้ไม่ให้ล้น */
+.logo img {
+  height: 40px;
+  /* หรือ 48px แล้วแต่ชอบครับ */
+  width: auto;
+  /* ให้กว้างตามสัดส่วน */
+  display: block;
+  object-fit: contain;
+}
+
+/* จัดให้กล่องด้านซ้ายดันโลโก้ให้อยู่กลาง */
 .nav-left {
+  flex: 1;
+  /* <--- เพิ่มบรรทัดนี้สำคัญมาก! เพื่อถ่วงน้ำหนักให้เท่าด้านขวา */
   display: flex;
   align-items: center;
-  gap: clamp(8px, 1.2vw, 16px);
-  flex: 1 1 auto;
-  min-width: 220px;
+  height: 100%;
 }
 
-.home-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;    /* ไม่มีพื้นหลังเหลือง */
-  border: none;
-  padding: 0;                 /* ไม่มีขอบใน */
-  border-radius: 0;
-  cursor: pointer;
-  line-height: 0;             /* ลบช่องว่างแนวตั้งของ <a> */
-}
-
-/* รูปไอคอน */
-.home-btn img {
-  width: 30px;                /* ขนาดไอคอน */
-  height: 30px;
-  display: block;
-  transition: transform 0.2s ease, filter 0.2s ease;
-}
-
-/* Search bar */
-.search {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #fff;
-  border-radius: var(--radius-pill);
-  padding: 6px 12px;
-  flex: 1 1 420px;
-  max-width: 560px;
-  min-width: 150px;
-}
-.search-ico { color: var(--ink); font-size: 18px; }
-.search input {
-  border: 0;
-  outline: 0;
-  width: 100%;
-  font-size: 16px;
-  color: var(--ink);
-  background: transparent;
-}
-
-/* ---- Right section ---- */
 .nav-right {
+  flex: 1;
   display: flex;
+  /* จัดให้อยู่กึ่งกลางแนวตั้งเสมอ */
   align-items: center;
-  gap: clamp(10px, 2vw, 24px);
 }
 
-/* ปุ่มเหลืองเฉพาะ 2 ปุ่มแรก */
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: clamp(10px, 1.5vw, 16px);
+.nav-right {
+  justify-content: flex-end;
 }
-.pill {
-  display: inline-block;
-  background: var(--yellow);
-  color: var(--ink);
-  padding: 10px 18px;
-  border-radius: var(--radius-pill);
-  font-weight: 600;
-  white-space: nowrap;
-  box-shadow: 0 0 0 1px rgba(0,0,0,.06) inset;
-  transition: filter 0.2s;
-}
-.pill:hover { filter: brightness(0.95); }
 
-/* เมนูข้อความธรรมดา (About, Contact, Hi!) */
-.nav-links {
+/* ... (ส่วน nav-center) ... */
+.nav-center {
+  flex: 2;
   display: flex;
-  align-items: center;
-  gap: clamp(14px, 2vw, 28px);
-}
-.nav-links a {
-  color: var(--text);
-  opacity: 0.95;
-  padding: 6px 0;
-  font-weight: 500;
-}
-.nav-links a:hover {
-  text-decoration: underline;
-}
-.greet a {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.avatar{
-  display: inline-flex;
-  align-items: center;
   justify-content: center;
-  line-height: 0;
+  /* 3. สั่งให้กล่องกลางยืดความสูงให้เต็ม Navbar */
+  height: 100%;
+}
+
+.menu {
+  list-style: none;
+  margin: 0;
   padding: 0;
-  background: transparent;
-  border: 0;
+  display: flex;
+  gap: 0;
+  /* 4. เอาช่องว่างระหว่างปุ่มออก เพื่อให้แถบมันดูต่อเนื่องกัน (ถ้ามีหลายปุ่ม) */
+  height: 100%;
+  /* ยืดความสูงให้เต็ม */
 }
 
-.avatar img{
-  width: 28px;
-  height: 28px;
-  display: block;
-  transition: transform .2s ease, filter .2s ease;
+.menu li {
+  height: 100%;
+  /* ยืดความสูง li ให้เต็ม */
+  display: flex;
+  /* เพื่อจัดลิงก์ข้างใน */
 }
 
+.nav-item {
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 16px;
+  text-transform: uppercase;
+  font-weight: 500;
+  transition: 0.2s;
 
-@media (max-width: 768px) {
-  body {
-    font-size: 14px;
-    padding: 10px;
-  }
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-  .container, .page-hero, .market-toolbar {
-    padding: 0 10px;
-  }
+  /* 5. ปรับโครงสร้างปุ่มให้เป็น "แถบ" */
+  display: flex;
+  /* ใช้ flex เพื่อจัดตัวหนังสือให้อยู่กลางแนวตั้ง */
+  align-items: center;
+  /* จัดกลางแนวตั้ง */
+  padding: 0 24px;
+  /* ใส่ระยะห่างแนวนอนซ้ายขวาให้ดูไม่อึดอัด */
+  height: 100%;
+  /* ยืดความสูงให้เต็ม Navbar (ชนขอบบนล่าง) */
+  border-radius: 0;
+  /* เอาความมนออก ให้เป็นเหลี่ยมเหมือน Sketch */
+}
+
+.nav-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* ACTIVE STATE */
+.nav-item.active {
+  background-color: var(--active-bg);
+  /* สีแดง #C3002F */
+  color: var(--white);
+  font-weight: 600;
+}
+
+/* --- Login / User Styles --- */
+
+/* ปุ่ม Login แบบมีกรอบ */
+.btn-login {
+  text-decoration: none;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 6px 16px;
+  font-size: 16px;
+  transition: 0.2s;
+  /* ทำให้เป็นกล่องสี่เหลี่ยมตามภาพ */
+  display: inline-block;
+}
+
+.btn-login:hover {
+  background-color: #222;
+  color: #fff;
+}
+
+/* ชื่อ User หลัง Login (ขีดเส้นใต้) */
+.user-profile {
+  text-decoration: underline;
+  color: var(--text-color);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: default;
 }

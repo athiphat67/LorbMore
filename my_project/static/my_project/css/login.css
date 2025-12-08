@@ -32,6 +32,7 @@
     overflow: hidden;
     position: relative;
     transition: transform 0.3s ease;
+    margin-bottom: 150px;
 }
 
 /* =========================================
@@ -93,6 +94,7 @@
     background-color: #F8FAFC;
     transition: all 0.3s ease;
     color: #2D3748;
+    box-sizing: border-box;
 }
 
 .auth-body input:focus {
