@@ -20,12 +20,14 @@ from django.conf.urls.static import static
 from django.conf import settings
 from users import views as user_views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('pages.urls')),
     path('posts/', include('posts.urls', namespace='posts')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('profile/', user_views.profile_view, name='profile'),
+    path('profile/edit/', user_views.profile_edit_view, name='profile_edit'),
+    path('profile/<str:username>/', user_views.profile_detail_view, name='profile_detail'),
     
 ]
 

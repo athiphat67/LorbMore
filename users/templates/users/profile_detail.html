@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="profile-container">
+    
+    <div class="profile-header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Profile</h2>
+        
+        {% if request.user == profile_user %}
+            <a href="{% url 'profile_edit' %}" class="btn-edit-profile" style="background-color: #E89E48; color: white; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold;">
+                Edit Profile
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="profile-layout" style="display: flex; gap: 30px; flex-wrap: wrap;">
+
+        <div class="left-col" style="flex: 1; min-width: 300px;">
+            <div class="card profile-card" style="background: #fdfdfd; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                
+                <div class="profile-img-box" style="margin-bottom: 15px;">
+                    {% if profile_user.profile.image %}
+                        <img src="{{ profile_user.profile.image.url }}" alt="Profile" style="width: 100%; height: auto; border-radius: 10px; object-fit: cover;">
+                    {% else %}
+                        <div style="width: 100%; height: 200px; background-color: #ccc; border-radius: 10px; display: flex; align-items: center; justify-content: center;">No Image</div>
+                    {% endif %}
+                </div>
+
+                <h3 class="display-name">{{ profile_user.profile.displayName }}</h3>
+                <p class="username text-muted">@{{ profile_user.username }}</p>
+                <p class="student-info">
+                    {{ profile_user.profile.studentId|default:"-" }}
+                    </p>
+                
+                <div class="ratings" style="color: #ffc107;">
+                    ★★ </div>
+
+                <div style="margin-top: 20px;">
+                    <button style="border: none; background: none; color: #666; cursor: pointer;">Report users</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-col" style="flex: 2; min-width: 300px; display: flex; flex-direction: column; gap: 20px;">
+            
+            <div class="card skill-card" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <h4 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">Skills</h4>
+                <div class="skill-list" style="padding-top: 10px;">
+                    {{ profile_user.profile.bioSkills|linebreaks }}
+                </div>
+            </div>
+
+            <div class="card info-card" style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <h4 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">Information</h4>
+                <div class="info-list" style="padding-top: 10px; display: flex; flex-direction: column; gap: 10px;">
+                    
+                    <div class="info-item">
+                        <strong>Social media :</strong> {{ profile_user.profile.socialMedia|default:"-" }}
+                    </div>
+                    <div class="info-item">
+                        <strong>Phone :</strong> {{ profile_user.profile.phoneNum|default:"-" }}
+                    </div>
+                    <div class="info-item">
+                        <strong>Email :</strong> {{ profile_user.email }}
+                    </div>
+                    </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}
