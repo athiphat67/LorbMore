@@ -220,6 +220,7 @@ def my_post_view(request):
 
     context = {
         "mypost_items": formatted_items,
+        "can_create":can_create,
     }
     return render(request, "pages/mypost.html", context)
 

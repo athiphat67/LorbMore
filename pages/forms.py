@@ -24,6 +24,7 @@ class StudentRegisterForm(UserCreationForm):
             if '.' not in local_part:
                 raise forms.ValidationError("รูปแบบอีเมลไม่ถูกต้อง (ต้องมีจุด . คั่น)")
 
+
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("อีเมลนี้ถูกใช้งานไปแล้ว")
 
