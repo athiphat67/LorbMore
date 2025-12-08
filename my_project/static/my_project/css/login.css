@@ -1,0 +1,172 @@
+/* =========================================
+   1. Premium Background & Layout
+   ========================================= */
+.glass-background {
+    /* เปลี่ยนจากส้ม เป็นสีเทาอมฟ้าอ่อนๆ เพื่อดันให้ Card สีส้มเด่นขึ้น */
+    background-color: #F0F2F5;
+    background-image: radial-gradient(circle at 10% 20%, rgb(255, 245, 230) 0%, rgb(240, 242, 245) 90%);
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* แนะนำให้ใช้ Font สวยๆ */
+}
+
+/* =========================================
+   2. Card Styling (พระเอกของเรา)
+   ========================================= */
+.auth-card {
+    width: 100%;
+    max-width: 520px;
+    /* ขยายให้กว้างขึ้น ดูโอ่อ่า */
+    background: white;
+    border-radius: 30px;
+    /* ความโค้งมนที่ดู Modern */
+    /* เงา 2 ชั้น เพื่อให้ดูลอยออกมาจริงๆ (Depth) */
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.08),
+        0 5px 15px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+/* =========================================
+   3. Header Section (Gradient สวยๆ)
+   ========================================= */
+.auth-header {
+    /* Gradient สีแบรนด์ Lorbmore */
+    background: linear-gradient(135deg, #FFC85C 0%, #FF5F6D 100%);
+    padding: 60px 40px 40px;
+    /* เพิ่มพื้นที่ด้านบนเยอะๆ */
+    text-align: center;
+    color: white;
+    /* ทำโค้งเว้าด้านล่างเล็กน้อย (Optional) */
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    margin-bottom: 20px;
+}
+
+.header-title {
+    font-size: 2.8rem;
+    /* ใหญ่สะใจ */
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+    /* บีบตัวอักษรนิดนึงให้ดู Modern */
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-subtitle {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* =========================================
+   4. Body & Inputs (คลีนๆ)
+   ========================================= */
+.auth-body {
+    padding: 20px 50px 50px;
+    /* Padding ด้านข้างเยอะๆ ให้ดูไม่เบียด */
+}
+
+.input-label {
+    font-weight: 700;
+    color: #4a5568;
+    margin-bottom: 10px;
+    display: block;
+    font-size: 1rem;
+}
+
+/* Input Fields ดีไซน์ใหม่ */
+.auth-body input[type="text"],
+.auth-body input[type="password"] {
+    width: 100%;
+    padding: 18px 25px;
+    border: 2px solid #E2E8F0;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    background-color: #F8FAFC;
+    transition: all 0.3s ease;
+    color: #2D3748;
+}
+
+.auth-body input:focus {
+    background-color: white;
+    outline: none;
+}
+
+/* =========================================
+   5. Premium Button
+   ========================================= */
+.btn-signin {
+    /* 1. บังคับโครงสร้างให้เต็มและความสูงพอดี */
+    display: block;
+    /* บังคับเป็นกล่อง (แก้ปัญหาปุ่มหด) */
+    width: 100%;
+    /* กว้างเต็มจอเท่า Input */
+    padding: 16px 0;
+    /* ความสูงของปุ่ม */
+    margin-top: 25px;
+    /* เว้นระยะห่างจากช่อง Password */
+    margin-bottom: 20px;
+    /* ดันลิงก์ด้านล่างลงไป */
+
+    /* 2. ดีไซน์ที่ดูแพง (Modern Flat) */
+    background: linear-gradient(135deg, #FF5F6D 0%, #C70039 100%);
+    /* ไล่สีแนวทแยง ดูมีมิติ */
+    color: white;
+    font-size: 1.1rem;
+    font-weight: 700;
+    /* ตัวหนา */
+
+    /* 3. ความโค้งที่ "รับ" กับช่อง Input (สำคัญ!) */
+    /* ถ้า Input โค้ง 20px ปุ่มก็ควรโค้ง 20px หรือใกล้เคียงกัน */
+    border-radius: 20px;
+    border: none;
+
+    /* 4. เงาแบบ Glow (เงาสีเดียวกับปุ่ม) ทำให้ดูเหมือนเรืองแสง */
+    box-shadow: 0 10px 25px -5px rgba(199, 0, 57, 0.5);
+
+}
+
+/* Effect ตอนเอาเมาส์ชี้ */
+.btn-signin:hover {
+    box-shadow: 0 15px 35px -5px rgba(199, 0, 57, 0.6);
+    /* เงาฟุ้งขึ้น */
+}
+
+/* =========================================
+   6. Footer & Links
+   ========================================= */
+.text-muted {
+    color: #A0AEC0;
+    font-size: 0.95rem;
+}
+
+.link-highlight {
+    color: #C70039;
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 5px;
+    transition: color 0.2s;
+}
+
+.link-highlight:hover {
+    color: #900028;
+    text-decoration: underline;
+}
+
+.link-small {
+    color: #718096;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.link-small:hover {
+    color: #2D3748;
+}

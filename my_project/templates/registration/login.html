@@ -1,16 +1,47 @@
-{% extends 'base.html' %} 
-
+{% extends 'base.html' %}
+{% load static %}
 {% block content %}
-<div class="container mt-5" style="max-width: 400px;">
-    <h2>เข้าสู่ระบบ</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn btn-primary w-100">Login</button>
-    </form>
+<link rel="stylesheet" href="{% static 'my_project/css/login.css' %}">
+<div class="glass-background">
     
-    <div class="mt-3 text-center">
-        <p>ยังไม่มีบัญชี? <a href="{% url 'register' %}">สมัครสมาชิกที่นี่</a></p>
+    <div class="auth-card">
+        
+        <div class="auth-header">
+            <h1 class="header-title">Welcome Back</h1>
+            <p class="header-subtitle">Please enter your details to sign in.</p>
+        </div>
+
+        <div class="auth-body">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group mb-4">
+                    <label class="input-label">Username</label>
+                    <div class="input-wrapper">
+                        {{ form.username }}
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="input-label">Password</label>
+                    <div class="input-wrapper">
+                        {{ form.password }}
+                    </div>
+                </div>
+
+                <div class="action-section mt-5">
+                    <button type="submit" class="btn btn-signin w-100">Sign In</button>
+                </div>
+
+                <div class="footer-links mt-4 text-center">
+                    <span class="text-muted">Don't have an account?</span>
+                    <a href="{% url 'register' %}" class="link-highlight">
+                        Create your account
+                    </a>
+
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
