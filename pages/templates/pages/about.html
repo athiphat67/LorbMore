@@ -2,63 +2,86 @@
 {% load static %}
 
 {% block content %}
-    <link rel="stylesheet" href="{% static 'pages/css/about.css' %}">
+<link rel="stylesheet" href="{% static 'pages/css/about.css' %}">
 
-    <div class="container">
-        <section class="team">
-            <h2>Team member</h2>
+    <div class="about-page-wrapper">
+        
+        <div class="hero-header">
+            <div class="hero-content">
+                <h1 class="hero-title">ABOUT US</h1>
+                <div class="hero-line"></div>
+                <p class="hero-subtitle">The developers behind Lorbmore Project</p>
+            </div>
+        </div>
+
+        <div class="custom-container">
             
-            <div class="member-list">
+            <div class="project-cards-grid">
                 
-                <div class="member-row header">
-                    <span class="member-name">ชื่อ-นามสกุล</span>
-                    <span class="student-id">รหัสนักศึกษา</span>
-                </div>
-
-                <div class="member-row">
-                    <span class="member-name">นาย ภูริช อัมพะวา</span>
-                    <span class="student-id">6710615185</span>
-                </div>
-                <div class="member-row">
-                    <span class="member-name">นาย อธิภัทร ศูนย์สิทธิ์</span>
-                    <span class="student-id">6710615292</span>
-                </div>
-                <div class="member-row">
-                    <span class="member-name">นางสาว ลลิตา ทัศนอนันชัย</span>
-                    <span class="student-id">6710615243</span>
-                </div>
-                <div class="member-row">
-                    <span class="member-name">นางสาว ศราสิณี ณ สงขลา</span>
-                    <span class="student-id">6710525020</span>
-                </div>
-                <div class="member-row">
-                    <span class="member-name">นางสาว ปณิตา ชโนวิทย์</span>
-                    <span class="student-id">6710525012</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="project-info">
-            <div class="panel">
-                <h3>GitHub Repository:</h3>
-                <a class="link" href="https://github.com/athiphat67/LorbMore.git" target="_blank">
-                    GitHub Link
+                <a href="https://github.com/athiphat67/LorbMore.git" target="_blank" class="card-link">
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <span class="emoji-icon">📦</span>
+                        </div>
+                        <h3 class="card-title">GitHub Repository</h3>
+                        <span class="action-text">View Source Code <span class="arrow">→</span></span>
+                    </div>
                 </a>
+
+                <a href="https://www.youtube.com/@purichampawa" target="_blank" class="card-link">
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <span class="emoji-icon">📺</span>
+                        </div>
+                        <h3 class="card-title">Project Video</h3>
+                        <span class="action-text">Watch Overview <span class="arrow">→</span></span>
+                    </div>
+                </a>
+
+                <a href="{% static 'pages/files/LorbMore_iteration0_review(2).pdf' %}" target="_blank" class="card-link">
+                    <div class="info-card">
+                        <div class="card-icon">
+                            <span class="emoji-icon">📄</span>
+                        </div>
+                        <h3 class="card-title">Project Proposal</h3>
+                        <span class="action-text">Download PDF <span class="arrow">→</span></span>
+                    </div>
+                </a>
+
             </div>
 
-            <div class="panel">
-                <h3>Project Overview vids:</h3>
-                <a class="link" href="https://www.youtube.com/@purichampawa" target="_blank">
-                    Youtube Link
-                </a>
+            <div class="members-section">
+                <h2 class="section-header">MEMBERS</h2>
+                
+                <div class="members-card">
+                    <div class="member-row header">
+                        <div class="col-name">NAME - SURNAME</div>
+                        <div class="col-id">STUDENT ID</div>
+                    </div>
+
+                    <div class="member-row">
+                        <div class="col-name">นาย ภูริช อัมพะวา</div>
+                        <div class="col-id">6710615185</div>
+                    </div>
+                    <div class="member-row">
+                        <div class="col-name">นาย อธิภัทร ศูนย์สิทธิ์</div>
+                        <div class="col-id">6710615292</div>
+                    </div>
+                    <div class="member-row">
+                        <div class="col-name">นางสาว ลลิตา ทัศนอนันชัย</div>
+                        <div class="col-id">6710615243</div>
+                    </div>
+                    <div class="member-row">
+                        <div class="col-name">นางสาว ศราสิณี ณ สงขลา</div>
+                        <div class="col-id">6710525020</div>
+                    </div>
+                    <div class="member-row">
+                        <div class="col-name">นางสาว ปณิตา ชโนวิทย์</div>
+                        <div class="col-id">6710525012</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="panel">
-                <h3>Project Proposal:</h3>
-                <a class="link" href="{% static 'pages/files/LorbMore_iteration0_review(2).pdf' %}" target="_blank">
-                    Proposal
-                </a>
-            </div>
-        </section>
+        </div>
     </div>
 {% endblock %}

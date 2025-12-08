@@ -1,0 +1,223 @@
+/* =========================================
+   1. Global & Hero Section (Theme หลัก)
+   ========================================= */
+   body {
+    background-color: #F9FAFB;
+    color: #333;
+}
+
+.contact-hero {
+    background: linear-gradient(135deg, #FFC85C 0%, #FF5F6D 100%);
+    height: 350px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+    border-radius: 0 0 50% 50% / 0 0 40px 40px; /* Curve */
+    box-shadow: 0 10px 30px rgba(255, 95, 109, 0.2);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: 2px;
+    text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.hero-line {
+    width: 60px;
+    height: 4px;
+    background: rgba(255,255,255,0.8);
+    margin: 15px auto;
+    border-radius: 2px;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    font-weight: 300;
+    opacity: 0.95;
+}
+
+/* =========================================
+   2. Container & Grid Layout
+   ========================================= */
+.custom-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    top: -60px; /* ดึงเนื้อหาขึ้นซ้อน Hero */
+    z-index: 10;
+    margin-bottom: 60px;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; /* ซ้ายเล็กกว่าขวาหน่อย */
+    gap: 30px;
+}
+
+/* =========================================
+   3. Left Side: Contact Info Card
+   ========================================= */
+.contact-info-card {
+    background: linear-gradient(135deg, #2D3748 0%, #1A202C 100%); /* สีเข้มดูหรู */
+    color: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.info-heading {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: #FFC85C; /* สีเหลืองตัดพื้นเข้ม */
+}
+
+.info-desc {
+    font-size: 0.95rem;
+    margin-bottom: 40px;
+    opacity: 0.8;
+    line-height: 1.6;
+}
+
+.info-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+}
+
+.icon-box {
+    font-size: 1.5rem;
+    margin-right: 20px;
+    background: rgba(255,255,255,0.1);
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.text-box h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.text-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    line-height: 1.5;
+}
+
+/* =========================================
+   4. Right Side: Contact Form Card
+   ========================================= */
+.contact-form-card {
+    background: white;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+}
+
+.form-heading {
+    font-size: 1.8rem;
+    color: #2D3748;
+    margin-bottom: 30px;
+    font-weight: 800;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: #4A5568;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+/* Styling Django Inputs */
+.contact-form-card input,
+.contact-form-card textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #E2E8F0;
+    border-radius: 12px;
+    font-size: 1rem;
+    background-color: #F8FAFC;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    box-sizing: border-box; /* สำคัญ */
+}
+
+.contact-form-card textarea {
+    height: 150px;
+    resize: vertical;
+}
+
+.contact-form-card input:focus,
+.contact-form-card textarea:focus {
+    background-color: white;
+    border-color: #FF5F6D;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 95, 109, 0.1);
+}
+
+.btn-send {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, #FF5F6D 0%, #C70039 100%);
+    color: white;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    letter-spacing: 1px;
+    margin-top: 10px;
+}
+
+.btn-send:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(199, 0, 57, 0.4);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #c3e6cb;
+}
+
+/* =========================================
+   5. Responsive
+   ========================================= */
+@media (max-width: 900px) {
+    .contact-grid {
+        grid-template-columns: 1fr; /* เรียงเป็นแถวเดียว */
+        gap: 20px;
+    }
+    
+    .contact-hero {
+        height: 300px;
+    }
+
+    .hero-title {
+        font-size: 2.5rem;
+    }
+}

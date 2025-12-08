@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'pages/css/contact.css' %}">
+
+<div class="contact-page-wrapper">
+    
+    <div class="contact-hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Get in touch here!</h1>
+            <div class="hero-line"></div>
+            <p class="hero-subtitle">We'd love to hear from you. Here's how you can reach us.</p>
+        </div>
+    </div>
+
+    <div class="container custom-container">
+        <div class="contact-grid">
+            
+            <div class="contact-info-card">
+                <h2 class="info-heading">Contact Information</h2>
+                <p class="info-desc">Have a question regarding our services? Feel free to contact us anytime.</p>
+                
+                <div class="info-item">
+                    <div class="icon-box">📍</div>
+                    <div class="text-box">
+                        <h4>Our Location</h4>
+                        <p>Thammasat University, Rangsit Campus<br>Pathum Thani, Thailand 12120</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="icon-box">📧</div>
+                    <div class="text-box">
+                        <h4>Email Address</h4>
+                        <p>rrrichamp@gmail.com</p>
+                        <p>purich.ampa@dome.tu.ac.th</p>
+                    </div>
+                </div>
+
+                <div class="info-item">
+                    <div class="icon-box">📞</div>
+                    <div class="text-box">
+                        <h4>Phone Number</h4>
+                        <p>+66 1 2345 6789</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form-card">
+                <h2 class="form-heading">Send us a Message</h2>
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label>Your Name</label>
+                        {{ form.name }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        {{ form.email }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Subject</label>
+                        {{ form.subject }}
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message</label>
+                        {{ form.message }}
+                    </div>
+
+                    <button type="submit" class="btn-send">SEND MESSAGE</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -26,7 +26,7 @@
 
     <ul class="nav-links">
       <li><a href="{% url 'about' %}">About us</a></li>
-      <li><a href="#">Contact us</a></li>
+      <li><a href="{% url 'contact' %}">Contact us</a></li>
 
       {% if user.is_authenticated %}
         <li class="greet">
