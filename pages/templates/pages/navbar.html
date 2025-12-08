@@ -1,4 +1,41 @@
-{% load static %} <link rel="stylesheet" href="{% static 'pages/css/navbar.css' %}">
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'pages/css/navbar.css' %}?v=21"> <nav class="navbar">
+
+    <div class="nav-left">
+        <a href="{% url 'home' %}" class="logo">
+            <img src="{% static 'pages/image/lorbmore_logo.png' %}" alt="Lorbmore Logo">
+        </a>
+    </div>
+
+    <div class="nav-center">
+        <ul class="menu">
+            <li>
+                <a class="nav-item {% if request.path == '/posts/hiring/' %}active{% endif %}"
+                   href="{% url 'posts:hiring' %}">HIRING</a>
+            </li>
+            <li>
+                <a class="nav-item {% if request.path == '/posts/rental/' %}active{% endif %}"
+                   href="{% url 'posts:rental' %}">RENTAL</a>
+            </li>
+            <li>
+                <a class="nav-item {% if request.path == '/about/' %}active{% endif %}"
+                   href="{% url 'about' %}">ABOUT US</a>
+            </li>
+            <li>
+                <a class="nav-item {% if request.path == '/contact/' %}active{% endif %}"
+                   href="{% url 'contact' %}">CONTACT US</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="nav-right">
+        {% if user.is_authenticated %}
+            <a class="user-profile">{{ user.username }}</a>
+        {% else %}
+            <a class="btn-login" href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
 
 <nav class="navbar" role="navigation" aria-label="Main">
   <div class="nav-left">
