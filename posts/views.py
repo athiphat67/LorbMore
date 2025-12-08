@@ -195,3 +195,91 @@ def create_rental_view(request):
         'form_title': 'Create your rental post'
     }
     return render(request, 'pages/create_rental.html', context)
+
+@login_required
+def my_post_view(request):
+    user = request.user
+    
+    # ดึงข้อมูล Media มารอไว้ (เพื่อแสดงรูปภาพปก)
+    posts_with_media = Prefetch("media", queryset=Media.objects.all(), to_attr="images")
+
+    # ดึง Post ของ User นั้นๆ ทั้ง Hiring และ Rental
+    my_hiring = HiringPost.objects.filter(author=user).prefetch_related(posts_with_media)
+    my_rental = RentalPost.objects.filter(author=user).prefetch_related(posts_with_media)
+
+    # รวมลิสต์และเรียงลำดับจาก "เก่า -> ใหม่" (ตาม id น้อยไปมาก)
+    all_my_posts = sorted(
+        list(my_hiring) + list(my_rental),
+        key=lambda x: x.id 
+    )
+
+    # แปลงข้อมูลให้อยู่ในรูปแบบ Dict
+    formatted_items = [_format_post_data(post) for post in all_my_posts]
+
+    context = {
+        "mypost_items": formatted_items,
+    }
+    return render(request, "pages/mypost.html", context)
+
+@login_required
+def delete_post_view(request, post_id):
+    # ดึง Post หลัก
+    post = get_object_or_404(Post, pk=post_id)
+
+    # ตรวจสอบว่าเป็นเจ้าของโพสต์หรือไม่
+    if post.author != request.user:
+        return redirect('posts:detail_post', post_id=post.id)
+
+    # ลบโพสต์
+    post.delete()
+    return redirect('posts:mypost')
+
+@login_required
+def edit_post_view(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+
+    # ตรวจสอบว่าเป็นเจ้าของโพสต์
+    if post.author != request.user:
+        return redirect('posts:detail_post', post_id=post.id)
+
+    # เช็คประเภทโพสต์เพื่อเลือก Form ที่ถูกต้อง
+    instance = None
+    form_class = None
+    template_name = ""
+    
+    if hasattr(post, 'hiringpost'):
+        instance = post.hiringpost
+        form_class = HiringPostForm
+        template_name = 'pages/create_hiring.html' # ใช้หน้าเดียวกับ create แต่มีข้อมูลเดิม
+        title_context = "Edit your hiring post"
+    elif hasattr(post, 'rentalpost'):
+        instance = post.rentalpost
+        form_class = RentalPostForm
+        template_name = 'pages/create_rental.html'
+        title_context = "Edit your rental post"
+    else:
+        return redirect('posts:mypost')
+
+    if request.method == 'POST':
+        # ส่ง instance เข้าไปเพื่อเป็นการ Update
+        form = form_class(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            updated_post = form.save()
+            form.save_m2m() # บันทึก Skills/Categories
+
+            # เพิ่มรูปภาพใหม่ (ถ้ามีการอัปโหลดเพิ่ม)
+            files = request.FILES.getlist('images')
+            for f in files:
+                Media.objects.create(post=updated_post, image=f)
+
+            return redirect('posts:detail_post', post_id=updated_post.id)
+    else:
+        # แสดงฟอร์มพร้อมข้อมูลเดิม
+        form = form_class(instance=instance)
+
+    context = {
+        'form': form,
+        'form_title': title_context,
+        'is_edit': True # ตัวแปรบอก Template ว่ากำลัง Edit อยู่ (เผื่อใช้ปรับคำในปุ่ม)
+    }
+    return render(request, template_name, context)

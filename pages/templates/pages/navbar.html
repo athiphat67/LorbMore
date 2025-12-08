@@ -30,7 +30,7 @@
             <div class="dropdown-content">
                 <a href="{% url 'profile_detail' user.username %}">Profile</a>
                 
-                <a href="#">My Posts</a>
+                <a href="{% url 'posts:mypost' %}">My Posts</a>
                 
                 <a href="{% url 'about' %}">About us</a>
                 <a href="{% url 'contact' %}">Contact us</a>
