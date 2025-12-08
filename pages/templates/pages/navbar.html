@@ -37,4 +37,66 @@
         {% endif %}
     </div>
 
+<nav class="navbar" role="navigation" aria-label="Main">
+  <div class="nav-left">
+    <a href="{% url 'home' %}" class="home-btn" aria-label="Home">
+      <img src="{% static 'pages/image/home_button.svg' %}" alt="Home">
+    </a>
+
+    <form class="search" action="#" method="get" role="search">
+      <span class="search-ico" aria-hidden="true">🔍</span>
+      <input type="text" name="q" placeholder="ค้นหา…" aria-label="Search" autocomplete="off"/>
+    </form>
+  </div>
+
+  <div id="nav-menu" class="nav-right">
+    <ul class="nav-actions">
+      <li><a class="pill" href="{% url 'posts:hiring' %}">ว่าจ้างงาน</a></li>
+      <li><a class="pill" href="{% url 'posts:rental' %}">เช่า-ยืม</a></li>
+    </ul>
+
+    <ul class="nav-links">
+      
+      {% if user.is_authenticated %}
+        <li class="dropdown">
+            <a href="#" class="dropbtn">
+                Hi! {{ user.username }} 
+                <span style="font-size: 0.8em;">▼</span>
+            </a>
+            
+            <div class="dropdown-content">
+                <a href="{% url 'profile_detail' user.username %}">Profile</a>
+                
+                <a href="{% url 'posts:mypost' %}">My Posts</a>
+                
+                <a href="{% url 'about' %}">About us</a>
+                <a href="{% url 'contact' %}">Contact us</a>
+                
+                <hr style="margin: 0; border: 0; border-top: 1px solid #eee;">
+
+                <form action="{% url 'logout' %}" method="post" style="padding: 0; margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item-btn">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </li>
+
+        <li class="avatar" aria-hidden="true">
+             {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="Profile" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'pages/image/avatar.svg' %}" alt="">
+            {% endif %}
+        </li>
+
+      {% else %}
+        <li><a href="{% url 'about' %}">About us</a></li>
+        <li><a href="{% url 'contact' %}">Contact us</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+      {% endif %}
+
+    </ul>
+  </div>
 </nav>
