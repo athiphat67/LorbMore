@@ -5,6 +5,7 @@ from posts.models import HiringPost, RentalPost, Media
 from posts.views import _format_post_data
 from django.core.files.uploadedfile import SimpleUploadedFile
 
+
 class PagesViewTests(TestCase):
     # กำหนดข้อมูลโพสต์ขึ้นมาเอง
     def setUp(self):
@@ -145,5 +146,145 @@ class PagesViewTests(TestCase):
         
         #นับจำนวนรูปด้วย ว่ามีครบตามที่ระบุจำนวนรูปไปมั้ย
         #self.assertEqual(len(formatted["images"]), 2)
+        
+class StudentRegisterFormTest(TestCase):
+    def setUp(self): 
+        User.objects.create_user(
+            username='john',
+            email='john.doe@dome.tu.ac.th',
+            password='Password123!'
+        )
+        
+    # email ตรงตาม form ที่กำหนดและสามารถใช้งานได้    
+    def test_valid_email(self):
+        form_data = {
+            'username': 'john', 
+            'email': 'john.doe@dome.tu.ac.th', 
+            'password1': 'Password123!', 
+            'password2': 'Password123!'
+        }
+        form = StudentRegisterForm(data=form_data)
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.cleaned_data['email'], 'john.doe@dome.tu.ac.th')
+    
+    # email ไม่ตรงตาม form ที่กำหนด
+    def test_email_no_dot(self):
+        form_data = {
+            'username': 'john',
+            'email': 'john@dome.tu.ac.th',
+            'password1': 'Password123!',
+            'password2': 'Password123!',
+        }
+        form = StudentRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("กรุณากรอก email ให้ถูกต้อง", form.errors['email'][0])
+    
+    # email ไม่ตรงตาม form ที่กำหนด
+    def test_email_surname_too_long(self):
+        form_data = {
+            'username': 'john',
+            'email': 'john.surname@dome.tu.ac.th',
+            'password1': 'Password123!',
+            'password2': 'Password123!',
+        }
+        form = StudentRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("กรุณากรอก email ให้ถูกต้อง", form.errors['email'][0])
+        
+    # email ซ้ำกัน
+    def test_email_duplicate(self):
+        form_data = {
+            'username': 'john',
+            'email': 'john.doe@dome.tu.ac.th',
+            'password1': 'Password123!',
+            'password2': 'Password123!',
+        }
+        form = StudentRegisterForm(data=form_data)
+        self.assertFalse(form.is_valid())
+        self.assertIn("อีเมลนี้ถูกใช้งานไปแล้ว", form.errors['email'][0])
+        
+    # ไม่ใช่ email ของนักศึกษามธ.
+    def test_email_not_dome_domain(self):
+        form_data = {
+            'username': 'user4',
+            'email': 'someone@gmail.com',
+            'password1': 'Password123!',
+            'password2': 'Password123!',
+        }
+        form = StudentRegisterForm(data=form_data)
+        self.assertTrue(form.is_valid())
+        
+class RegisterViewTest(TestCase):
+    def setUp(self):
+        self.url = reverse('register')  # ชื่อ url ของ register_view
+        self.user_data = {
+            'username': 'john',
+            'email': 'john.doe@dome.tu.ac.th',
+            'password1': 'Password123!',
+            'password2': 'Password123!',
+        }
+
+    def test_register_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'registration/register.html')
+        self.assertIsInstance(response.context['form'], StudentRegisterForm)
+
+    def test_register_post_valid(self):
+        response = self.client.post(self.url, self.user_data)
+        self.assertEqual(response.status_code, 302)  # redirect
+        self.assertRedirects(response, reverse('home'))
+        # ตรวจสอบว่าผู้ใช้ถูกสร้าง
+        user_exists = User.objects.filter(username='john').exists()
+        self.assertTrue(user_exists)
+
+    def test_register_post_invalid(self):
+        invalid_data = self.user_data.copy()
+        invalid_data['email'] = 'johndoe@dome.tu.ac.th'  # ไม่มีจุด → invalid
+        response = self.client.post(self.url, invalid_data)
+        self.assertEqual(response.status_code, 200)  # ไม่ redirect
+        self.assertFormError(response, 'form', 'email', "กรุณากรอก email ให้ถูกต้อง")
+
+
+# class StudentRequiredDecoratorTest(TestCase):
+#     def setUp(self):
+#         self.admin_user = User.objects.create_superuser(
+#             username='admin',
+#             email='admin@dome.tu.ac.th',
+#             password='adminpass'
+#         )
+#         self.student_user = User.objects.create_user(
+#             username='student',
+#             email='stu.j@dome.tu.ac.th',
+#             password='studentpass'
+#         )
+#         self.other_user = User.objects.create_user(
+#             username='other',
+#             email='other@gmail.com',
+#             password='otherpass'
+#         )
+
+#     def test_decorator_admin_access(self):
+#         self.client.login(username='admin', password='adminpass')
+#         response = self.client.get('/test_view/')  # ต้อง mapping URL ของ test_view
+#         self.assertEqual(response.status_code, 200)
+#         self.client.logout()
+
+#     def test_decorator_student_access(self):
+#         self.client.login(username='student', password='studentpass')
+#         response = self.client.get('/test_view/')
+#         self.assertEqual(response.status_code, 200)
+#         self.client.logout()
+
+#     def test_decorator_other_redirect(self):
+#         self.client.login(username='other', password='otherpass')
+#         response = self.client.get('/test_view/')
+#         self.assertRedirects(response, reverse('login'))
+
+#     def test_decorator_anonymous_redirect(self):
+#         response = self.client.get('/test_view/')
+#         self.assertRedirects(response, reverse('login'))
+        
+
 
          
