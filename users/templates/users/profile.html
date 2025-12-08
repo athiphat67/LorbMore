@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 40px auto; padding: 20px;">
+    
+    <h2 class="mb-4">แก้ไขข้อมูลส่วนตัว</h2>
+
+    <div class="card p-4 shadow-sm">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <h4 class="mb-3 text-primary">ข้อมูลบัญชี</h4>
+            {{ u_form.as_p }}
+            
+            <hr class="my-4">
+            
+            <h4 class="mb-3 text-success">ข้อมูลโปรไฟล์เพิ่มเติม</h4>
+            {{ p_form.as_p }}
+
+            <div class="mt-4">
+                <button class="btn btn-primary" type="submit">บันทึกการเปลี่ยนแปลง</button>
+                <a href="{% url 'home' %}" class="btn btn-secondary">ยกเลิก</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}

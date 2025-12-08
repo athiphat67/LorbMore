@@ -30,7 +30,7 @@
 
       {% if user.is_authenticated %}
         <li class="greet">
-            <a href="#">Hi! {{ user.username }}</a>
+            <a href="{% url 'profile' %}">Hi! {{ user.username }}</a>
         </li>
         <li class="avatar" aria-hidden="true">
             <img src="{% static 'pages/image/avatar.svg' %}" alt="">
