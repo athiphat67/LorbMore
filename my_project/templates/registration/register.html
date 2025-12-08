@@ -1,11 +1,11 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% load static %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'my_project/css/register.css' %}">
 
 <div class="register-background">
     <div class="register-card">
-        
+
         <div class="register-header">
             <h1 class="header-title">Join LORBMORE today</h1>
             <p class="header-subtitle">Create your account and start exploring</p>
@@ -14,7 +14,22 @@
         <div class="register-body">
             <form method="post">
                 {% csrf_token %}
-
+                {% if form.errors %}
+                <div class="alert-error"
+                    style="background-color: #ffebee; color: #c62828; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 14px; border: 1px solid #ef9a9a;">
+                    <strong>เกิดข้อผิดพลาด:</strong>
+                    <ul style="margin: 5px 0 0 20px; padding: 0;">
+                        {% for field in form %}
+                        {% for error in field.errors %}
+                        <li>{{ field.label }}: {{ error }}</li>
+                        {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
                 <div class="form-group">
                     <label class="input-label">Username</label>
                     {{ form.username }}
@@ -27,13 +42,13 @@
 
                 <div class="form-group">
                     <label class="input-label">Password</label>
-                    {{ form.password1 }} 
-                    </div>
+                    {{ form.password1 }}
+                </div>
 
                 <div class="form-group">
                     <label class="input-label">Confirm Password</label>
                     {{ form.password2 }}
-                    </div>
+                </div>
 
                 <div class="action-section">
                     <button type="submit" class="btn-register">SIGN UP</button>

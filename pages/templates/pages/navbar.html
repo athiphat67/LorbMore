@@ -31,7 +31,22 @@
 
   <div class="nav-right">
     {% if user.is_authenticated %}
-    <a class="user-profile">{{ user.username }}</a>
+    <div class="dropdown">
+      <button class="dropbtn">
+          {{ user.username }} 
+          <span style="font-size: 0.8em;"> ▼ </span>
+      </button>
+      
+      <div class="dropdown-content">
+          <a href="{% url 'profile_detail' user.username %}">Profile</a>
+          <a href="{% url 'posts:mypost' %}">My Posts</a>
+          <hr>
+          <form action="{% url 'logout' %}" method="post">
+              {% csrf_token %}
+              <button type="submit" class="dropdown-logout">Logout</button>
+          </form>
+      </div>
+    </div>
     {% else %}
     <a class="btn-login" href="{% url 'login' %}">Login</a>
     {% endif %}
