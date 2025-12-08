@@ -13,7 +13,6 @@ def profile_view(request):
         if u_form.is_valid() and p_form.is_valid():
             u_form.save()
             p_form.save()
-            messages.success(request, f'อัปเดตข้อมูลโปรไฟล์เรียบร้อยแล้ว!')
             return redirect('profile') 
 
     else:

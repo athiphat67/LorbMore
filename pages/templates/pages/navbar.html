@@ -8,13 +8,7 @@
 
     <form class="search" action="#" method="get" role="search">
       <span class="search-ico" aria-hidden="true">🔍</span>
-      <input
-        type="text"
-        name="q"
-        placeholder="ค้นหา…"
-        aria-label="Search"
-        autocomplete="off"
-      />
+      <input type="text" name="q" placeholder="ค้นหา…" aria-label="Search" autocomplete="off"/>
     </form>
   </div>
 
@@ -25,27 +19,47 @@
     </ul>
 
     <ul class="nav-links">
-      <li><a href="{% url 'about' %}">About us</a></li>
-      <li><a href="{% url 'contact' %}">Contact us</a></li>
-
+      
       {% if user.is_authenticated %}
-        <li class="greet">
-            <a href="{% url 'profile' %}">Hi! {{ user.username }}</a>
+        <li class="dropdown">
+            <a href="#" class="dropbtn">
+                Hi! {{ user.username }} 
+                <span style="font-size: 0.8em;">▼</span>
+            </a>
+            
+            <div class="dropdown-content">
+                <a href="{% url 'profile' %}">Profile</a>
+                
+                <a href="#">My Posts</a>
+                
+                <a href="{% url 'about' %}">About us</a>
+                <a href="{% url 'contact' %}">Contact us</a>
+                
+                <hr style="margin: 0; border: 0; border-top: 1px solid #eee;">
+
+                <form action="{% url 'logout' %}" method="post" style="padding: 0; margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item-btn">
+                        Logout
+                    </button>
+                </form>
+            </div>
         </li>
+
         <li class="avatar" aria-hidden="true">
-            <img src="{% static 'pages/image/avatar.svg' %}" alt="">
+             {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="Profile" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'pages/image/avatar.svg' %}" alt="">
+            {% endif %}
         </li>
-        <li>
-            <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" style="background: none; border: none; cursor: pointer; color: inherit; font-size: inherit; font-family: inherit; padding: 0;">
-                    Logout
-                </button>
-            </form>
-        </li>
+
       {% else %}
+        <li><a href="{% url 'about' %}">About us</a></li>
+        <li><a href="#">Contact us</a></li>
         <li><a href="{% url 'login' %}">Login</a></li>
       {% endif %}
+
     </ul>
   </div>
 </nav>
