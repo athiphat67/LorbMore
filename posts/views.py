@@ -215,6 +215,8 @@ def my_post_view(request):
 
     # แปลงข้อมูลให้อยู่ในรูปแบบ Dict
     formatted_items = [_format_post_data(post) for post in all_my_posts]
+    
+    can_create = user.is_superuser or user.email.endswith('@dome.tu.ac.th')
 
     context = {
         "mypost_items": formatted_items,
