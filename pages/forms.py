@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django import forms
 
 class StudentRegisterForm(UserCreationForm):
     email = forms.EmailField(
@@ -29,3 +30,9 @@ class StudentRegisterForm(UserCreationForm):
             raise forms.ValidationError("อีเมลนี้ถูกใช้งานไปแล้ว")
 
         return email
+    
+class ContactForm(forms.Form):
+    name = forms.CharField(max_length=100, label='Your Name')
+    email = forms.EmailField(label='Email Address')
+    subject = forms.CharField(max_length=200, label='Subject')
+    message = forms.CharField(widget=forms.Textarea, label='Message')

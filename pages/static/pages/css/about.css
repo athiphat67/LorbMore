@@ -1,125 +1,211 @@
-body {
-    background-color: #ffffff;       
-    color: #222;                    
-    font-family: Arial, Helvetica, sans-serif;
+/* =========================================
+   1. Global Settings
+   ========================================= */
+   body {
+    background-color: #F9FAFB; /* สีขาวควันบุหรี่ ดูสะอาดตา */
+    color: #333;
     margin: 0;
     padding: 0;
-  }
-  
-/* กล่องหลัก */
-.container {
-  width: 80%;
-  margin: 30px auto;
-  padding: 20px;
-  border: 2px solid #ffcc00;       
-  border-radius: 10px;
-  background-color: #ffffff;
 }
 
-h3 {
-  color: #333;
-  margin-top: 20px;
+.custom-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    top: -60px; /* ดึงเนื้อหาขึ้นไปซ้อนทับ Hero นิดนึงให้ดู Modern */
+    z-index: 10;
 }
 
-/* แบ่งซ้ายขวา */
-.team {
-  float: left;
-  width: 45%;
+/* =========================================
+   2. Hero Header (Premium Curve)
+   ========================================= */
+.hero-header {
+    /* Gradient สีส้ม-แดง (Theme หลัก) */
+    background: linear-gradient(135deg, #FFC85C 0%, #FF5F6D 100%);
+    height: 380px; /* เพิ่มความสูงเพื่อให้ Curve ดูชัด */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* ดันข้อความไปไว้ด้านบน */
+    padding-top: 80px;
+    text-align: center;
+    color: white;
+    
+    /* Key Styling: ทำขอบล่างโค้งมนเหมือนถ้วย */
+    border-radius: 0 0 30% 30% / 0 0 20px 20px;
+    
+    box-shadow: 0 10px 30px rgba(255, 95, 109, 0.2);
+    margin-bottom: 20px;
 }
 
-.project-info {
-  float: right;
-  width: 45%;
+.hero-title {
+    font-size: 4.5rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: 3px;
+    text-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
-/* หัวข้อ Team member */
-.team h2 {
-  color: #180d07; 
-  border-bottom: 2px solid #ffcc00;
-  padding-bottom: 8px; 
-  margin-top: 0; 
+.hero-line {
+    width: 60px;
+    height: 4px;
+    background: rgba(255,255,255,0.8);
+    margin: 15px auto;
+    border-radius: 2px;
 }
 
-/* Container ของรายชื่อ  */
-.member-list {
-  display: flex;
-  flex-direction: column; /* เรียงแถวจากบนลงล่าง */
-  gap: 8px; 
-  margin-top: 15px;
+.hero-subtitle {
+    font-size: 1.1rem;
+    font-weight: 300;
+    opacity: 0.9;
+    letter-spacing: 1px;
+    margin-top: 5px;
 }
 
-/* แถวของสมาชิกแต่ละคน */
+/* =========================================
+   3. Project Cards Grid (แก้ปัญหา Layout เบี้ยว)
+   ========================================= */
+.project-cards-grid {
+    display: grid;
+    /* บังคับ 3 คอลัมน์ เท่าๆ กัน */
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 25px;
+    margin-bottom: 60px;
+}
+
+.card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.info-card {
+    background: white;
+    padding: 35px 20px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.05); /* เงานุ่มๆ */
+    border: 1px solid rgba(0,0,0,0.02);
+    transition: all 0.3s ease;
+    height: 100%; /* ให้การ์ดสูงเท่ากันหมด */
+}
+
+.info-card:hover {
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2D3748;
+    margin-bottom: 10px;
+}
+
+.action-text {
+    color: #C70039; /* สีแดงแบรนด์ */
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.action-text .arrow {
+    margin-left: 5px;
+    transition: transform 0.2s;
+}
+
+
+/* =========================================
+   4. Members Section
+   ========================================= */
+.section-header {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1A202C;
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+}
+
+.members-card {
+    background: white;
+    border-radius: 20px;
+    padding: 30px 50px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    border: 1px solid #EDF2F7;
+    max-width: 800px;
+    margin: 0 auto; /* จัดกึ่งกลาง */
+}
+
 .member-row {
-  display: flex; 
-  justify-content: space-between;
-  align-items: center; /* จัดให้อยู่กลางแนวตั้ง */
-  padding: 8px 4px;
-  border-bottom: 1px solid #f0f0f0; /* เส้นคั่นบางๆ */
-  line-height: 1.6;
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 0;
+    border-bottom: 1px solid #F0F0F0;
+    font-size: 1.05rem;
+    color: #4A5568;
 }
 
-/* แถวหัวข้อ (ที่เราเพิ่มเข้าไป) */
+.member-row:last-child {
+    border-bottom: none;
+}
+
+/* Header ของตาราง */
 .member-row.header {
-  font-weight: bold;
-  color: #a0522d; 
-  border-bottom: 2px solid #eee;
-  font-size: 0.95em;
+    border-bottom: 2px solid #E2E8F0;
+    margin-bottom: 10px;
 }
 
-.member-row.header .student-id {
-    color: #180d07;  
-    font-weight:  bold;
+.member-row.header div {
+    color: #C70039;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
 }
 
-/* คอลัมน์ชื่อ */
-.member-name {
-  flex-basis: 60%; /* ให้พื้นที่ชื่อ 60% */
-  color: #180d07; 
+.col-name {
+    text-align: left;
+    font-weight: 500;
 }
 
-/* คอลัมน์รหัส */
-.student-id {
-  flex-basis: 40%; /* ให้พื้นที่รหัส 40% */
-  text-align: right; /* จัดชิดขวา */
-  color: #b8860b; 
-  font-weight: 600; 
-  margin-left: 10px;
+.col-id {
+    text-align: right;
+    font-family: monospace; /* ฟอนต์ตัวเลขแบบโค้ด */
+    color: #718096;
+    font-size: 1.1rem;
 }
 
-/* ลิงก์แบบปุ่มเหลือง */
-.container a {
-  display: inline-block;
-  background-color: #ffcc00;
-  color: #000;
-  text-decoration: none;
-  padding: 6px 12px;
-  border: 1px solid #b8860b;
-  border-radius: 5px;
-  margin-top: 5px;
-}
-
-.container a:hover {
-  background-color: #ffe45c;
-}
-
-/* ล้าง float */
-.container::after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-/* มือถือ */
+/* =========================================
+   5. Responsive (มือถือ)
+   ========================================= */
 @media (max-width: 768px) {
-  body {
-    font-size: 14px;
-    padding: 10px;
-  }
-  img {
-    max-width: 100%;
-    height: auto;
-  }
-  .container, .page-hero, .market-toolbar {
-    padding: 0 10px;
-  }
+    /* เปลี่ยน Grid เป็น 1 แถวในมือถือ */
+    .project-cards-grid {
+        grid-template-columns: 1fr; 
+        gap: 15px;
+    }
+
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .hero-header {
+        height: 300px;
+    }
+
+    .members-card {
+        padding: 20px;
+    }
+    
+    .member-row {
+        font-size: 0.95rem;
+    }
 }

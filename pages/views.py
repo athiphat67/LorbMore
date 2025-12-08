@@ -5,6 +5,9 @@ from posts.views import _format_post_data
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from .forms import StudentRegisterForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import ContactForm
 
 def about_page_view(request):
     return render(request, 'pages/about.html')
@@ -41,3 +44,30 @@ def register_view(request):
         form = StudentRegisterForm()
     
     return render(request, 'registration/register.html', {'form': form})
+
+def contact_view(request):
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # --- ตรงนี้คือจุดที่เอาข้อมูลไปใช้งาน ---
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            
+            # วิธีที่ 1 (ง่ายสุด): ปริ้นท์ลง Terminal เพื่อเช็คว่าข้อมูลเข้าไหม
+            print(f"New Message from {name} ({email}): {message}")
+            
+            # วิธีที่ 2 (ส่งอีเมลจริง): ต้องตั้งค่า Email ใน settings.py ก่อน
+            # send_mail(
+            #     subject=f"New Contact from {name}",
+            #     message=message,
+            #     from_email=email,
+            #     recipient_list=['your_admin_email@example.com'],
+            # )
+
+            messages.success(request, 'Message sent successfully! We will get back to you soon.')
+            return redirect('contact') # redirect กลับมาหน้าเดิม
+    else:
+        form = ContactForm()
+
+    return render(request, 'pages/contact.html', {'form': form})
