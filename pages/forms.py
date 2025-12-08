@@ -23,7 +23,7 @@ class StudentRegisterForm(UserCreationForm):
                 raise forms.ValidationError("กรุณากรอก email ให้ถูกต้อง")
             
             surname_part = local_part.split('.')[-1]
-            if len(surname_part) > 3:
+            if len(surname_part) > 4:
                 raise forms.ValidationError(f"กรุณากรอก email ให้ถูกต้อง")
 
         if User.objects.filter(email=email).exists():

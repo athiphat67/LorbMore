@@ -1,39 +1,65 @@
-{% load static %}
+{% load static %} <link rel="stylesheet" href="{% static 'pages/css/navbar.css' %}">
 
-<link rel="stylesheet" href="{% static 'pages/css/navbar.css' %}">
-<nav class="navbar">
-
+<nav class="navbar" role="navigation" aria-label="Main">
   <div class="nav-left">
-    <a href="{% url 'home' %}" class="logo">
-      <img src="{% static 'pages/image/lorbmore_logo.png' %}" alt="Lorbmore Logo">
+    <a href="{% url 'home' %}" class="home-btn" aria-label="Home">
+      <img src="{% static 'pages/image/home_button.svg' %}" alt="Home">
     </a>
+
+    <form class="search" action="#" method="get" role="search">
+      <span class="search-ico" aria-hidden="true">🔍</span>
+      <input type="text" name="q" placeholder="ค้นหา…" aria-label="Search" autocomplete="off"/>
+    </form>
   </div>
 
-  <div class="nav-center">
-    <ul class="menu">
-      <li>
-        <a class="nav-item {% if request.path == '/posts/hiring/' %}active{% endif %}"
-          href="{% url 'posts:hiring' %}">HIRING</a>
-      </li>
-      <li>
-        <a class="nav-item {% if request.path == '/posts/rental/' %}active{% endif %}"
-          href="{% url 'posts:rental' %}">RENTAL</a>
-      </li>
-      <li>
-        <a class="nav-item {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">ABOUT US</a>
-      </li>
-      <li>
-        <a class="nav-item {% if request.path == '/contact/' %}active{% endif %}" href="{% url 'contact' %}">CONTACT
-          US</a>
-      </li>
+  <div id="nav-menu" class="nav-right">
+    <ul class="nav-actions">
+      <li><a class="pill" href="{% url 'posts:hiring' %}">ว่าจ้างงาน</a></li>
+      <li><a class="pill" href="{% url 'posts:rental' %}">เช่า-ยืม</a></li>
     </ul>
-  </div>
 
-  <div class="nav-right">
-    {% if user.is_authenticated %}
-    <a class="user-profile">{{ user.username }}</a>
-    {% else %}
-    <a class="btn-login" href="{% url 'login' %}">Login</a>
-    {% endif %}
+    <ul class="nav-links">
+      
+      {% if user.is_authenticated %}
+        <li class="dropdown">
+            <a href="#" class="dropbtn">
+                Hi! {{ user.username }} 
+                <span style="font-size: 0.8em;">▼</span>
+            </a>
+            
+            <div class="dropdown-content">
+                <a href="{% url 'profile_detail' user.username %}">Profile</a>
+                
+                <a href="{% url 'posts:mypost' %}">My Posts</a>
+                
+                <a href="{% url 'about' %}">About us</a>
+                <a href="{% url 'contact' %}">Contact us</a>
+                
+                <hr style="margin: 0; border: 0; border-top: 1px solid #eee;">
+
+                <form action="{% url 'logout' %}" method="post" style="padding: 0; margin: 0;">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item-btn">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </li>
+
+        <li class="avatar" aria-hidden="true">
+             {% if user.profile.image %}
+                <img src="{{ user.profile.image.url }}" alt="Profile" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;">
+            {% else %}
+                <img src="{% static 'pages/image/avatar.svg' %}" alt="">
+            {% endif %}
+        </li>
+
+      {% else %}
+        <li><a href="{% url 'about' %}">About us</a></li>
+        <li><a href="#">Contact us</a></li>
+        <li><a href="{% url 'login' %}">Login</a></li>
+      {% endif %}
+
+    </ul>
   </div>
 </nav>
