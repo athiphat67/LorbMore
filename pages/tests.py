@@ -151,11 +151,10 @@ class PagesViewTests(TestCase):
         
 class StudentRegisterFormTest(TestCase):
     def setUp(self): 
-        User.objects.create_user(
-            'username': 'john0',
-            'email': 'john.doe@dome.tu.ac.th',
-            'password1': 'Password123!',
-            'password2': 'Password123!',
+        self.user = User.objects.create_user(
+            username='john0',
+            email='john.doe@dome.tu.ac.th',
+            password='Password123!'
         )
         
     # email ตรงตาม form ที่กำหนดและสามารถใช้งานได้    
