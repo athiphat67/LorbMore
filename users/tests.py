@@ -34,18 +34,35 @@ class ProfileViewTests(TestCase):
     def test_profile_post_valid(self):
         """POST request valid จะบันทึกข้อมูลและ redirect"""
         data = {
-            'username': 'updateduser',  # field ของ UserUpdateForm
-            'bio': 'New bio for profile'  # field ของ ProfileUpdateForm
+        # UserUpdateForm fields
+        'username': 'john',
+        'email': 'john.do@dome.tu.ac.th',
+        'first_name': 'John',
+        'last_name': 'Do',
+
+        # ProfileUpdateForm fields
+        'displayName': 'Johnny',
+        'studentId': '12345678',
+        'bioSkills': 'New bio for profile',
+        'phoneNum': '0123456789',
+        'socialMedia': '@johnny'
         }
 
         response = self.client.post(self.url, data)
-        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, self.url)
 
         # ตรวจสอบว่า user และ profile ถูกอัปเดต
         self.user.refresh_from_db()
-        self.assertEqual(self.user.username, 'updateduser')
-        self.assertEqual(self.user.profile.bio, 'New bio for profile')
+        self.assertEqual(self.user.username, 'john')
+        self.assertEqual(self.user.email, 'john.do@dome.tu.ac.th')
+        self.assertEqual(self.user.first_name, 'John')
+        self.assertEqual(self.user.last_name, 'Do')
+        self.assertEqual(self.user.profile.displayName, 'Johnny')
+        self.assertEqual(self.user.profile.studentId, '12345678')
+        self.assertEqual(self.user.profile.bioSkills, 'New bio for profile')
+        self.assertEqual(self.user.profile.phoneNum, '0123456789')
+        self.assertEqual(self.user.profile.socialMedia, '@johnny')
+        
 
     def test_profile_post_invalid(self):
         """POST request invalid จะไม่ redirect, render หน้าเดิมพร้อม error"""

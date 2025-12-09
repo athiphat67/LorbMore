@@ -294,6 +294,7 @@ class PostCreationTests(TestCase):
             'skills': [self.skill.id],
             'budgetMin': 1000,
             'budgetMax': 2000,
+            'images': [test_image]
         }
         
         # จำลองการกรอกฟอร์มในหน้าเว็บจริง โดยมีทั้ง data และ files รูป
@@ -401,7 +402,7 @@ class PostCreationTests(TestCase):
         
         response = self.client.post(url, data, FILES={"images": [test_image]})
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'pages/create_rental.html')
 
     # ตรวจสอบว่า login required redirect
@@ -443,7 +444,7 @@ class PostCreationTests(TestCase):
             'skills': [self.skill.id],
             'budgetMin': 1000,
             'budgetMax': 2000,
-
+            'images': [test_image]
         }
 
         response = self.client.post(url, data, FILES={'images': [test_image]})
