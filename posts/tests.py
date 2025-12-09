@@ -229,7 +229,12 @@ class PostIntegrationTestCase(TestCase):
 class PostCreationTests(TestCase):
     def setUp(self):
         # สร้าง user
-        self.user = User.objects.create_user(username="minnie", password="123456")
+        self.user = User.objects.create_user(
+            username="minnie",
+            email="minnie@dome.tu.ac.th",
+            password="123456"
+        )
+        
         self.client = Client()
         self.client.force_login(self.user)
 
@@ -273,7 +278,7 @@ class PostCreationTests(TestCase):
     def test_create_hiring_post__valid_post(self):
         url = reverse('posts:create_hiring')
         
-        self.client.login(username='minnie', password='123456')  # ใส่รหัสจริงของ self.user
+        self.client.login(username="minnie", password="123456")
         
         # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
@@ -311,7 +316,7 @@ class PostCreationTests(TestCase):
     def test_create_hiring_post__invalid_post(self):
         url = reverse('posts:create_hiring')
         
-        self.client.login(username='minnie', password='123456')  # ใส่รหัสจริงของ self.user
+        self.client.login(username="minnie", password="123456")
         
         # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
@@ -340,6 +345,8 @@ class PostCreationTests(TestCase):
     # ตรวจสอบการสร้างโพสต์ rental ในกรณีที่ข้อมูลครบ
     def test_create_rental_post_valid_post(self):
         url = reverse('posts:create_rental')
+    
+        self.client.login(username="minnie", password="123456")
         
          # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
@@ -374,6 +381,8 @@ class PostCreationTests(TestCase):
     # ตรวจสอบการสร้างโพสต์ rental ในกรณีที่ข้อมูลไม่ครบ
     def test_create_rental_post__invalid_post(self):
         url = reverse('posts:create_rental')
+        
+        self.client.login(username="minnie", password="123456")
         
         test_image = SimpleUploadedFile(
             name="test_image.jpg",
@@ -418,7 +427,7 @@ class PostCreationTests(TestCase):
         url = reverse('posts:create_hiring')
         
         # login ก่อน
-        self.client.login(username='minnie', password='123456')  # ใส่รหัสจริงของ self.user
+        self.client.login(username="minnie", password="123456")
 
         # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
@@ -452,8 +461,8 @@ class PostCreationTests(TestCase):
     # ตรวจสอบกรณีไม่มีรูป    
     def test_create_rental_post_without_image(self):
         url = reverse('posts:create_rental')
-
-        self.client.login(username='minnie', password='123456')  # ใส่รหัสจริงของ self.user
+        
+        self.client.login(username="minnie", password="123456")
         
         data = {
             'title': 'Test Rental No Image',

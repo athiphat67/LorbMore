@@ -6,6 +6,7 @@ from posts.views import _format_post_data
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.messages import get_messages
 from pages.forms import StudentRegisterForm
+from django.contrib import messages
 
 
 class PagesViewTests(TestCase):
@@ -296,43 +297,78 @@ class RegisterViewTest(TestCase):
 #         response = self.client.get('/test_view/')
 #         self.assertRedirects(response, reverse('login'))
 
-class ContactViewTest(TestCase):
+# class ContactViewTest(TestCase):
+
+#     def setUp(self):
+#         self.url = reverse('contact')  # ชื่อ URL ของ contact_view
+
+#     def test_contact_get(self):
+#         # GET request → แสดง form เปล่า
+#         response = self.client.get(self.url)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'pages/contact.html')
+#         self.assertIn('form', response.context)
+
+#     def test_contact_post_valid(self):
+#         data = {
+#             'name': 'John Doe',
+#             'email': 'john.doe@example.com',
+#             'message': 'Hello, this is a test message.'
+#         }
+#         response = self.client.post(self.url, data, follow=True)
+#         self.assertEqual(response.status_code, 200)  # เพราะ follow redirect
+#         self.assertTemplateUsed(response, 'pages/contact.html')
+
+#         # ตรวจสอบว่ามี message success
+#         messages = list(get_messages(response.wsgi_request))
+#         self.assertTrue(
+#         any("Message sent successfully" in str(m) for m in messages)
+#     )
+
+#     def test_contact_post_invalid(self):
+#         """POST ข้อมูลไม่ครบ → form invalid → render template เดิม"""
+#         data = {
+#             'name': '',  # ขาดชื่อ → invalid
+#             'email': 'invalid-email',
+#             'message': ''
+#         }
+#         response = self.client.post(self.url, data)
+#         self.assertEqual(response.status_code, 200)
+#         self.assertTemplateUsed(response, 'pages/contact.html')
+#         self.assertIn('form', response.context)
+#         self.assertTrue(response.context['form'].errors)  # form ต้องมี error
+
+class ContactViewTests(TestCase):
 
     def setUp(self):
-        self.url = reverse('contact')  # ชื่อ URL ของ contact_view
+        self.url = reverse("contact")
 
-    def test_contact_get(self):
-        # GET request → แสดง form เปล่า
+    def test_get_request(self):
+        """GET /contact/ ต้องแสดงหน้าและโหลดฟอร์ม"""
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'pages/contact.html')
-        self.assertIn('form', response.context)
+        self.assertIsInstance(response.context["form"], ContactForm)
 
-    def test_contact_post_valid(self):
+    def test_post_valid(self):
+        """POST valid → redirect กลับไปหน้า contact"""
         data = {
             'name': 'John Doe',
             'email': 'john.doe@example.com',
             'message': 'Hello, this is a test message.'
         }
-        response = self.client.post(self.url, data, follow=True)
-        self.assertEqual(response.status_code, 200)  # เพราะ follow redirect
-        self.assertTemplateUsed(response, 'pages/contact.html')
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.url)
 
-        # ตรวจสอบว่ามี message success
-        messages = list(get_messages(response.wsgi_request))
-        self.assertTrue(any("Message sent successfully" in str(m) for m in messages))
-
-    def test_contact_post_invalid(self):
-        """POST ข้อมูลไม่ครบ → form invalid → render template เดิม"""
+    def test_post_invalid(self):
+        """POST invalid → อยู่หน้าเดิม และมีฟอร์ม error"""
         data = {
-            'name': '',  # ขาดชื่อ → invalid
-            'email': 'invalid-email',
-            'message': ''
+            "name": "",
+            "email": "invalid",
+            "message": ""
         }
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'pages/contact.html')
-        self.assertIn('form', response.context)
-        self.assertTrue(response.context['form'].errors)  # form ต้องมี error
+        self.assertFalse(response.context["form"].is_valid())
 
          
