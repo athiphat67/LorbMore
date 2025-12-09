@@ -42,10 +42,16 @@
                             </p>
                         </div>
 
-                        <div class="card__info">
-                            <span class="card__rating">⭐ {{ item.rating|floatformat:1 }}</span>
-                            <span class="mx-1">{{ item.reviews }} reviews </span>
+                        {% if item.count_reviews > 0 %}
+                        <div class="card__rating-info" style="margin-top: 5px;">
+                            <span style="color: #ffc107; font-weight: bold;">★ {{ item.avg_rating|floatformat:1}}</span>
+                            <span style="color: #888; font-size: 0.9em;">({{ item.count_reviews }} รีวิว)</span>
                         </div>
+                        {% else %}
+                        <div class="card__rating-info" style="margin-top: 5px;">
+                            <span style="color: #aaa; font-size: 0.9em;">รีวิวคนแรกเลยซิ</span>
+                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="card__footer">
@@ -88,10 +94,16 @@
                             </p>
                         </div>
 
-                        <div class="card__info">
-                            <span class="card__rating">⭐ {{ item.rating|floatformat:1 }}</span>
-                            <span class="mx-1">{{ item.reviews }} reviews</span>
+                        {% if item.count_reviews > 0 %}
+                        <div class="card__rating-info" style="margin-top: 5px;">
+                            <span style="color: #ffc107; font-weight: bold;">★ {{ item.avg_rating|floatformat:1}}</span>
+                            <span style="color: #888; font-size: 0.9em;">({{ item.count_reviews }} รีวิว)</span>
                         </div>
+                        {% else %}
+                        <div class="card__rating-info" style="margin-top: 5px;">
+                            <span style="color: #aaa; font-size: 0.9em;">รีวิวคนแรกเลยซิ</span>
+                        </div>
+                        {% endif %}
 
                         <div class="card__footer">
                             <p class="card__price">{{ item.price_detail }}</p>

@@ -29,8 +29,11 @@
                     <p class="card-text text-primary fw-bold">{{ item.price_detail }}</p>
 
                     <div class="mb-3">
-                        <span class="text-warning">★ {{ item.rating }}</span>
-                        <span class="text-muted">({{ item.reviews }} รีวิว)</span>
+                        <span class="text-warning">
+                            ★ {{ item.avg_rating|floatformat:1 }}
+                        </span>
+
+                        <span class="text-muted">({{ item.count_reviews }} รีวิว)</span>
                     </div>
 
                     <div class="mt-auto d-flex justify-content-between">

@@ -3,8 +3,9 @@ from .models import Post, HiringPost, RentalPost, Media
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .forms import HiringPostForm, RentalPostForm
-from .decorators import student_required 
+from .forms import HiringPostForm, RentalPostForm, ReviewForm
+from .decorators import student_required
+
 
 # Create your views here.
 def hiring_page_view(request):
@@ -84,9 +85,8 @@ def _format_post_data(post):
         "image_url": first_image_url or "/static/img/default.png",
         # "images": images,
         "title": post.title,
-        # ตอนนี้มันยังไม่มีระบบให้คะแนน เลยสมมติค่านี้ไปก่อนนะ
-        "reviews": 27 if isinstance(post, HiringPost) else 13,
-        "rating": 4.8 if isinstance(post, HiringPost) else 4.5,
+        "count_reviews": post.count_reviews,
+        "avg_rating": post.avg_rating,
         "price_detail": price_detail,
     }
 
@@ -96,7 +96,7 @@ def detail_post_view(request, post_id):
     post = get_object_or_404(
         Post.objects.select_related(
             "author", "hiringpost", "rentalpost"
-        ).prefetch_related(  
+        ).prefetch_related(
             "media",  # ดึงจาก Post
             "categories",  # ดึงจาก Post
             "hiringpost__skills",  # ดึง skills ที่อยู่ *ข้างใน* hiringpost (M2M)
@@ -117,11 +117,11 @@ def detail_post_view(request, post_id):
         specific_post = post.rentalpost
 
     context = {
-        "post": specific_post,  
-        "media": post.media.all(), 
-        "skills": skills_list,  
-        "categories": post.categories.all(), 
-        "is_hiring" : is_hiring, 
+        "post": specific_post,
+        "media": post.media.all(),
+        "skills": skills_list,
+        "categories": post.categories.all(),
+        "is_hiring": is_hiring,
     }
 
     return render(request, "pages/detail_post.html", context)
@@ -130,30 +130,31 @@ def detail_post_view(request, post_id):
 def createpost(request):
     return render(request, "pages/createposts.html")
 
+
 @student_required
 def create_hiring_view(request):
-    if request.method == 'POST':
-        form = HiringPostForm(request.POST, request.FILES) 
+    if request.method == "POST":
+        form = HiringPostForm(request.POST, request.FILES)
         if form.is_valid():
             # บันทึกฟอร์มหลัก แต่ยังไม่ commit ลง DB
             new_post = form.save(commit=False)
-            
+
             # กำหนด 'author' ให้เป็น user ที่ login อยู่
-            new_post.author = request.user 
-            
+            new_post.author = request.user
+
             # บันทึก post หลักลง DB (ตอนนี้ post จะมี id แล้ว)
             new_post.save()
-            
+
             # บันทึก M2M (categories, skills)
-            form.save_m2m() 
-            
-            files = request.FILES.getlist('images')
+            form.save_m2m()
+
+            files = request.FILES.getlist("images")
             for f in files:
                 # สร้าง Media object ที่เชื่อมโยงกับ new_post
                 Media.objects.create(post=new_post, image=f)
-            
+
             # ส่งผู้ใช้ไปยังหน้า detail ของโพสต์ที่เพิ่งสร้าง
-            return redirect('posts:detail_post', post_id=new_post.id) 
+            return redirect("posts:detail_post", post_id=new_post.id)
     else:
         form = HiringPostForm()
 
@@ -163,30 +164,31 @@ def create_hiring_view(request):
     }
     return render(request, 'pages/create_hiring.html', context)
 
+
 @student_required
 def create_rental_view(request):
-    if request.method == 'POST':
-        form = RentalPostForm(request.POST, request.FILES) 
+    if request.method == "POST":
+        form = RentalPostForm(request.POST, request.FILES)
         if form.is_valid():
             # บันทึกฟอร์มหลัก แต่ยังไม่ commit ลง DB
             new_post = form.save(commit=False)
-            
+
             # กำหนด 'author' ให้เป็น user ที่ login อยู่
-            new_post.author = request.user 
-            
+            new_post.author = request.user
+
             # บันทึก post หลักลง DB (ตอนนี้ post จะมี id แล้ว)
             new_post.save()
-            
+
             # บันทึก M2M (categories, skills)
-            form.save_m2m() 
-            
-            files = request.FILES.getlist('images')
+            form.save_m2m()
+
+            files = request.FILES.getlist("images")
             for f in files:
                 # สร้าง Media object ที่เชื่อมโยงกับ new_post
                 Media.objects.create(post=new_post, image=f)
-            
+
             # ส่งผู้ใช้ไปยังหน้า detail ของโพสต์ที่เพิ่งสร้าง
-            return redirect('posts:detail_post', post_id=new_post.id) 
+            return redirect("posts:detail_post", post_id=new_post.id)
     else:
         form = RentalPostForm()
 
@@ -199,30 +201,32 @@ def create_rental_view(request):
 @login_required
 def my_post_view(request):
     user = request.user
-    
+
     # ดึงข้อมูล Media มารอไว้ (เพื่อแสดงรูปภาพปก)
     posts_with_media = Prefetch("media", queryset=Media.objects.all(), to_attr="images")
 
     # ดึง Post ของ User นั้นๆ ทั้ง Hiring และ Rental
-    my_hiring = HiringPost.objects.filter(author=user).prefetch_related(posts_with_media)
-    my_rental = RentalPost.objects.filter(author=user).prefetch_related(posts_with_media)
+    my_hiring = HiringPost.objects.filter(author=user).prefetch_related(
+        posts_with_media
+    )
+    my_rental = RentalPost.objects.filter(author=user).prefetch_related(
+        posts_with_media
+    )
 
     # รวมลิสต์และเรียงลำดับจาก "เก่า -> ใหม่" (ตาม id น้อยไปมาก)
-    all_my_posts = sorted(
-        list(my_hiring) + list(my_rental),
-        key=lambda x: x.id 
-    )
+    all_my_posts = sorted(list(my_hiring) + list(my_rental), key=lambda x: x.id)
 
     # แปลงข้อมูลให้อยู่ในรูปแบบ Dict
     formatted_items = [_format_post_data(post) for post in all_my_posts]
-    
-    can_create = user.is_superuser or user.email.endswith('@dome.tu.ac.th')
+
+    can_create = user.is_superuser or user.email.endswith("@dome.tu.ac.th")
 
     context = {
         "mypost_items": formatted_items,
-        "can_create":can_create,
+        "can_create": can_create,
     }
     return render(request, "pages/mypost.html", context)
+
 
 @login_required
 def delete_post_view(request, post_id):
@@ -231,11 +235,12 @@ def delete_post_view(request, post_id):
 
     # ตรวจสอบว่าเป็นเจ้าของโพสต์หรือไม่
     if post.author != request.user:
-        return redirect('posts:detail_post', post_id=post.id)
+        return redirect("posts:detail_post", post_id=post.id)
 
     # ลบโพสต์
     post.delete()
-    return redirect('posts:mypost')
+    return redirect("posts:mypost")
+
 
 @login_required
 def edit_post_view(request, post_id):
@@ -243,46 +248,66 @@ def edit_post_view(request, post_id):
 
     # ตรวจสอบว่าเป็นเจ้าของโพสต์
     if post.author != request.user:
-        return redirect('posts:detail_post', post_id=post.id)
+        return redirect("posts:detail_post", post_id=post.id)
 
     # เช็คประเภทโพสต์เพื่อเลือก Form ที่ถูกต้อง
     instance = None
     form_class = None
     template_name = ""
-    
-    if hasattr(post, 'hiringpost'):
+
+    if hasattr(post, "hiringpost"):
         instance = post.hiringpost
         form_class = HiringPostForm
-        template_name = 'pages/create_hiring.html' # ใช้หน้าเดียวกับ create แต่มีข้อมูลเดิม
+        template_name = "pages/create_hiring.html"  # ใช้หน้าเดียวกับ create แต่มีข้อมูลเดิม
         title_context = "Edit your hiring post"
-    elif hasattr(post, 'rentalpost'):
+    elif hasattr(post, "rentalpost"):
         instance = post.rentalpost
         form_class = RentalPostForm
-        template_name = 'pages/create_rental.html'
+        template_name = "pages/create_rental.html"
         title_context = "Edit your rental post"
     else:
-        return redirect('posts:mypost')
+        return redirect("posts:mypost")
 
-    if request.method == 'POST':
+    if request.method == "POST":
         # ส่ง instance เข้าไปเพื่อเป็นการ Update
         form = form_class(request.POST, request.FILES, instance=instance)
         if form.is_valid():
             updated_post = form.save()
-            form.save_m2m() # บันทึก Skills/Categories
 
-            # เพิ่มรูปภาพใหม่ (ถ้ามีการอัปโหลดเพิ่ม)
-            files = request.FILES.getlist('images')
+            files = request.FILES.getlist("images")
             for f in files:
                 Media.objects.create(post=updated_post, image=f)
 
-            return redirect('posts:detail_post', post_id=updated_post.id)
+            return redirect("posts:detail_post", post_id=updated_post.id)
     else:
         # แสดงฟอร์มพร้อมข้อมูลเดิม
         form = form_class(instance=instance)
 
     context = {
-        'form': form,
-        'form_title': title_context,
-        'is_edit': True # ตัวแปรบอก Template ว่ากำลัง Edit อยู่ (เผื่อใช้ปรับคำในปุ่ม)
+        "form": form,
+        "form_title": title_context,
+        "is_edit": True,  # ตัวแปรบอก Template ว่ากำลัง Edit อยู่ (เผื่อใช้ปรับคำในปุ่ม)
     }
     return render(request, template_name, context)
+
+
+@login_required
+def add_review_view(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    # ป้องกันไม่ให้เจ้าของโพสต์รีวิวตัวเอง (Optional)
+    if post.author == request.user:
+        # อาจจะ redirect กลับพร้อมแจ้งเตือนว่ารีวิวไม่ได้
+        return redirect("posts:detail_post", post_id=post.id)
+
+    if request.method == "POST":
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.post = post
+            review.author = request.user
+            review.save()
+            return redirect("posts:detail_post", post_id=post.id)
+
+    # ถ้าไม่ใช่ POST ให้ redirect กลับไปหน้า post detail เลย
+    return redirect("posts:detail_post", post_id=post.id)

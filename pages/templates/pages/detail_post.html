@@ -85,6 +85,55 @@
             </div>
             {% endif %}
 
+            <hr class="mt-5 mb-4">
+
+            <h2 class="post-detail__subtitle">รีวิวจากผู้ใช้งาน ({{ post.avg_rating|floatformat:1 }} ★)</h2>
+
+            <div class="reviews-section mt-3">
+                {% for review in post.reviews.all %}
+                <div class="card mb-3 shadow-sm border-0 bg-light">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="card-title fw-bold">{{ review.author.profile.displayName }} </h6>
+                            <span class="text-warning">★ {{ review.rating }}</span>
+                        </div>
+                        <p class="card-text text-muted small">{{ review.created_at|date:"d M Y" }}</p>
+                        <p class="card-text">{{ review.comment }}</p>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">ยังไม่มีรีวิว เป็นคนแรกที่รีวิวเลย!</p>
+                {% endfor %}
+            </div>
+
+            {% if user.is_authenticated and user != post.author %}
+            <div class="add-review-section mt-5 p-4 bg-white rounded shadow-sm">
+                <h4>เขียนรีวิวของคุณ</h4>
+                <form method="POST" action="{% url 'posts:add_review' post.id %}">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">คะแนนความพึงพอใจ</label>
+                        <select name="rating" class="form-select w-auto">
+                            <option value="5">★★★★★ (5 - ดีมาก)</option>
+                            <option value="4">★★★★ (4 - ดี)</option>
+                            <option value="3">★★★ (3 - ปานกลาง)</option>
+                            <option value="2">★★ (2 - พอใช้)</option>
+                            <option value="1">★ (1 - ปรับปรุง)</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">ความคิดเห็นเพิ่มเติม</label>
+                        <textarea name="comment" class="form-control" rows="3"
+                            placeholder="บริการเป็นอย่างไรบ้าง? คุ้มค่าหรือไม่?"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">ส่งรีวิว</button>
+                </form>
+            </div>
+            {% endif %}
+
         </div>
     </div>
 </div>
