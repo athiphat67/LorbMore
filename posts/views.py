@@ -159,7 +159,7 @@ def create_hiring_view(request):
 
     context = {
         'form': form,
-        'form_title': 'Create your hiring post'
+        'form_title': 'Create hiring post'
     }
     return render(request, 'pages/create_hiring.html', context)
 
@@ -192,7 +192,7 @@ def create_rental_view(request):
 
     context = {
         'form': form,
-        'form_title': 'Create your rental post'
+        'form_title': 'Create rental post'
     }
     return render(request, 'pages/create_rental.html', context)
 

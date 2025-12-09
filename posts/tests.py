@@ -229,7 +229,12 @@ class PostIntegrationTestCase(TestCase):
 class PostCreationTests(TestCase):
     def setUp(self):
         # สร้าง user
-        self.user = User.objects.create_user(username="minnie", password="123456")
+        self.user = User.objects.create_user(
+            username="minnie",
+            email="minnie@dome.tu.ac.th",
+            password="123456"
+        )
+        
         self.client = Client()
         self.client.force_login(self.user)
 
@@ -255,7 +260,7 @@ class PostCreationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         
         # ยืนยันเปิดหน้า hiring และใช้ form ที่ถูกต้อง
-        self.assertContains(response, 'Create your hiring post')
+        self.assertContains(response, 'Create hiring post')
         self.assertIsInstance(response.context['form'], HiringPostForm)
 
     # ตรวจสอบหน้า create rental post แสดงแบบฟอร์มถูกหรือไม่
@@ -266,12 +271,14 @@ class PostCreationTests(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         
-        self.assertContains(response, 'Create your rental post')
+        self.assertContains(response, 'Create rental post')
         self.assertIsInstance(response.context['form'], RentalPostForm)
     
     # ตรวจสอบการสร้างโพสต์ hiring ในกรณีที่ข้อมูลครบ
     def test_create_hiring_post__valid_post(self):
         url = reverse('posts:create_hiring')
+        
+        self.client.login(username="minnie", password="123456")
         
         # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
@@ -287,7 +294,7 @@ class PostCreationTests(TestCase):
             'skills': [self.skill.id],
             'budgetMin': 1000,
             'budgetMax': 2000,
-            'images': [test_image],
+            'images': [test_image]
         }
         
         # จำลองการกรอกฟอร์มในหน้าเว็บจริง โดยมีทั้ง data และ files รูป
@@ -309,6 +316,8 @@ class PostCreationTests(TestCase):
     # ตรวจสอบการสร้างโพสต์ hiring ในกรณีที่ข้อมูลไม่ครบ (title) 
     def test_create_hiring_post__invalid_post(self):
         url = reverse('posts:create_hiring')
+        
+        self.client.login(username="minnie", password="123456")
         
         # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
@@ -332,11 +341,13 @@ class PostCreationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         
         # ตรวจว่าหน้า template ที่ใช้คือหน้าเดิมของฟอร์ม
-        self.assertTemplateUsed(response, "pages/create_hiring.html")
+        self.assertTemplateUsed(response, 'pages/create_hiring.html')
 
     # ตรวจสอบการสร้างโพสต์ rental ในกรณีที่ข้อมูลครบ
     def test_create_rental_post_valid_post(self):
         url = reverse('posts:create_rental')
+    
+        self.client.login(username="minnie", password="123456")
         
          # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
@@ -372,6 +383,8 @@ class PostCreationTests(TestCase):
     def test_create_rental_post__invalid_post(self):
         url = reverse('posts:create_rental')
         
+        self.client.login(username="minnie", password="123456")
+        
         test_image = SimpleUploadedFile(
             name="test_image.jpg",
             content=b"test image content",
@@ -390,7 +403,7 @@ class PostCreationTests(TestCase):
         response = self.client.post(url, data, FILES={"images": [test_image]})
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "pages/create_rental.html")
+        self.assertTemplateUsed(response, 'pages/create_rental.html')
 
     # ตรวจสอบว่า login required redirect
     def test_login_required_redirect(self):
@@ -413,6 +426,9 @@ class PostCreationTests(TestCase):
     # ตรวจสอบกรณีมีรูป
     def test_create_hiring_post_with_image(self):
         url = reverse('posts:create_hiring')
+        
+        # login ก่อน
+        self.client.login(username="minnie", password="123456")
 
         # สร้างข้อมูลทดสอบและรูปภาพ
         test_image = SimpleUploadedFile(
@@ -428,8 +444,7 @@ class PostCreationTests(TestCase):
             'skills': [self.skill.id],
             'budgetMin': 1000,
             'budgetMax': 2000,
-            'images': [test_image],
-
+            'images': [test_image]
         }
 
         response = self.client.post(url, data, FILES={'images': [test_image]})
@@ -447,7 +462,9 @@ class PostCreationTests(TestCase):
     # ตรวจสอบกรณีไม่มีรูป    
     def test_create_rental_post_without_image(self):
         url = reverse('posts:create_rental')
-
+        
+        self.client.login(username="minnie", password="123456")
+        
         data = {
             'title': 'Test Rental No Image',
             'description': 'Rental post without image',
