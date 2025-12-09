@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.conf import settings
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.db.models import Avg
 
 # โมเดลหลักที่ Post จะอ้างอิงถึง
 class Skill(models.Model):
@@ -54,6 +56,17 @@ class Post(models.Model):
         # เช่น "รับสมัครโปรแกรมเมอร์"
         return self.title
 
+    @property
+    def avg_rating(self):
+        # คำนวณค่าเฉลี่ยจาก field 'rating' ของ model Review ที่ผูกกับโพสต์นี้
+        # โดยสมมติว่าใน Review model ใช้ related_name='reviews'
+        ratings = self.reviews.aggregate(Avg('rating'))['rating__avg']
+        return ratings if ratings else 0
+
+    @property
+    def count_reviews(self):
+        return self.reviews.count()
+
 
 # โมเดลที่สืบทอดจาก Post
 class RentalPost(Post):
@@ -103,3 +116,20 @@ class Media(models.Model):
         # ถ้าไม่มีไฟล์ (เช่น เป็นแค่ URL หรือยังไม่ได้อัปโหลด)
         # ให้แสดงข้อความสำรองเพื่อบอกว่านี่คือ Media ของ Post ไหน
         return f"Media for Post ID: {self.post.id}"
+
+
+class Review(models.Model):
+    post = models.ForeignKey('Post', on_delete=models.CASCADE, related_name='reviews')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    rating = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)], 
+        help_text="คะแนน 1-5 ดาว"
+    )
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('post', 'author') # ป้องกันคนเดิมรีวิวโพสต์เดิมซ้ำ
+
+    def __str__(self):
+        return f"Rating {self.rating} on {self.post.title} by {self.author.username}"
