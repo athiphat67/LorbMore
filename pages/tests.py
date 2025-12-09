@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from posts.models import HiringPost, RentalPost, Media
 from posts.views import _format_post_data
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.contrib.messages import get_messages
+from pages.forms import StudentRegisterForm
 
 
 class PagesViewTests(TestCase):
@@ -150,15 +152,16 @@ class PagesViewTests(TestCase):
 class StudentRegisterFormTest(TestCase):
     def setUp(self): 
         User.objects.create_user(
-            username='john',
-            email='john.doe@dome.tu.ac.th',
-            password='Password123!'
+            'username': 'john0',
+            'email': 'john.doe@dome.tu.ac.th',
+            'password1': 'Password123!',
+            'password2': 'Password123!',
         )
         
     # email ตรงตาม form ที่กำหนดและสามารถใช้งานได้    
     def test_valid_email(self):
         form_data = {
-            'username': 'john', 
+            'username': 'john1', 
             'email': 'john.doe@dome.tu.ac.th', 
             'password1': 'Password123!', 
             'password2': 'Password123!'
@@ -170,7 +173,7 @@ class StudentRegisterFormTest(TestCase):
     # email ไม่ตรงตาม form ที่กำหนด
     def test_email_no_dot(self):
         form_data = {
-            'username': 'john',
+            'username': 'john2',
             'email': 'john@dome.tu.ac.th',
             'password1': 'Password123!',
             'password2': 'Password123!',
@@ -182,7 +185,7 @@ class StudentRegisterFormTest(TestCase):
     # email ไม่ตรงตาม form ที่กำหนด
     def test_email_surname_too_long(self):
         form_data = {
-            'username': 'john',
+            'username': 'john3',
             'email': 'john.surname@dome.tu.ac.th',
             'password1': 'Password123!',
             'password2': 'Password123!',
@@ -194,10 +197,10 @@ class StudentRegisterFormTest(TestCase):
     # email ซ้ำกัน
     def test_email_duplicate(self):
         form_data = {
-            'username': 'john',
+            'username': 'john0',
             'email': 'john.doe@dome.tu.ac.th',
-            'password1': 'Password123!',
-            'password2': 'Password123!',
+            'password1': 'Password',
+            'password2': 'Password',
         }
         form = StudentRegisterForm(data=form_data)
         self.assertFalse(form.is_valid())
@@ -242,8 +245,17 @@ class RegisterViewTest(TestCase):
         invalid_data = self.user_data.copy()
         invalid_data['email'] = 'johndoe@dome.tu.ac.th'  # ไม่มีจุด → invalid
         response = self.client.post(self.url, invalid_data)
-        self.assertEqual(response.status_code, 200)  # ไม่ redirect
-        self.assertFormError(response, 'form', 'email', "กรุณากรอก email ให้ถูกต้อง")
+
+        # status code ต้องเป็น 200 เพราะไม่ได้ redirect
+        self.assertEqual(response.status_code, 200)
+
+        # ตรวจสอบว่า template ใช้ form ถูกต้อง
+        self.assertTemplateUsed(response, 'registration/register.html')
+
+        # ดึง form จาก context
+        form = response.context['form']
+        self.assertFalse(form.is_valid())
+        self.assertIn("กรุณากรอก email ให้ถูกต้อง", form.errors['email'])
 
 
 # class StudentRequiredDecoratorTest(TestCase):
@@ -284,7 +296,44 @@ class RegisterViewTest(TestCase):
 #     def test_decorator_anonymous_redirect(self):
 #         response = self.client.get('/test_view/')
 #         self.assertRedirects(response, reverse('login'))
-        
 
+class ContactViewTest(TestCase):
+
+    def setUp(self):
+        self.url = reverse('contact')  # ชื่อ URL ของ contact_view
+
+    def test_contact_get(self):
+        # GET request → แสดง form เปล่า
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/contact.html')
+        self.assertIn('form', response.context)
+
+    def test_contact_post_valid(self):
+        data = {
+            'name': 'John Doe',
+            'email': 'john.doe@example.com',
+            'message': 'Hello, this is a test message.'
+        }
+        response = self.client.post(self.url, data, follow=True)
+        self.assertEqual(response.status_code, 200)  # เพราะ follow redirect
+        self.assertTemplateUsed(response, 'pages/contact.html')
+
+        # ตรวจสอบว่ามี message success
+        messages = list(get_messages(response.wsgi_request))
+        self.assertTrue(any("Message sent successfully" in str(m) for m in messages))
+
+    def test_contact_post_invalid(self):
+        """POST ข้อมูลไม่ครบ → form invalid → render template เดิม"""
+        data = {
+            'name': '',  # ขาดชื่อ → invalid
+            'email': 'invalid-email',
+            'message': ''
+        }
+        response = self.client.post(self.url, data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'pages/contact.html')
+        self.assertIn('form', response.context)
+        self.assertTrue(response.context['form'].errors)  # form ต้องมี error
 
          
