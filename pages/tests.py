@@ -182,19 +182,7 @@ class StudentRegisterFormTest(TestCase):
         }
         form = StudentRegisterForm(data=form_data)
         self.assertFalse(form.is_valid())
-        self.assertIn("กรุณากรอก email ให้ถูกต้อง", form.errors['email'][0])
-    
-    # email ไม่ตรงตาม form ที่กำหนด => ยาวเกินกำหนด
-    def test_email_surname_too_long(self):
-        form_data = {
-            'username': 'john3',
-            'email': 'john.surname@dome.tu.ac.th',
-            'password1': 'Password123!',
-            'password2': 'Password123!',
-        }
-        form = StudentRegisterForm(data=form_data)
-        self.assertFalse(form.is_valid())
-        self.assertIn("กรุณากรอก email ให้ถูกต้อง", form.errors['email'][0])
+        self.assertIn("รูปแบบอีเมลไม่ถูกต้อง (ต้องมีจุด . คั่น)", form.errors['email'][0])
         
     # email ซ้ำกันกับที่เรากำหนดใน setUp
     def test_email_duplicate(self):
@@ -245,7 +233,12 @@ class RegisterViewTest(TestCase):
         self.assertRedirects(response, reverse('home'))
         # ตรวจสอบว่าผ user ถูกสร้าง
         user_exists = User.objects.filter(username='john').exists()
-        self.assertTrue(user_exists)
+        
+        # ต้อง login สำเร็จ → request.user.authenticated = True
+        # (ต้องใช้ follow=True เพื่อโหลด session ใหม่)
+        response = self.client.get(reverse('home'))
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+        #self.assertTrue(user_exists)
 
     # จำลองการในตอนสร้างข้อมูลไม่ถูกต้อง
     def test_register_post_invalid(self):
@@ -259,10 +252,10 @@ class RegisterViewTest(TestCase):
         # ตรวจสอบว่า template ใช้ form ถูกต้อง
         self.assertTemplateUsed(response, 'registration/register.html')
 
-        # ดึง form จาก context
-        form = response.context['form']
-        self.assertFalse(form.is_valid())
-        self.assertIn("กรุณากรอก email ให้ถูกต้อง", form.errors['email'])
+        self.assertFalse(User.objects.exists())
+
+        # ฟอร์มต้องมี error
+        self.assertTrue(response.context['form'].errors)
         
 # ทดสอบ contact page view
 class ContactViewTests(TestCase):

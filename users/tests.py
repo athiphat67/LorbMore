@@ -21,13 +21,13 @@ class ProfileViewTests(TestCase):
         self.user = User.objects.create_user(username='testuser', password='123456')
         self.client = Client()
         self.client.login(username='testuser', password='123456')
-        self.url = reverse('profile')  # url ของ profile_view
+        self.url = reverse('profile_edit')  
 
     def test_profile_get(self):
         """GET request จะ render หน้า profile พร้อม form"""
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'users/profile.html')
+        self.assertTemplateUsed(response, 'users/profile_edit.html')
         self.assertIsInstance(response.context['u_form'], UserUpdateForm)
         self.assertIsInstance(response.context['p_form'], ProfileUpdateForm)
 
@@ -49,7 +49,11 @@ class ProfileViewTests(TestCase):
         }
 
         response = self.client.post(self.url, data)
-        self.assertRedirects(response, self.url)
+        # ต้อง redirect ไป profile_detail ของ user ใหม่
+        self.assertRedirects(
+            response,
+            reverse('profile_detail', kwargs={'username': 'john'})
+        )
 
         # ตรวจสอบว่า user และ profile ถูกอัปเดต
         self.user.refresh_from_db()
@@ -73,7 +77,7 @@ class ProfileViewTests(TestCase):
 
         response = self.client.post(self.url, data)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'users/profile.html')
+        self.assertTemplateUsed(response, 'users/profile_edit.html')
 
         # ตรวจสอบว่ามี error ใน form
         self.assertTrue(response.context['u_form'].errors)
