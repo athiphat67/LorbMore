@@ -1,7 +1,4 @@
-/* =========================================
-   1. Global & Hero Section (Theme หลัก)
-   ========================================= */
-   body {
+body {
     background-color: #F9FAFB;
     color: #565656;
 }
@@ -14,7 +11,7 @@
     align-items: center;
     text-align: center;
     color: white;
-    border-radius: 0 0 50% 50% / 0 0 40px 40px; /* Curve */
+    border-radius: 0 0 50% 50% / 0 0 40px 40px;
     box-shadow: 0 10px 30px rgba(255, 95, 109, 0.2);
     margin-bottom: 20px;
     position: relative;
@@ -26,7 +23,7 @@
     font-weight: 800;
     margin: 0;
     letter-spacing: 2px;
-    text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .hero-subtitle {
@@ -35,41 +32,37 @@
     opacity: 0.95;
 }
 
-/* =========================================
-   2. Container & Grid Layout
-   ========================================= */
+
 .custom-container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 0 20px;
     position: relative;
-    top: -60px; /* ดึงเนื้อหาขึ้นซ้อน Hero */
+    top: -60px;
     z-index: 10;
     margin-bottom: 60px;
 }
 
 .contact-grid {
     display: grid;
-    grid-template-columns: 1fr 1.5fr; /* ซ้ายเล็กกว่าขวาหน่อย */
+    grid-template-columns: 1fr 1.5fr;
     gap: 30px;
 }
 
-/* =========================================
-   3. Left Side: Contact Info Card
-   ========================================= */
+
 .contact-info-card {
-    background: linear-gradient(135deg, #3d485b 0%, #313845 100%); /* สีเข้มดูหรู */
+    background: linear-gradient(135deg, #3d485b 0%, #313845 100%);
     color: white;
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
 .info-heading {
     font-size: 1.8rem;
     font-weight: 700;
     margin-bottom: 10px;
-    color: #FFC85C; /* สีเหลืองตัดพื้นเข้ม */
+    color: #FFC85C;
 }
 
 .info-desc {
@@ -88,7 +81,7 @@
 .icon-box {
     font-size: 1.5rem;
     margin-right: 20px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(255, 255, 255, 0.1);
     width: 50px;
     height: 50px;
     display: flex;
@@ -110,14 +103,12 @@
     line-height: 1.5;
 }
 
-/* =========================================
-   4. Right Side: Contact Form Card
-   ========================================= */
+
 .contact-form-card {
     background: white;
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 }
 
 .form-heading {
@@ -139,7 +130,7 @@
     font-size: 0.95rem;
 }
 
-/* Styling Django Inputs */
+
 .contact-form-card input,
 .contact-form-card textarea {
     width: 100%;
@@ -150,7 +141,7 @@
     background-color: #F8FAFC;
     transition: all 0.3s ease;
     font-family: inherit;
-    box-sizing: border-box; /* สำคัญ */
+    box-sizing: border-box;
 }
 
 .contact-form-card textarea {
@@ -196,15 +187,13 @@
     border: 1px solid #c3e6cb;
 }
 
-/* =========================================
-   5. Responsive
-   ========================================= */
+
 @media (max-width: 900px) {
     .contact-grid {
-        grid-template-columns: 1fr; /* เรียงเป็นแถวเดียว */
+        grid-template-columns: 1fr;
         gap: 20px;
     }
-    
+
     .contact-hero {
         height: 300px;
     }
