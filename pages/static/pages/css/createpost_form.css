@@ -98,11 +98,6 @@
     gap: 12px;
 }
 
-@media (min-width: 576px) {
-    .two-col {
-        grid-template-columns: 1fr 1fr;
-    }
-}
 
 .field-error {
     color: #c83232;
@@ -169,4 +164,18 @@
 .post-form input[type="text"],
 .post-form input[type="number"] {
     height: 42px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+}
+
+@media (min-width: 992px) {
+    .form-grid {
+        grid-template-columns: 7fr 5fr;
+        gap: 32px;
+        align-items: start;
+    }
 }

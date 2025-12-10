@@ -1,52 +1,105 @@
-:root{
-    --red:#b80f2d;          /* โทนเดียวกับ navbar */
-    --yellow:#f6dd8a;
-    --ink:#111;
-    --muted:#6b6b6b;
-    --card:#fff;
-    --border:#eee;
-    --radius:16px;
-    --shadow:0 8px 22px rgba(0,0,0,.06);
-  }
-
-.page-hero{
-  max-width:1200px; margin:28px auto 18px; padding:0 20px;
-}
-.page-hero h1{
-  font-weight:800; font-size:clamp(24px,3.6vw,40px); color:var(--ink);
-  margin:0 0 6px;
-}
-.page-hero .th{ font-weight:700; color:var(--red); }
-.page-hero .sub{ color:#333; opacity:.75; margin:0; }
-
-.market-toolbar{
-  max-width:1200px; margin:18px auto 8px; padding:0 20px;
-  display:flex; align-items:center; justify-content:space-between; gap:16px;
-  flex-wrap:wrap;
+:root {
+  --red: #b80f2d;
+  --yellow: #f6dd8a;
+  --ink: #111;
+  --muted: #6b6b6b;
+  --card: #fff;
+  --border: #eee;
+  --radius: 16px;
+  --shadow: 0 8px 22px rgba(0, 0, 0, .06);
 }
 
-.market-toolbar .mt-left{ display:flex; align-items:center; gap:10px; flex:1 1 520px; }
-.market-toolbar .mt-right{ display:flex; align-items:center; gap:16px; }
-
-.market-toolbar .searchbar{
-  display:flex; align-items:center; gap:8px;
-  background:#f1f1f1; border-radius:999px; padding:10px 14px;
-  flex:1; min-width:280px;
+.page-hero {
+  max-width: 1200px;
+  margin: 28px auto 18px;
+  padding: 0 20px;
 }
-.market-toolbar .searchbar input{
-  border:0; outline:0; background:transparent;
-  width:100%; font:inherit; color:#222;
-}
-.market-toolbar .searchbar input::placeholder{ color:#8e8e8e; }
 
-.market-toolbar .quick{
-  display:inline-flex; align-items:center; gap:8px;
+.page-hero h1 {
+  font-weight: 800;
+  font-size: clamp(24px, 3.6vw, 40px);
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.page-hero .th {
+  font-weight: 700;
+  color: var(--red);
+}
+
+.page-hero .sub {
+  color: #333;
+  opacity: .75;
+  margin: 0;
+}
+
+.market-toolbar {
+  max-width: 1200px;
+  margin: 18px auto 8px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.market-toolbar .mt-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1 1 520px;
+}
+
+.market-toolbar .mt-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.market-toolbar .searchbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f1f1;
+  border-radius: 999px;
+  padding: 10px 14px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.market-toolbar .searchbar input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  width: 100%;
+  font: inherit;
+  color: #222;
+}
+
+.market-toolbar .searchbar input::placeholder {
+  color: #8e8e8e;
+}
+
+.market-toolbar .quick {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   text-decoration: none;
-  padding:8px 14px; border-radius:999px; border:1px dashed #d9d9d9;
-  background:#fff; color:#333; font-weight:600;
-  transition:transform .15s ease, border-color .15s ease, filter .15s ease;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px dashed #d9d9d9;
+  background: #fff;
+  color: #333;
+  font-weight: 600;
+  transition: transform .15s ease, border-color .15s ease, filter .15s ease;
 }
-.market-toolbar .inline-ico{ width:18px; height:18px; display:block; }
+
+.market-toolbar .inline-ico {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
 
 .pager {
   max-width: 1200px;
@@ -90,11 +143,15 @@
     font-size: 14px;
     padding: 10px;
   }
+
   img {
     max-width: 100%;
     height: auto;
   }
-  .container, .page-hero, .market-toolbar {
+
+  .container,
+  .page-hero,
+  .market-toolbar {
     padding: 0 10px;
   }
 }
@@ -102,18 +159,18 @@
 .page-container {
   max-width: 1200px;
   margin: 0 auto 18px;
-  padding: 0 20px; 
+  padding: 0 20px;
 }
 
 .card-grid-market {
   display: grid;
-  gap: 24px; /* ลด gap ลงเล็กน้อยเพื่อให้ดูทันสมัย */
-  grid-template-columns: repeat(1, 1fr); /* 1. มือถือ: 1 คอลัมน์ */
+  gap: 24px;
+  grid-template-columns: repeat(1, 1fr);
 }
 
-@media (min-width: 640px) { /* sm breakpoint */
+@media (min-width: 640px) {
   .card-grid-market {
-    grid-template-columns: repeat(2, 1fr); /* 2. Tablet: 2 คอลัมน์ */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -133,7 +190,7 @@
 
 .card__image {
   width: 100%;
-  height: 280px; 
+  height: 280px;
   object-fit: cover;
   background-color: #f0f0f0;
 }
@@ -150,11 +207,11 @@
   padding: 16px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; 
+  flex-grow: 1;
 }
 
 .card__title-wrapper {
-  height: 48px; 
+  height: 48px;
   overflow: hidden;
   margin-bottom: 8px;
 }
@@ -168,7 +225,7 @@
 .card__rating-info {
   font-size: 13px;
   color: #555;
-  flex-shrink: 0; /* ไม่ให้มันหด */
+  flex-shrink: 0;
   padding-top: 2px;
 }
 
@@ -183,7 +240,7 @@
 }
 
 .card__footer {
-  margin-top: auto; /* ⭐️ สำคัญ: ดัน footer ลงล่างสุดเสมอ */
+  margin-top: auto;
   padding-top: 16px;
   border-top: 1px solid #f0f0f0;
   display: flex;
@@ -191,6 +248,7 @@
   align-items: center;
   gap: 12px;
 }
+
 
 .card__price-section {
   display: flex;
@@ -203,33 +261,80 @@
   font-weight: bold;
   color: #000;
   margin-bottom: 16px;
-  margin-top: auto; /* ดันราคาลงล่างสุด */
+  margin-top: auto;
+}
+
+
+.card__rating-wrap {
+  margin-top: 5px;
+}
+
+.rating-star {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.rating-text {
+  color: #888;
+  font-size: 0.9em;
+}
+
+.rating-empty {
+  color: #aaa;
+  font-size: 0.9em;
+}
+
+.card__actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
 }
 
 .card__button {
-  display: block;
-  width: 100%;
-  text-align: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 10px;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  background-color: #FFD95A;
-  color: #4C3D0E;
   border: none;
-  transition: background-color 0.3s ease;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
-.card--hiring .card__button {
+.card--hiring .btn-view {
   background-color: #FFD95A;
   color: #4C3D0E;
 }
 
-.card--rental .card__button {
-  background-color: #22c55e; /* 👈 สีเขียว */
-  color: #ffffff;            /* 👈 ตัวอักษรสีขาว */
+.card--hiring .btn-view:hover {
+  background-color: #eec540;
 }
 
-.card--rental .card__button:hover {
-  background-color: #1da34e; /* 👈 สีเขียวเข้มขึ้น */
+
+.card--rental .btn-view {
+  background-color: #22c55e;
+  color: #ffffff;
+}
+
+.card--rental .btn-view:hover {
+  background-color: #1da34e;
+}
+
+.btn-book {
+  background-color: #1f6feb;
+  color: white !important;
+}
+
+
+.btn-book:hover {
+  background-color: #164f9e;
+}
+
+.btn-book.is-booked {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  pointer-events: none;
 }

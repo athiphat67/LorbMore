@@ -1,8 +1,5 @@
-/* 
-   1. Global Settings
-   */
-   body {
-    background-color: #F9FAFB; /* สีขาวควันบุหรี่ ดูสะอาดตา */
+body {
+    background-color: #F9FAFB;
     color: #333;
     margin: 0;
     padding: 0;
@@ -13,27 +10,25 @@
     margin: 0 auto;
     padding: 0 20px;
     position: relative;
-    top: -60px; /* ดึงเนื้อหาขึ้นไปซ้อนทับ Hero นิดนึงให้ดู Modern */
+    top: -60px;
     z-index: 10;
 }
 
-/* 
-   2. Hero Header (Premium Curve)
-   ========================================= */
+
 .hero-header {
-    /* Gradient สีส้ม-แดง (Theme หลัก) */
+
     background: linear-gradient(135deg, #FFC85C 0%, #FF5F6D 100%);
-    height: 240px; /* เพิ่มความสูงเพื่อให้ Curve ดูชัด */
+    height: 240px;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* ดันข้อความไปไว้ด้านบน */
+    align-items: flex-start;
     padding-top: 80px;
     text-align: center;
     color: white;
-    
-    /* Key Styling: ทำขอบล่างโค้งมนเหมือนถ้วย */
+
+
     border-radius: 0 0 30% 30% / 0 0 20px 20px;
-    
+
     box-shadow: 0 10px 30px rgba(255, 95, 109, 0.2);
     margin-bottom: 20px;
 }
@@ -43,7 +38,7 @@
     font-weight: 800;
     margin: 0;
     letter-spacing: 3px;
-    text-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    text-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .hero-subtitle {
@@ -54,13 +49,11 @@
     margin-top: 5px;
 }
 
-/* 
-   3. Project Cards Grid (แก้ปัญหา Layout เบี้ยว)
-   ========================================= */
+
 .project-cards-grid {
     display: grid;
-    /* บังคับ 3 คอลัมน์ เท่าๆ กัน */
-    grid-template-columns: repeat(3, 1fr); 
+
+    grid-template-columns: repeat(3, 1fr);
     gap: 35px;
     margin-bottom: 100px;
 }
@@ -76,14 +69,14 @@
     padding: 30px 20px;
     border-radius: 20px;
     text-align: center;
-    box-shadow: 0 15px 30px rgba(0,0,0,0.05); /* เงานุ่มๆ */
-    border: 1px solid rgba(0,0,0,0.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.02);
     transition: all 0.3s ease;
-    height: 100%; /* ให้การ์ดสูงเท่ากันหมด */
+    height: 100%;
 }
 
 .info-card:hover {
-    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 .card-icon {
@@ -99,7 +92,7 @@
 }
 
 .action-text {
-    color: #C70039; /* สีแดงแบรนด์ */
+    color: #C70039;
     font-weight: 600;
     font-size: 0.9rem;
     text-transform: uppercase;
@@ -114,9 +107,7 @@
 }
 
 
-/* =========================================
-   4. Members Section
-   ========================================= */
+
 .section-header {
     text-align: center;
     font-size: 2rem;
@@ -130,10 +121,10 @@
     background: white;
     border-radius: 20px;
     padding: 30px 50px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.03);
     border: 1px solid #EDF2F7;
     max-width: 800px;
-    margin: 0 auto; /* จัดกึ่งกลาง */
+    margin: 0 auto;
 }
 
 .member-row {
@@ -149,7 +140,7 @@
     border-bottom: none;
 }
 
-/* Header ของตาราง */
+
 .member-row.header {
     border-bottom: 2px solid #E2E8F0;
     margin-bottom: 10px;
@@ -170,25 +161,23 @@
 
 .col-id {
     text-align: right;
-    font-family: monospace; /* ฟอนต์ตัวเลขแบบโค้ด */
+    font-family: monospace;
     color: #718096;
     font-size: 1.1rem;
 }
 
-/* =========================================
-   5. Responsive (มือถือ)
-   ========================================= */
+
 @media (max-width: 768px) {
-    /* เปลี่ยน Grid เป็น 1 แถวในมือถือ */
+
     .project-cards-grid {
-        grid-template-columns: 1fr; 
+        grid-template-columns: 1fr;
         gap: 15px;
     }
 
     .hero-title {
         font-size: 3rem;
     }
-    
+
     .hero-header {
         height: 300px;
     }
@@ -196,7 +185,7 @@
     .members-card {
         padding: 20px;
     }
-    
+
     .member-row {
         font-size: 0.95rem;
     }

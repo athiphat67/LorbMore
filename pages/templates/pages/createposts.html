@@ -4,34 +4,44 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'pages/css/createposts.css' %}">
 <main class="create-post-container">
-    <div class="content-box">
-        <h1 class="page-title">Create your own Post</h1>
-        <p class="page-subtitle">เลือกประเภทโพสต์ที่คุณต้องการสร้าง</p>
+    <div class="content-card">
+        <div class="header-section">
+            <h1 class="page-title">Create New Post</h1>
+            <p class="page-subtitle">เลือกประเภทโพสต์ที่คุณต้องการสร้าง</p>
+        </div>
 
         <div class="choice-wrapper">
 
             {% if user.is_superuser or "@dome.tu.ac.th" in user.email %}
                 <a href="{% url 'posts:create_hiring' %}" class="choice-button choice-hiring">
-                    Hiring (รับจ้างงาน)
+                    <div class="text-content">
+                        <h3>Hiring</h3>
+                        <span>รับจ้างงาน / หาคนทำงาน</span>
+                    </div>
                 </a>
-                <a href="{% url 'posts:create_rental' %}" class="choice-button choice-hiring">
-                    Rental (เช่า-ยืม)
+
+                <a href="{% url 'posts:create_rental' %}" class="choice-button choice-rental">
+                    <div class="text-content">
+                        <h3>Rental</h3>
+                        <span>เช่าของ / ยืมของ</span>
+                    </div>
                 </a>
             {% else %}
-                <div class="choice-button choice-hiring" style="background-color: #ccc; cursor: not-allowed; opacity: 0.6; pointer-events: none;">
-                    Hiring (รับจ้างงาน)
-                    <br>
-                    <span style="font-size: 0.7rem; display: block; margin-top: 5px;">(เฉพาะนักศึกษา TU เท่านั้น)</span>
+                <div class="choice-button btn-disabled">
+                    <div class="text-content">
+                        <h3>Hiring</h3>
+                        <span>(เฉพาะนักศึกษา TU เท่านั้น)</span>
+                    </div>
                 </div>
-                    <div class="choice-button choice-hiring" style="background-color: #ccc; cursor: not-allowed; opacity: 0.6; pointer-events: none;">
-                    Rental (เช่า-ยืม)
-                    <br>
-                    <span style="font-size: 0.7rem; display: block; margin-top: 5px;">(เฉพาะนักศึกษา TU เท่านั้น)</span>
+
+                <div class="choice-button btn-disabled">
+                    <div class="text-content">
+                        <h3>Rental</h3>
+                        <span>(เฉพาะนักศึกษา TU เท่านั้น)</span>
+                    </div>
                 </div>
             {% endif %}
 
-            <span class="choice-separator">
-            </a>
         </div>
     </div>
 </main>

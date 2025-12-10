@@ -2,42 +2,55 @@
 {% load static %}
 
 {% block content %}
-<div class="container" style="padding: 20px;">
-    <h2>My Booking List (รายการที่สนใจ)</h2>
-    <hr>
+<link rel="stylesheet" href="{% static 'pages/css/mybooking.css' %}">
+<div class="booking-page-wrapper">
+    <div class="booking-container">
 
-    {% if booking_items %}
-    <div class="booking-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
-        {% for item in booking_items %}
-        <div class="card"
-            style="width: 300px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; position: relative;">
+        <div class="booking-header">
+            <h2 class="page-title">My Booking List <span
+                    style="font-size: 0.6em; color: #718096; font-weight: normal;">(รายการที่สนใจ)</span></h2>
+        </div>
 
-            <img src="{{ item.image_url }}" style="width: 100%; height: 200px; object-fit: cover;">
+        {% if booking_items %}
+        <div class="booking-grid">
+            {% for item in booking_items %}
+            <article class="booking-card">
+                <div class="booking-image-box">
+                    <img src="{{ item.image_url }}" alt="{{ item.title }}" class="booking-image">
+                </div>
 
-            <div class="card-body" style="padding: 15px;">
-                <h5 style="margin: 0 0 10px 0;">{{ item.title }}</h5>
-                <p style="color: #E89E48; font-weight: bold;">{{ item.price_detail }}</p>
+                <div class="booking-content">
+                    <h3 class="booking-title">{{ item.title }}</h3>
+                    <p class="booking-price">{{ item.price_detail }}</p>
 
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
-                    <a href="{% url 'posts:detail_post' item.id %}" class="btn"
-                        style="background-color: #333; color: white; padding: 5px 15px; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">
-                        View Detail
-                    </a>
-
-                    <a href="{% url 'posts:toggle_booking' item.id %}" class="card__button"
-                        style="background-color: {% if item.is_booked %}#6c757d{% else %}#E89E48{% endif %}; border: none; color: white;">
+                    <div class="booking-actions">
+                        <a href="{% url 'posts:detail_post' item.id %}" class="btn-action btn-view">
+                            View Detail
+                        </a>
 
                         {% if item.is_booked %}
-                        Booked {% else %}
-                        Booking {% endif %}
-                    </a>
+                        <a href="{% url 'posts:toggle_booking' item.id %}" class="btn-action btn-booked">
+                            Booked
+                        </a>
+                        {% else %}
+                        <a href="{% url 'posts:toggle_booking' item.id %}" class="btn-action btn-booking">
+                            Booking
+                        </a>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
+            </article>
+            {% endfor %}
         </div>
-        {% endfor %}
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🔖</div>
+            <h4>คุณยังไม่มีรายการที่ Booking ไว้</h4>
+            <p>เลือกดูรายการที่น่าสนใจและกด Booking เพื่อเก็บไว้ดูภายหลัง</p>
+            <br>
+            <a href="/" class="btn-add" style="display: inline-block;">ไปหน้าแรก</a>
+        </div>
+        {% endif %}
     </div>
-    {% else %}
-    <p style="color: #888; text-align: center; margin-top: 50px;">คุณยังไม่มีรายการที่ Booking ไว้</p>
-    {% endif %}
 </div>
 {% endblock %}

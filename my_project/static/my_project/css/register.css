@@ -1,7 +1,4 @@
-/* =========================================
-   1. Background & Layout (Theme เดียวกับ Login)
-   ========================================= */
-   .register-background {
+.register-background {
     background-color: #F0F2F5;
     background-image: radial-gradient(circle at 10% 20%, rgb(255, 245, 230) 0%, rgb(240, 242, 245) 90%);
     min-height: 100vh;
@@ -9,34 +6,37 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 40px 20px; /* เพิ่ม Padding กันฟอร์มล้นจอ */
+    padding: 40px 20px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* =========================================
-   2. Card Structure
-   ========================================= */
+
 .register-card {
     width: 100%;
-    max-width: 500px; /* กว้างพอประมาณ */
+    max-width: 500px;
     background: white;
     border-radius: 30px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(0, 0, 0, 0.05);
     overflow: hidden;
     position: relative;
-    /* เพิ่ม Animation ให้ดูแพง */
+
     animation: fadeInUp 0.6s ease-out;
     margin-bottom: 150px;
 }
 
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* =========================================
-   3. Header Section
-   ========================================= */
+
 .register-header {
     background: linear-gradient(135deg, #FFC85C 0%, #FF5F6D 100%);
     padding: 40px 30px 30px;
@@ -48,7 +48,7 @@
     font-size: 2rem;
     font-weight: 800;
     margin-bottom: 5px;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .header-subtitle {
@@ -56,9 +56,7 @@
     opacity: 0.9;
 }
 
-/* =========================================
-   4. Form Body & Inputs (แก้ปัญหา CSS ไม่ติด)
-   ========================================= */
+
 .register-body {
     padding: 30px 40px 40px;
 }
@@ -75,28 +73,26 @@
     font-size: 0.95rem;
 }
 
-/* --- [สำคัญ] Selector เหมา input ทุกประเภท --- */
+
 .register-body input {
     width: 100%;
     padding: 14px 20px;
     border: 2px solid #E2E8F0;
-    border-radius: 15px; /* ความมน */
+    border-radius: 15px;
     font-size: 1rem;
     background-color: #F8FAFC;
     color: #2D3748;
     transition: all 0.3s ease;
-    box-sizing: border-box; /* สำคัญ: ไม่ให้ Padding ดันจนล้น */
+    box-sizing: border-box;
 }
 
-/* Effect ตอนกดพิมพ์ */
+
 .register-body input:focus {
     background-color: white;
     outline: none;
 }
 
-/* =========================================
-   5. Button (Premium Style)
-   ========================================= */
+
 .btn-register {
     display: block;
     width: 100%;
@@ -119,9 +115,7 @@
     box-shadow: 0 15px 30px -5px rgba(199, 0, 57, 0.5);
 }
 
-/* =========================================
-   6. Footer
-   ========================================= */
+
 .footer-links {
     margin-top: 25px;
     text-align: center;

@@ -2,106 +2,92 @@
 {% load static %}
 
 {% block content %}
-<div class="profile-container">
+<link rel="stylesheet" href="{% static 'users/css/profile.css' %}">
+<div class="profile-page-wrapper">
 
-    <div class="profile-header-section"
-        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2>Profile</h2>
+    <header class="page-header">
+        <h2 class="page-title">Profile</h2>
 
         {% if request.user == profile_user %}
-        <a href="{% url 'profile_edit' %}" class="btn-edit-profile"
-            style="background-color: #E89E48; color: white; padding: 10px 20px; border-radius: 20px; text-decoration: none; font-weight: bold;">
+        <a href="{% url 'profile_edit' %}" class="btn btn-edit">
             Edit Profile
         </a>
         {% endif %}
-    </div>
+    </header>
 
-    <div class="profile-layout" style="display: flex; gap: 30px; flex-wrap: wrap;">
+    <div class="profile-content-grid">
 
-        <div class="left-col" style="flex: 1; min-width: 300px;">
-            <div class="card profile-card"
-                style="background: #fdfdfd; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-
-                <div class="profile-img-box" style="margin-bottom: 15px;">
+        <aside class="profile-sidebar">
+            <div class="card identity-card">
+                
+                <div class="profile-avatar-box">
                     {% if profile_user.profile.profile_image %}
-                    <img src="{{ profile_user.profile.profile_image.url }}" alt="Profile"
-                        style="width: 100%; height: auto; border-radius: 10px; object-fit: cover;">
+                        <img src="{{ profile_user.profile.profile_image.url }}" alt="Profile Image" class="avatar-img">
                     {% else %}
-                    <div
-                        style="width: 100%; height: 200px; background-color: #ccc; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #666;">
-                        No Image
-                    </div>
+                        <div class="avatar-placeholder">No Image</div>
                     {% endif %}
                 </div>
 
-                <h3 class="display-name">{{ profile_user.profile.displayName }}</h3>
-                <p class="username text-muted">@{{ profile_user.username }}</p>
-                <p class="student-info">
-                    {{ profile_user.profile.studentId|default:"-" }}
-                </p>
-
-                <div class="ratings" style="color: #ffc107; font-size: 1.1rem; margin-top: 10px;">
-                    ★
-                    <span style="color: #333; font-weight: bold; margin-left: 5px;">
-                        {{ avg_rating }} / 5.0
-                    </span>
-                    <span style="color: #888; font-size: 0.9rem;">
-                        ({{ review_count }} รีวิว)
-                    </span>
+                <div class="profile-text-info">
+                    <h3 class="display-name">{{ profile_user.profile.displayName }}</h3>
+                    <p class="username">@{{ profile_user.username }}</p>
+                    <p class="student-detail">
+                        {{ profile_user.profile.studentId|default:"-" }}
+                    </p>
                 </div>
 
-                <div style="margin-top: 20px;">
-                    <button style="border: none; background: none; color: #666; cursor: pointer;">Report users</button>
+                <div class="rating-badge">
+                    <span class="star-icon">★</span>
+                    <span class="rating-score">{{ avg_rating }} / 5.0</span>
+                    <span class="review-count">({{ review_count }} รีวิว)</span>
+                </div>
+
+                <div class="report-section">
+                    <button class="btn-text-report">Report users</button>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <div class="right-col" style="flex: 2; min-width: 300px; display: flex; flex-direction: column; gap: 20px;">
+        <section class="profile-main-content">
 
-            <div class="card skill-card"
-                style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <h4 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">Skills</h4>
-                <div class="skill-list" style="padding-top: 10px;">
+            <div class="card skills-card">
+                <h4 class="card-title">Skills</h4>
+                <div class="card-body">
                     {{ profile_user.profile.bioSkills|linebreaks }}
                 </div>
             </div>
 
-            <div class="card review-card"
-                style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 20px;">
-                <h4 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
-                    Reviews from others
-                </h4>
-
-                <div class="review-list" style="max-height: 400px; overflow-y: auto;">
+            <div class="card reviews-card">
+                <h4 class="card-title">Reviews from others</h4>
+                
+                <div class="reviews-list-container">
                     {% for review in user_reviews %}
-                    <div class="review-item"
-                        style="border-bottom: 1px solid #f0f0f0; padding-bottom: 15px; margin-bottom: 15px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                            <strong style="color: #333;">{{ review.author.username }}</strong>
-                            <span style="color: #ffc107;">★ {{ review.rating }}</span>
+                    <div class="review-item">
+                        <div class="review-header">
+                            <strong class="review-author">{{ review.author.username }}</strong>
+                            <span class="review-score">★ {{ review.rating }}</span>
                         </div>
 
-                        <div style="font-size: 0.85rem; color: #888; margin-bottom: 8px;">
-                            On post: <a href="{% url 'posts:detail_post' review.post.id %}"
-                                style="color: #E89E48; text-decoration: none;">
+                        <div class="review-meta">
+                            On post: <a href="{% url 'posts:detail_post' review.post.id %}" class="review-link">
                                 {{ review.post.title }}
                             </a>
                         </div>
 
-                        <p style="color: #555; font-size: 0.95rem; margin: 0;">
+                        <p class="review-comment">
                             "{{ review.comment|default:"No comment" }}"
                         </p>
-                        <small style="color: #aaa; font-size: 0.8rem;">{{ review.created_at|date:"d M Y" }}</small>
+                        <small class="review-date">{{ review.created_at|date:"d M Y" }}</small>
                     </div>
                     {% empty %}
-                    <div style="text-align: center; color: #999; padding: 20px;">
+                    <div class="empty-state">
                         ยังไม่มีรีวิว
                     </div>
                     {% endfor %}
                 </div>
             </div>
 
-        </div>
+        </section>
     </div>
 </div>
 {% endblock content %}
