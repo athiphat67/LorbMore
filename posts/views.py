@@ -24,7 +24,7 @@ def hiring_page_view(request):
 
     # ดึงข้อมูล "หน้า" ที่ถูกต้องมา
     page_obj = paginator.get_page(page_number)
-    formatted_items = [_format_post_data(post) for post in page_obj]
+    formatted_items = [_format_post_data(post, request.user) for post in page_obj]
 
     context = {
         "hiring_items": formatted_items,
@@ -49,7 +49,7 @@ def rental_page_view(request):
 
     # ดึงข้อมูล "หน้า" ที่ถูกต้องมา
     page_obj = paginator.get_page(page_number)
-    formatted_items = [_format_post_data(post) for post in page_obj]
+    formatted_items = [_format_post_data(post, request.user) for post in page_obj]
 
     context = {
         "rental_items": formatted_items,
@@ -59,7 +59,7 @@ def rental_page_view(request):
 
 
 # ฟังก์ชันช่วยในการแปลงข้อมูลจาก ORM object เป็น Dict
-def _format_post_data(post):
+def _format_post_data(post, user=None):
     """
     ฟังก์ชันช่วยแปลงข้อมูลจาก ORM Object -> Dict
     เพื่อส่งต่อไปยัง Template (HTML)
@@ -78,6 +78,11 @@ def _format_post_data(post):
         price_detail = f"เริ่มต้น {post.budgetMin:,}฿"
     elif isinstance(post, RentalPost):
         price_detail = f"เริ่มต้น {post.pricePerDay:,}฿/วัน"
+        
+    is_booked = False
+    if user and user.is_authenticated:
+        # เช็คว่า id ของ user นี้ อยู่ใน list bookings ของโพสต์นี้ไหม
+        is_booked = post.bookings.filter(id=user.id).exists()
 
     # ส่งค่าในรูป Dic กลับไป
     return {
@@ -88,6 +93,7 @@ def _format_post_data(post):
         "count_reviews": post.count_reviews,
         "avg_rating": post.avg_rating,
         "price_detail": price_detail,
+        "is_booked": is_booked,
     }
 
 
@@ -122,6 +128,7 @@ def detail_post_view(request, post_id):
         "skills": skills_list,
         "categories": post.categories.all(),
         "is_hiring": is_hiring,
+        
     }
 
     return render(request, "pages/detail_post.html", context)
@@ -306,3 +313,48 @@ def add_review_view(request, post_id):
 
     # ถ้าไม่ใช่ POST ให้ redirect กลับไปหน้า post detail เลย
     return redirect("posts:detail_post", post_id=post.id)
+
+@login_required
+def toggle_booking_view(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
+    
+    # เช็คว่า user จองไปหรือยัง
+    if post.bookings.filter(id=request.user.id).exists():
+        post.bookings.remove(request.user) # ถ้ามีแล้ว ให้ลบออก (Un-book)
+    else:
+        post.bookings.add(request.user)    # ถ้ายังไม่มี ให้เพิ่ม (Book)
+        
+    # Redirect กลับไปหน้าเดิมที่ user กดมา
+    return redirect(request.META.get('HTTP_REFERER', 'posts:hiring'))
+
+@login_required
+def my_booking_view(request):
+    user = request.user
+    
+    # ดึง Media มารอไว้
+    posts_with_media = Prefetch("media", queryset=Media.objects.all(), to_attr="images")
+    
+    # ดึงโพสต์ที่ user นี้อยู่ใน field bookings
+    # ต้อง select_related hiringpost/rentalpost เพื่อให้แยกประเภทได้ตอน format
+    booked_posts = Post.objects.filter(bookings=user).select_related(
+        'hiringpost', 'rentalpost'
+    ).prefetch_related(posts_with_media).order_by('-id')
+
+    # แปลงข้อมูล (ดึง instance ลูก hiring/rental ออกมาส่งให้ format)
+    formatted_items = []
+    for post in booked_posts:
+        # ต้องแปลงเป็น HiringPost หรือ RentalPost object ก่อนส่งเข้า format
+        actual_post = post
+        if hasattr(post, 'hiringpost'):
+            actual_post = post.hiringpost
+        elif hasattr(post, 'rentalpost'):
+            actual_post = post.rentalpost
+        if hasattr(post, 'images'):
+            actual_post.images = post.images
+            
+        formatted_items.append(_format_post_data(actual_post, user))
+
+    context = {
+        "booking_items": formatted_items,
+    }
+    return render(request, "pages/mybooking.html", context)
