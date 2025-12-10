@@ -1,19 +1,27 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .forms import UserUpdateForm, ProfileUpdateForm
+from django.db.models import Avg
+from posts.models import Review
 
-
-# ฟังก์ชันสำหรับ "ดูโปรไฟล์" (ใครเข้าก็ได้ หรือจะบังคับ login ก็ได้)
-def profile_detail_view(request, username):
-    # ค้นหา User จาก username ที่ส่งมาใน URL
+def profile_detail_view(request, username): 
+    
     profile_user = get_object_or_404(User, username=username)
+    user_reviews = Review.objects.filter(post__author=profile_user).order_by('-created_at')
+    avg_rating = user_reviews.aggregate(Avg('rating'))['rating__avg']
+    if avg_rating is None:
+        avg_rating = 0
+    else:
+        avg_rating = round(avg_rating, 1) # ทศนิยม 1 ตำแหน่ง
 
     context = {
-        "profile_user": profile_user,
+        'profile_user': profile_user,
+        'user_reviews': user_reviews, # ส่งลิสต์รีวิวไป
+        'avg_rating': avg_rating,     # ส่งคะแนนเฉลี่ยไป
+        'review_count': user_reviews.count() # จำนวนรีวิว
     }
-    return render(request, "users/profile_detail.html", context)
+    return render(request, 'users/profile_detail.html', context)
 
 
 # ฟังก์ชันสำหรับ "แก้ไขโปรไฟล์" (ต้อง Login เท่านั้น)
