@@ -18,7 +18,8 @@
         </form>
     </div>
     <div class="mt-right">
-        <a class="quick" href="{% url 'posts:createposts' %}"><span aria-hidden="true">＋</span> create your hiring post</a>
+        <a class="quick" href="{% url 'posts:createposts' %}"><span aria-hidden="true">＋</span> create your hiring
+            post</a>
     </div>
 </section>
 
@@ -34,16 +35,16 @@
                 <div class="card__header">
                     <p class="card__title" title="{{ item.title|striptags }}">{{ item.title }}</p>
 
-                        {% if item.count_reviews > 0 %}
-                        <div class="card__rating-info" style="margin-top: 5px;">
-                            <span style="color: #ffc107; font-weight: bold;">★ {{ item.avg_rating|floatformat:1}}</span>
-                            <span style="color: #888; font-size: 0.9em;">({{ item.count_reviews }} รีวิว)</span>
-                        </div>
-                        {% else %}
-                        <div class="card__rating-info" style="margin-top: 5px;">
-                            <span style="color: #aaa; font-size: 0.9em;">รีวิวคนแรกเลยซิ</span>
-                        </div>
-                        {% endif %}
+                    {% if item.count_reviews > 0 %}
+                    <div class="card__rating-info" style="margin-top: 5px;">
+                        <span style="color: #ffc107; font-weight: bold;">★ {{ item.avg_rating|floatformat:1}}</span>
+                        <span style="color: #888; font-size: 0.9em;">({{ item.count_reviews }} รีวิว)</span>
+                    </div>
+                    {% else %}
+                    <div class="card__rating-info" style="margin-top: 5px;">
+                        <span style="color: #aaa; font-size: 0.9em;">รีวิวคนแรกเลยซิ</span>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="card__tags">
@@ -61,15 +62,25 @@
                     <span class="card__price">{{ item.price_detail }}</span>
                 </div>
 
-                <a href="{% url 'posts:detail_post' item.id %}" class="card__button">
-                    VIEW
-                </a>
+                <div style="display: flex; gap: 8px;"> <a href="{% url 'posts:detail_post' item.id %}"
+                        class="card__button">
+                        VIEW
+                    </a>
+
+                    <a href="{% url 'posts:toggle_booking' item.id %}" class="card__button"
+                        style="background-color: {% if item.is_booked %}#6c757d{% else %}#E89E48{% endif %}; border: none; color: white;">
+
+                        {% if item.is_booked %}
+                        Booked {% else %}
+                        Booking {% endif %}
+                    </a>
+
+                </div>
             </div>
         </div>
         {% endfor %}
     </div>
 </div>
-
 <!-- Demo Pagination -->
 <nav class="pager" aria-label="Pagination">
 

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container" style="padding: 20px;">
+    <h2>My Booking List (รายการที่สนใจ)</h2>
+    <hr>
+
+    {% if booking_items %}
+    <div class="booking-grid" style="display: flex; flex-wrap: wrap; gap: 20px;">
+        {% for item in booking_items %}
+        <div class="card"
+            style="width: 300px; border: 1px solid #ddd; border-radius: 10px; overflow: hidden; position: relative;">
+
+            <img src="{{ item.image_url }}" style="width: 100%; height: 200px; object-fit: cover;">
+
+            <div class="card-body" style="padding: 15px;">
+                <h5 style="margin: 0 0 10px 0;">{{ item.title }}</h5>
+                <p style="color: #E89E48; font-weight: bold;">{{ item.price_detail }}</p>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+                    <a href="{% url 'posts:detail_post' item.id %}" class="btn"
+                        style="background-color: #333; color: white; padding: 5px 15px; text-decoration: none; border-radius: 5px; font-size: 0.9rem;">
+                        View Detail
+                    </a>
+
+                    <a href="{% url 'posts:toggle_booking' item.id %}" class="card__button"
+                        style="background-color: {% if item.is_booked %}#6c757d{% else %}#E89E48{% endif %}; border: none; color: white;">
+
+                        {% if item.is_booked %}
+                        Booked {% else %}
+                        Booking {% endif %}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p style="color: #888; text-align: center; margin-top: 50px;">คุณยังไม่มีรายการที่ Booking ไว้</p>
+    {% endif %}
+</div>
+{% endblock %}

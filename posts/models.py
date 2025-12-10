@@ -50,6 +50,7 @@ class Post(models.Model):
     )
 
     categories = models.ManyToManyField(Category, related_name="posts", blank=True)
+    bookings = models.ManyToManyField(User, related_name='booked_posts', blank=True)
 
     def __str__(self):
         # กำหนดให้ Django Admin แสดงผลด้วยฟิลด์ 'title'

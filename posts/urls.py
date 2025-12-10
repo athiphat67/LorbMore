@@ -14,4 +14,7 @@ urlpatterns = [
     path('post/edit/<int:post_id>/', views.edit_post_view, name='edit_post'), 
     path('post/delete/<int:post_id>/', views.delete_post_view, name='delete_post'),
     path('post/<int:post_id>/review/', views.add_review_view, name='add_review'),
+    path('mybooking/', views.my_booking_view, name='mybooking'),
+    path('post/<int:post_id>/booking/', views.toggle_booking_view, name='toggle_booking'),
+    
 ]

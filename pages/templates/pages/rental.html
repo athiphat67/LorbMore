@@ -6,20 +6,21 @@
 <link rel="stylesheet" href="{% static 'pages/css/market_space.css' %}">
 
 <section class="page-hero">
-  <h1>Items Rental <span class="th">(ให้-เช่ายืม)</span></h1>
-  <p class="sub">Rent the tools you need — save time and budget.</p>
+    <h1>Items Rental <span class="th">(ให้-เช่ายืม)</span></h1>
+    <p class="sub">Rent the tools you need — save time and budget.</p>
 </section>
 
 <!-- Toolbar: Rental -->
 <section class="market-toolbar" data-page="rental" aria-label="Rental tools">
     <div class="mt-left">
         <form class="searchbar" role="search" action="#" method="get">
-        <span class="search-ico" aria-hidden="true">🔍</span>
-        <input type="search" name="q" placeholder="searching…" aria-label="Search rentals">
+            <span class="search-ico" aria-hidden="true">🔍</span>
+            <input type="search" name="q" placeholder="searching…" aria-label="Search rentals">
         </form>
     </div>
     <div class="mt-right">
-        <a class="quick" href="{% url 'posts:createposts' %}"><span aria-hidden="true">＋</span> create your rental post</a>
+        <a class="quick" href="{% url 'posts:createposts' %}"><span aria-hidden="true">＋</span> create your rental
+            post</a>
         </a>
     </div>
 </section>
@@ -31,21 +32,21 @@
             <a href="{% url 'posts:detail_post' item.id %}" class="card__image-link">
                 <img src="{{ item.image_url }}" alt="{{ item.title }}" class="card__image">
             </a>
-            
+
             <div class="card__body">
                 <div class="card__header">
                     <p class="card__title" title="{{ item.title|striptags }}">{{ item.title }}</p>
 
-                        {% if item.count_reviews > 0 %}
-                        <div class="card__rating-info" style="margin-top: 5px;">
-                            <span style="color: #ffc107; font-weight: bold;">★ {{ item.avg_rating|floatformat:1}}</span>
-                            <span style="color: #888; font-size: 0.9em;">({{ item.count_reviews }} รีวิว)</span>
-                        </div>
-                        {% else %}
-                        <div class="card__rating-info" style="margin-top: 5px;">
-                            <span style="color: #aaa; font-size: 0.9em;">รีวิวคนแรกเลยซิ</span>
-                        </div>
-                        {% endif %}
+                    {% if item.count_reviews > 0 %}
+                    <div class="card__rating-info" style="margin-top: 5px;">
+                        <span style="color: #ffc107; font-weight: bold;">★ {{ item.avg_rating|floatformat:1}}</span>
+                        <span style="color: #888; font-size: 0.9em;">({{ item.count_reviews }} รีวิว)</span>
+                    </div>
+                    {% else %}
+                    <div class="card__rating-info" style="margin-top: 5px;">
+                        <span style="color: #aaa; font-size: 0.9em;">รีวิวคนแรกเลยซิ</span>
+                    </div>
+                    {% endif %}
                 </div>
 
                 <div class="card__tags">
@@ -63,22 +64,34 @@
                     <span class="card__price">{{ item.price_detail }}</span>
                 </div>
 
-                <a href="{% url 'posts:detail_post' item.id %}" class="card__button">
-                    VIEW
-                </a>
+                <div style="display: flex; gap: 8px;"> <a href="{% url 'posts:detail_post' item.id %}"
+                        class="card__button">
+                        VIEW
+                    </a>
+
+                    <a href="{% url 'posts:toggle_booking' item.id %}" class="card__button"
+                        style="background-color: {% if item.is_booked %}#6c757d{% else %}#E89E48{% endif %}; border: none; color: white;">
+
+                        {% if item.is_booked %}
+                        Booked {% else %}
+                        Booking {% endif %}
+                    </a>
+
+                </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
+</div>
 </div>
 
 <!-- Demo Pagination -->
 <nav class="pager" aria-label="Pagination">
-    
+
     {% if page_obj.has_previous %}
-        <a class="prev" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">‹</a>
+    <a class="prev" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous page">‹</a>
     {% else %}
-        <span class="prev" style="color: #ccc; cursor: not-allowed;" aria-label="Previous page">‹</span>
+    <span class="prev" style="color: #ccc; cursor: not-allowed;" aria-label="Previous page">‹</span>
     {% endif %}
 
     <span class="current-page" style="padding: 0 15px; font-weight: bold; color: #333;">
@@ -86,11 +99,10 @@
     </span>
 
     {% if page_obj.has_next %}
-        <a class="next" href="?page={{ page_obj.next_page_number }}" aria-label="Next page">›</a>
+    <a class="next" href="?page={{ page_obj.next_page_number }}" aria-label="Next page">›</a>
     {% else %}
-        <span class="next" style="color: #ccc; cursor: not-allowed;" aria-label="Next page">›</span>
+    <span class="next" style="color: #ccc; cursor: not-allowed;" aria-label="Next page">›</span>
     {% endif %}
 
 </nav>
 {% endblock %}
-
