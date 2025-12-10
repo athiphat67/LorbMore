@@ -10,13 +10,13 @@ class UserUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'first_name', 'last_name']
+        fields = ['email', 'first_name', 'last_name']
 
 # ฟอร์มแก้ไขข้อมูลโปรไฟล์ (Profile Model)
 class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['displayName', 'studentId', 'bioSkills', 'phoneNum', 'socialMedia']
+        fields = ['displayName', 'studentId', 'bioSkills', 'phoneNum', 'socialMedia', 'profile_image']
         labels = {
             'displayName': 'ชื่อที่ใช้แสดง (Display Name)',
             'studentId': 'รหัสนักศึกษา',

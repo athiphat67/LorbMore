@@ -3,53 +3,72 @@
 
 {% block content %}
 <div class="profile-container">
-    
+
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
 
-        <div class="profile-header-section" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div class="profile-header-section"
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h2>Edit Profile</h2>
-            <button type="submit" class="btn-save" style="background-color: #E89E48; color: white; padding: 10px 30px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer;">
+            <button type="submit" class="btn-save"
+                style="background-color: #E89E48; color: white; padding: 10px 30px; border-radius: 20px; border: none; font-weight: bold; cursor: pointer;">
                 Save Edit
             </button>
         </div>
 
+        {% if u_form.errors or p_form.errors %}
+        <div
+            style="background-color: #ffebee; color: #c62828; padding: 15px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #ef9a9a;">
+            <strong>แก้ไขข้อมูลไม่สำเร็จ กรุณาตรวจสอบ:</strong>
+            <ul>
+                {% for field, errors in u_form.errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+                {% endfor %}
+                {% for field, errors in p_form.errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
         <div class="profile-layout" style="display: flex; gap: 30px; flex-wrap: wrap;">
 
             <div class="left-col" style="flex: 1; min-width: 300px;">
-                <div class="card upload-card" style="background: #e0e0e0; height: 300px; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
-                    
-                    {% if user.profile.image %}
-                        <img src="{{ user.profile.image.url }}" style="width:100%; height:100%; object-fit:cover; opacity: 0.6;">
+                <div class="card upload-card"
+                    style="background: #e0e0e0; height: 300px; border-radius: 15px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+
+                    {% if user.profile.profile_image %}
+                    <img src="{{ user.profile.profile_image.url }}"
+                        style="width:100%; height:100%; object-fit:cover; opacity: 0.6;">
                     {% endif %}
 
-                    <div style="position: absolute; text-align: center;">
-                        <span style="font-size: 3rem; color: #555;">+</span>
-                        <br>
-                        {{ p_form.image }} 
+                    <div
+                        style="position: absolute; text-align: center; background: rgba(255,255,255,0.8); padding: 10px; border-radius: 10px;">
+                        {{ p_form.profile_image }}
                     </div>
                 </div>
-                
-                <div class="basic-inputs" style="margin-top: 20px; background: #fff; padding: 20px; border-radius: 15px;">
-                     <div class="form-group">
+
+                <div class="basic-inputs"
+                    style="margin-top: 20px; background: #fff; padding: 20px; border-radius: 15px;">
+                    <div class="form-group">
                         <label>Name (Display)</label>
-                        {{ p_form.displayName }} 
-                     </div>
-                     <div class="form-group">
+                        {{ p_form.displayName }}
+                    </div>
+                    <div class="form-group">
                         <label>Student ID</label>
                         {{ p_form.studentId }}
-                     </div>
+                    </div>
 
-                     
-                     <div class="form-group">
+
+                    <div class="form-group">
                         <label>Social Media</label>
                         {{ p_form.socialMedia }}
-                     </div>
-                     </div>
+                    </div>
+                </div>
             </div>
 
             <div class="right-col" style="flex: 2; min-width: 300px; display: flex; flex-direction: column; gap: 20px;">
-                
+
                 <div class="card skill-card" style="background: white; padding: 20px; border-radius: 15px;">
                     <h4 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">Skills</h4>
                     <div style="margin-top: 10px;">
@@ -60,17 +79,17 @@
                 <div class="card info-card" style="background: white; padding: 20px; border-radius: 15px;">
                     <h4 style="border-bottom: 1px solid #eee; padding-bottom: 10px;">Information</h4>
                     <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
-                        
+
                         <div class="form-row" style="display: flex; align-items: center;">
                             <label style="width: 100px; font-weight: bold;">Phone :</label>
                             {{ p_form.phoneNum }}
                         </div>
-                        
+
                         <div class="form-row" style="display: flex; align-items: center;">
                             <label style="width: 100px; font-weight: bold;">Email :</label>
                             {{ u_form.email }}
                         </div>
-                        
+
 
                     </div>
                 </div>
