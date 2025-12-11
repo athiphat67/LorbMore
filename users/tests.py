@@ -18,9 +18,9 @@ class ProfileModelTest(TestCase):
 class ProfileViewTests(TestCase):
     def setUp(self):
         # สร้าง user และ profile อัตโนมัติ (สมมติ Profile มี OneToOne กับ User)
-        self.user = User.objects.create_user(username='testuser', password='123456')
+        self.user = User.objects.create_user(username='john', password='123456')
         self.client = Client()
-        self.client.login(username='testuser', password='123456')
+        self.client.login(username='john', password='123456')
         self.url = reverse('profile_edit')  
 
     def test_profile_get(self):
