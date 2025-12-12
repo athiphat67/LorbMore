@@ -338,3 +338,15 @@
   cursor: not-allowed;
   pointer-events: none;
 }
+
+.card__button.btn-book.is-booked {
+  background-color: #333;
+  color: #fff;
+  border-color: #333;
+}
+
+.card__button.btn-book.is-booked:hover {
+  background-color: #d32f2f;
+  border-color: #d32f2f;
+  content: "Unbook";
+}

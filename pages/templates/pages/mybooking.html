@@ -30,11 +30,11 @@
 
                         {% if item.is_booked %}
                         <a href="{% url 'posts:toggle_booking' item.id %}" class="btn-action btn-booked">
-                            Booked
+                            Bookmark
                         </a>
                         {% else %}
                         <a href="{% url 'posts:toggle_booking' item.id %}" class="btn-action btn-booking">
-                            Booking
+                            Booked
                         </a>
                         {% endif %}
                     </div>

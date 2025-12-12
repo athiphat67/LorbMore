@@ -75,13 +75,40 @@
 
                         <div class="form-row">
                             <label class="form-label-inline">Phone :</label>
-                            <div class="form-input-inline">{{ p_form.phoneNum }}</div>
+                            <div class="form-input-inline">
+                                {{ p_form.phoneNum }} </div>
+                        </div>
+                
+                        <h5 class="sub-section-title">Social Media (Optional)</h5>
+                        
+                        <div class="social-input-group">
+                            <div class="social-row line">
+                                <span class="social-icon line-bg">Line ID</span>
+                                {{ p_form.line_id }}
+                            </div>
+                
+                            <div class="social-row ig">
+                                <span class="social-icon ig-bg">Instagram</span>
+                                {{ p_form.instagram_id }}
+                            </div>
+                
+                            <div class="social-row fb">
+                                <span class="social-icon fb-bg">Facebook (Link)</span>
+                                {{ p_form.facebook_link }}
+                            </div>
+                
+                            <div class="social-row x">
+                                <span class="social-icon x-bg">X (Link)</span>
+                                {{ p_form.x_link }}
+                            </div>
                         </div>
 
                         <div class="form-row">
                             <label class="form-label-inline">Email :</label>
                             <div class="form-input-inline">{{ u_form.email }}</div>
                         </div>
+
+
 
                     </div>
                 </div>

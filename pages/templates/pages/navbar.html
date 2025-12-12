@@ -19,13 +19,6 @@
         <a class="nav-item {% if request.path == '/posts/rental/' %}active{% endif %}"
           href="{% url 'posts:rental' %}">RENTAL</a>
       </li>
-      <li>
-        <a class="nav-item {% if request.path == '/about/' %}active{% endif %}" href="{% url 'about' %}">ABOUT US</a>
-      </li>
-      <li>
-        <a class="nav-item {% if request.path == '/contact/' %}active{% endif %}" href="{% url 'contact' %}">CONTACT
-          US</a>
-      </li>
     </ul>
   </div>
 
@@ -40,8 +33,9 @@
       <div class="dropdown-content">
           <a href="{% url 'profile_detail' user.username %}">Profile</a>
           <a href="{% url 'posts:mypost' %}">My Posts</a>
-          <a href="{% url 'posts:mybooking' %}">My Bookings</a>
-          <hr>
+          <a href="{% url 'posts:mybooking' %}">My Bookmark</a>
+          <a href="{% url 'about' %}">ABOUT US</a>
+          <a href="{% url 'contact' %}">CONTACT US</a>
           <form action="{% url 'logout' %}" method="post">
               {% csrf_token %}
               <button type="submit" class="dropdown-logout">Logout</button>

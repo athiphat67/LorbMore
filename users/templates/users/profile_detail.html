@@ -57,6 +57,60 @@
                 </div>
             </div>
 
+            <div class="card contact-card">
+                <h4 class="card-title">Contact & Social</h4>
+                <div class="card-body">
+                    
+                    <div class="contact-item">
+                        <span class="contact-label">Email:</span>
+                        <span class="contact-value">{{ profile_user.email }}</span>
+                    </div>
+            
+                    <div class="contact-item">
+                        <span class="contact-label">Phone:</span>
+                        <span class="contact-value">{{ profile_user.profile.phone_number|default:"-" }}</span>
+                    </div>
+            
+                    <hr class="divider">
+            
+                    <div class="social-links-display">
+                        <div class="social-display-item">
+                            <span class="social-tag line-tag">Line</span>
+                            <span class="social-value">{{ profile_user.profile.line_id|default:"-" }}</span>
+                        </div>
+            
+                        <div class="social-display-item">
+                            <span class="social-tag ig-tag">IG</span>
+                            {% if profile_user.profile.instagram_id %}
+                                <a href="https://instagram.com/{{ profile_user.profile.instagram_id }}" target="_blank" class="social-link">
+                                    {{ profile_user.profile.instagram_id }}
+                                </a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+            
+                        <div class="social-display-item">
+                            <span class="social-tag fb-tag">FB</span>
+                            {% if profile_user.profile.facebook_link %}
+                                <a href="{{ profile_user.profile.facebook_link }}" target="_blank" class="social-link">Link Profile</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+            
+                        <div class="social-display-item">
+                            <span class="social-tag x-tag">X</span>
+                            {% if profile_user.profile.x_link %}
+                                <a href="{{ profile_user.profile.x_link }}" target="_blank" class="social-link">Link Profile</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="card reviews-card">
                 <h4 class="card-title">Reviews from others</h4>
                 

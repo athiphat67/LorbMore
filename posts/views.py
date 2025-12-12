@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Post, HiringPost, RentalPost, Media
+from .models import Post, HiringPost, RentalPost, Media, Review
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -78,7 +78,7 @@ def _format_post_data(post, user=None):
         price_detail = f"เริ่มต้น {post.budgetMin:,}฿"
     elif isinstance(post, RentalPost):
         price_detail = f"เริ่มต้น {post.pricePerDay:,}฿/วัน"
-        
+
     is_booked = False
     if user and user.is_authenticated:
         # เช็คว่า id ของ user นี้ อยู่ใน list bookings ของโพสต์นี้ไหม
@@ -98,7 +98,6 @@ def _format_post_data(post, user=None):
 
 
 def detail_post_view(request, post_id):
-
     post = get_object_or_404(
         Post.objects.select_related(
             "author", "hiringpost", "rentalpost"
@@ -122,13 +121,17 @@ def detail_post_view(request, post_id):
     elif hasattr(post, "rentalpost"):
         specific_post = post.rentalpost
 
+    is_booked = False
+    if request.user.is_authenticated:
+        is_booked = post.bookings.filter(id=request.user.id).exists()
+
     context = {
         "post": specific_post,
         "media": post.media.all(),
         "skills": skills_list,
         "categories": post.categories.all(),
         "is_hiring": is_hiring,
-        
+        "is_booked": is_booked,
     }
 
     return render(request, "pages/detail_post.html", context)
@@ -165,11 +168,8 @@ def create_hiring_view(request):
     else:
         form = HiringPostForm()
 
-    context = {
-        'form': form,
-        'form_title': 'Create hiring post'
-    }
-    return render(request, 'pages/create_hiring.html', context)
+    context = {"form": form, "form_title": "Create hiring post"}
+    return render(request, "pages/create_hiring.html", context)
 
 
 @student_required
@@ -199,11 +199,9 @@ def create_rental_view(request):
     else:
         form = RentalPostForm()
 
-    context = {
-        'form': form,
-        'form_title': 'Create rental post'
-    }
-    return render(request, 'pages/create_rental.html', context)
+    context = {"form": form, "form_title": "Create rental post"}
+    return render(request, "pages/create_rental.html", context)
+
 
 @login_required
 def my_post_view(request):
@@ -308,55 +306,63 @@ def add_review_view(request, post_id):
         return redirect("posts:detail_post", post_id=post.id)
 
     if request.method == "POST":
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.post = post
-            review.author = request.user
-            review.save()
-            return redirect("posts:detail_post", post_id=post.id)
+        rating = request.POST.get("rating")
+        comment = request.POST.get("comment")
 
+        # ใช้คำสั่ง update_or_create
+        # ความหมาย: ถ้ามี (post+author) นี้อยู่แล้ว ให้ 'อัปเดต' rating/comment
+        # ถ้ายังไม่มี ให้ 'สร้างใหม่'
+        Review.objects.update_or_create(
+            post=post,
+            author=request.user,
+            defaults={"rating": rating, "comment": comment},
+        )
     # ถ้าไม่ใช่ POST ให้ redirect กลับไปหน้า post detail เลย
     return redirect("posts:detail_post", post_id=post.id)
+
 
 @login_required
 def toggle_booking_view(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    
+
     # เช็คว่า user จองไปหรือยัง
     if post.bookings.filter(id=request.user.id).exists():
-        post.bookings.remove(request.user) # ถ้ามีแล้ว ให้ลบออก (Un-book)
+        post.bookings.remove(request.user)  # ถ้ามีแล้ว ให้ลบออก (Un-book)
     else:
-        post.bookings.add(request.user)    # ถ้ายังไม่มี ให้เพิ่ม (Book)
-        
+        post.bookings.add(request.user)  # ถ้ายังไม่มี ให้เพิ่ม (Book)
+
     # Redirect กลับไปหน้าเดิมที่ user กดมา
-    return redirect(request.META.get('HTTP_REFERER', 'posts:hiring'))
+    return redirect(request.META.get("HTTP_REFERER", "posts:hiring"))
+
 
 @login_required
 def my_booking_view(request):
     user = request.user
-    
+
     # ดึง Media มารอไว้
     posts_with_media = Prefetch("media", queryset=Media.objects.all(), to_attr="images")
-    
+
     # ดึงโพสต์ที่ user นี้อยู่ใน field bookings
     # ต้อง select_related hiringpost/rentalpost เพื่อให้แยกประเภทได้ตอน format
-    booked_posts = Post.objects.filter(bookings=user).select_related(
-        'hiringpost', 'rentalpost'
-    ).prefetch_related(posts_with_media).order_by('-id')
+    booked_posts = (
+        Post.objects.filter(bookings=user)
+        .select_related("hiringpost", "rentalpost")
+        .prefetch_related(posts_with_media)
+        .order_by("-id")
+    )
 
     # แปลงข้อมูล (ดึง instance ลูก hiring/rental ออกมาส่งให้ format)
     formatted_items = []
     for post in booked_posts:
         # ต้องแปลงเป็น HiringPost หรือ RentalPost object ก่อนส่งเข้า format
         actual_post = post
-        if hasattr(post, 'hiringpost'):
+        if hasattr(post, "hiringpost"):
             actual_post = post.hiringpost
-        elif hasattr(post, 'rentalpost'):
+        elif hasattr(post, "rentalpost"):
             actual_post = post.rentalpost
-        if hasattr(post, 'images'):
+        if hasattr(post, "images"):
             actual_post.images = post.images
-            
+
         formatted_items.append(_format_post_data(actual_post, user))
 
     context = {

@@ -48,8 +48,12 @@
             <h1 class="post-detail__title">{{ post.title }}</h1>
 
             <div class="post-detail__author">
-                By: <span>{{ post.author.username }}</span>
+                By: 
+                <a href="{% url 'profile_detail' post.author.username %}" class="author-link">
+                    <span>{{ post.author.username }}</span>
+                </a>
             </div>
+
 
             {% if user.is_authenticated and post.author == user %}
             <div class="mt-3 mb-3">
@@ -69,6 +73,23 @@
             </p>
             {% endif %}
 
+            <div class="booking-action-area" style="margin-top: 16px; margin-bottom: 24px;">
+                {% if user.is_authenticated %}
+                <a href="{% url 'posts:toggle_booking' post.id %}"
+                    class="btn-toggle-booking {% if is_booked %}booked{% endif %}">
+                    {% if is_booked %}
+                    <span>✅ Booked (บันทึกแล้ว)</span>
+                    {% else %}
+                    <span>🔖 Bookmark (สนใจ)</span>
+                    {% endif %}
+                </a>
+                {% else %}
+                <a href="{% url 'users:login' %}" class="btn-toggle-booking">
+                    เข้าสู่ระบบเพื่อ Booking
+                </a>
+                {% endif %}
+            </div>
+
             <h2 class="post-detail__subtitle">รายละเอียด</h2>
             <p class="post-detail__description">
                 {{ post.description|linebreaksbr }}
@@ -87,49 +108,59 @@
 
             <hr class="mt-5 mb-4">
 
-            <h2 class="post-detail__subtitle">รีวิวจากผู้ใช้งาน ({{ post.avg_rating|floatformat:1 }} ★)</h2>
+            <h2 class="post-detail__subtitle">รีวิวจากผู้ใช้งาน ({{ post.avg_rating|floatformat:1 }} <span
+                    class="text-warning">★</span>)</h2>
 
-            <div class="reviews-section mt-3">
-                {% for review in post.reviews.all %}
-                <div class="card mb-3 shadow-sm border-0 bg-light">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <h6 class="card-title fw-bold">{{ review.author.profile.displayName }} </h6>
-                            <span class="text-warning">★ {{ review.rating }}</span>
+            <div class="reviews-scroll-container">
+                <div class="review-list">
+                    {% for review in post.reviews.all %}
+                    <div class="review-card">
+                        <div class="review-card__header">
+                            <h6 class="review-card__author">
+                                <a href="{% url 'profile_detail' review.author.username %}" style="text-decoration: none; color: inherit;">
+                                    {{ review.author.profile.displayName }}
+                                </a>
+                            </h6>                            
+                            <span class="review-card__rating">★ {{ review.rating }}</span>
                         </div>
-                        <p class="card-text text-muted small">{{ review.created_at|date:"d M Y" }}</p>
-                        <p class="card-text">{{ review.comment }}</p>
+                        <span class="review-card__date">{{ review.created_at|date:"d M Y" }}</span>
+                        <p class="review-card__content">{{ review.comment }}</p>
                     </div>
+                    {% empty %}
+                    <div class="review-empty">
+                        <p>ยังไม่มีรีวิว เป็นคนแรกที่รีวิวเลย!</p>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% empty %}
-                <p class="text-muted">ยังไม่มีรีวิว เป็นคนแรกที่รีวิวเลย!</p>
-                {% endfor %}
             </div>
 
             {% if user.is_authenticated and user != post.author %}
-            <div class="add-review-section mt-5 p-4 bg-white rounded shadow-sm">
-                <h4>เขียนรีวิวของคุณ</h4>
-                <form method="POST" action="{% url 'posts:add_review' post.id %}">
+            <div class="review-form-wrapper">
+                <h4 class="review-form__title">เขียนรีวิวของคุณ</h4>
+
+                <form method="POST" action="{% url 'posts:add_review' post.id %}" class="review-form">
                     {% csrf_token %}
 
-                    <div class="mb-3">
-                        <label class="form-label">คะแนนความพึงพอใจ</label>
-                        <select name="rating" class="form-select w-auto">
-                            <option value="5">★★★★★ (5 - ดีมาก)</option>
-                            <option value="4">★★★★ (4 - ดี)</option>
-                            <option value="3">★★★ (3 - ปานกลาง)</option>
-                            <option value="2">★★ (2 - พอใช้)</option>
-                            <option value="1">★ (1 - ปรับปรุง)</option>
-                        </select>
+                    <div class="form-group">
+                        <label class="form-label">ความพึงพอใจ</label>
+                        <div class="select-wrapper">
+                            <select name="rating" class="custom-select">
+                                <option value="5">★★★★★ (5 - ดีมาก)</option>
+                                <option value="4">★★★★ (4 - ดี)</option>
+                                <option value="3">★★★ (3 - ปานกลาง)</option>
+                                <option value="2">★★ (2 - พอใช้)</option>
+                                <option value="1">★ (1 - ปรับปรุง)</option>
+                            </select>
+                        </div>
                     </div>
 
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label class="form-label">ความคิดเห็นเพิ่มเติม</label>
-                        <textarea name="comment" class="form-control" rows="3"
+                        <textarea name="comment" class="custom-textarea" rows="4"
                             placeholder="บริการเป็นอย่างไรบ้าง? คุ้มค่าหรือไม่?"></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">ส่งรีวิว</button>
+                    <button type="submit" class="btn-submit">ส่งรีวิว</button>
                 </form>
             </div>
             {% endif %}
