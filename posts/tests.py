@@ -1,9 +1,10 @@
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
 from django.contrib.auth.models import User
-from .models import Post, RentalPost, HiringPost, Media, Skill, Category
-from posts.forms import HiringPostForm, RentalPostForm
+from .models import Post, RentalPost, HiringPost, Media, Skill, Category, Review
+from posts.forms import HiringPostForm, RentalPostForm, ReviewForm
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils.http import urlencode
 
 # Create your tests here.
 class PostIntegrationTestCase(TestCase):
@@ -97,7 +98,7 @@ class PostIntegrationTestCase(TestCase):
         formatted_item = response.context['hiring_items'][0]
     
         # ตรวจสอบว่า expected_keys ที่เรากำหนดตรงกับ formatted_item 
-        expected_keys = ['id', 'image_url', 'title', 'reviews', 'rating', 'price_detail']
+        expected_keys = ['id', 'image_url', 'title', 'count_reviews', 'avg_rating', 'price_detail']
         for key in expected_keys:
             self.assertIn(key, formatted_item)
         
@@ -123,7 +124,7 @@ class PostIntegrationTestCase(TestCase):
         formatted_item = response.context['rental_items'][0]
     
         # ตรวจสอบว่า expected_keys ที่เรากำหนดตรงกับ formatted_item เปล่า
-        expected_keys = ['id', 'image_url', 'title', 'reviews', 'rating', 'price_detail']
+        expected_keys = ['id', 'image_url', 'title', 'count_reviews', 'avg_rating', 'price_detail']
         for key in expected_keys:
             self.assertIn(key, formatted_item)
         
@@ -192,13 +193,15 @@ class PostIntegrationTestCase(TestCase):
         hiring = HiringPost.objects.create(author=self.user, title="Hire", budgetMin=100, budgetMax=200)
         media = Media.objects.create(post=rental)  # ไม่มี image
         post = Post.objects.create(author=self.user, title="Base Post")
+        review = Review.objects.create( post=post, author=self.user, rating=4, comment="Good!")
 
         self.assertEqual(str(post), "Base Post")
         self.assertEqual(str(skill), "TestSkill")
         self.assertEqual(str(category), "TestCat")
         self.assertEqual(str(rental), "[Rental] Rent")
         self.assertEqual(str(hiring), "[Hiring] Hire")
-        self.assertEqual(str(media), f"Media for Post ID: {rental.id}"),
+        self.assertEqual(str(media), f"Media for Post ID: {rental.id}")
+        self.assertEqual(str(review), f"Rating 4 on {post.title} by {self.user.username}")
     
     # ใส่รูปภาพ    
     def test_media_str_with_image(self):
@@ -449,7 +452,6 @@ class PostCreationTests(TestCase):
 
         response = self.client.post(url, data, FILES={'images': [test_image]})
 
-
         self.assertEqual(response.status_code, 302)
         post = HiringPost.objects.get(title='Test Hiring')
         self.assertEqual(post.author, self.user)
@@ -483,3 +485,461 @@ class PostCreationTests(TestCase):
         # มีจำนวนรูป 0
         media_objects = Media.objects.filter(post=post)
         self.assertEqual(media_objects.count(), 0)
+        
+class PostViewTests(TestCase):
+    def setUp(self):
+        # สร้าง user 2 คน
+        self.owner = User.objects.create_user(username="owner", password="123456", email="owner.on@dome.tu.ac.th")
+        self.other = User.objects.create_user(username="other", password="1234567")
+        
+        # Category และ Skill
+        self.category = Category.objects.create(name="Test Category")
+        self.skill = Skill.objects.create(name="Python")
+        
+        # สร้างโพสต์
+        # rental post
+        self.rental = RentalPost.objects.create(
+            author=self.owner,
+            title="Camera Rent",
+            description="Rent description",
+            pricePerDay=500,
+            deposit=2,
+        )
+        self.rental.categories.add(self.category)
+
+        # hiring post
+        self.hiring = HiringPost.objects.create(
+            author=self.owner,
+            title="Hiring Develop",
+            description="Hire description",
+            budgetMin=1000,
+            budgetMax=2000,
+        )
+        self.hiring.skills.add(self.skill)
+        
+        self.url_mypost = reverse("posts:mypost")
+        self.url = reverse("posts:delete_post", args=[self.rental.id])
+        self.rental_url_detail = reverse("posts:detail_post", args=[self.rental.id])
+        self.hiring_url_detail = reverse("posts:detail_post", args=[self.hiring.id])
+        self.rental_url_edit = reverse("posts:edit_post", args=[self.rental.id])
+        self.hiring_url_edit = reverse("posts:edit_post", args=[self.hiring.id])
+        
+    def test_my_post_view_status_and_template(self):
+        # ตรวจสอบว่า user login แล้วสามารถเข้าดูหน้าได้
+        self.client.login(username="owner", password="123456")
+        response = self.client.get(self.url_mypost)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "pages/mypost.html")
+        
+    def test_my_post_view_returns_correct_items(self):
+        # login user ที่มีโพสต์
+        self.client.login(username="owner", password="123456")
+
+        # request view
+        response = self.client.get(self.url_mypost)
+        self.assertEqual(response.status_code, 200)  # ต้อง 200
+
+        # ดึง context
+        items = response.context["mypost_items"]
+
+        # ตรวจสอบจำนวนโพสต์
+        self.assertEqual(len(items), 2)
+
+        # ตรวจสอบลำดับ id จากเก่า → ใหม่
+        item_ids = [item["id"] for item in items]
+        self.assertEqual(item_ids, sorted(item_ids))
+        
+    def test_my_post_view_can_create(self):
+        # ตรวขสอบสิทธิ์คนที่สามารถสร้างโพสต์ได้
+        # user ปกติ email @dome.tu.ac.th = True
+        self.client.login(username="owner", password="123456", email="owner.on@dome.tu.ac.th")
+        response = self.client.get(self.url_mypost)
+        self.assertTrue(response.context["can_create"])
+
+        # user ปกติ email ปกติ → can_create = False
+        self.client.login(username="other", password="1234567")
+        response = self.client.get(self.url_mypost)
+        self.assertFalse(response.context["can_create"])
+
+        # superuser → can_create = True
+        admin = User.objects.create_superuser(username="admin", password="admin123", email="admin@admin.com")
+        self.client.login(username="admin", password="admin123")
+        response = self.client.get(self.url_mypost)
+        self.assertTrue(response.context["can_create"])
+    
+    # ------------
+    # Delete_post   
+    # ------------    
+    def test_not_logged_in(self):
+        # กรณีผู้ใช้ไม่ได้ login => redirect ไปหน้า login
+        response = self.client.get(self.url)
+        
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/login", response.url) # string ของ URL หลัง redirect
+        
+    def test_delete_post_owner(self):
+        # กรณีเจ้าของลบโพสต์ => redirect ไปหน้า mypost
+        self.client.login(username="owner", password="123456")
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("posts:mypost"))
+        
+        # โพสต์ต้องหายไปแล้ว
+        self.assertFalse(Post.objects.filter(id=self.rental.id).exists())
+    
+    def test_delete_post_other_user(self):
+        # กรณีคนที่ไม่ใช่เจ้าของลบโพสต์ => โพสต์ยังอยู่
+        self.client.login(username="other", password="1234567")
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.rental_url_detail)
+        
+        # โพสต์ต้องยังอยู่
+        self.assertTrue(Post.objects.filter(id=self.rental.id).exists())
+        
+    # ------------
+    # Edit_post   
+    # ------------
+    def test_edit_post_other_user(self):
+        # กรณีคนที่ไม่ใช่เจ้าของแก้ไขโพสต์ => redirect ไป detail_post
+        self.client.login(username="other", password="1234567")
+        response = self.client.get(self.rental_url_edit)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.rental_url_detail)
+    
+    def test_rental_edit_form(self):
+        # กรณีถูกฟอร์ม_GET RentalPost
+        self.client.login(username="owner", password="123456")
+        response = self.client.get(self.rental_url_edit)
+
+        self.assertEqual(response.status_code, 200)
+        
+        # ยืนยันว่า form ที่ให้ user ใช้แก้ไขหรือสร้างเป็น rental post ถูกต้อง
+        self.assertTemplateUsed(response, "pages/create_rental.html")
+        self.assertIsInstance(response.context["form"], RentalPostForm)
+        
+        # ยืนยันว่าหน้านี้คือแก้ไข rental post
+        self.assertTrue(response.context["is_edit"])
+
+    def test_hiring_edit_form(self):
+        # กรณีถูกฟอร์ม_GET HiringPost
+        self.client.login(username="owner", password="123456")
+        response = self.client.get(self.hiring_url_edit)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "pages/create_hiring.html")
+        self.assertIsInstance(response.context["form"], HiringPostForm)
+        self.assertTrue(response.context["is_edit"])
+
+    def test_rental_post_update_with_media(self):
+        # สามารถอัปเดตรูปกับข้อมูลสำเร็จ (RentalPost)
+        self.client.login(username="owner", password="123456")
+
+        # สร้างข้อมูลทดสอบและรูปภาพ
+        test_image = SimpleUploadedFile(
+            name="test_image.jpg",
+            content=b"dummy_image_content",
+            content_type="image/jpeg"
+        )
+
+        # อับเดตข้อมูล
+        response = self.client.post(
+            self.rental_url_edit,
+            {
+                "title": "Updated Camera",         
+                "description": "Updated description",     
+                "pricePerDay": 650,
+                "deposit": 2,
+                "categories": [self.category.id],
+                "images": test_image,
+            },
+            format="multipart",
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.rental_url_detail)
+        
+        # เช็คว่าข้อมูลอัปเดตตรงกับข้อมูลหรือไม่
+        rental = RentalPost.objects.get(id=self.rental.id)
+        self.assertEqual(rental.title, "Updated Camera")
+        self.assertEqual(rental.pricePerDay, 650)
+        self.assertEqual(rental.description, "Updated description")
+        self.assertEqual(rental.categories.count(), 1)
+        self.assertEqual(Media.objects.filter(post=rental).count(), 1)
+
+    def test_hiring_post_update(self):
+        # สามารถอัปเดตรูปและข้อมูลสำเร็จ (HiringPost)
+        self.client.login(username="owner", password="123456")
+
+        # อัปเดตราคา
+        response = self.client.post(
+            self.hiring_url_edit,
+            {
+                "title": "Updated Hiring",
+                "description": "Updated Hiring Desc",
+                "budgetMin": 2000,
+                "budgetMax": 3000,
+                "skills": [self.skill.id],
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, self.hiring_url_detail)
+
+        # เช็คว่าข้อมูลอัปเดตตรงกับข้อมูลหรือไม่
+        hiring = HiringPost.objects.get(id=self.hiring.id)
+        self.assertEqual(hiring.title, "Updated Hiring")
+        self.assertEqual(hiring.description, "Updated Hiring Desc")
+        self.assertEqual(hiring.budgetMin, 2000)
+        self.assertEqual(hiring.budgetMax, 3000)
+        self.assertEqual(hiring.skills.count(), 1)
+
+    def test_edit_post_not_rental_or_hiring(self):
+        # กรณีอื่นๆ ไม่ใช่ hiring or rental => กลับมา mypost
+        # สร้างโพสต์ที่ไม่ใช่ rental หรือ hiring
+        base_post = Post.objects.create(
+            author=self.owner,
+            title="Not hiring/rental Post",
+            description="Post description",
+            type=None,
+        )
+
+        url = reverse("posts:edit_post", args=[base_post.id])
+
+        self.client.login(username="owner", password="123456")
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("posts:mypost"))
+        
+class ReviewViewTests(TestCase):
+
+    def setUp(self):
+        # User 2 คน
+        self.owner = User.objects.create_user(username="owner", password="123456")
+        self.reviewer = User.objects.create_user(username="reviewer", password="1234567")
+
+        # Post
+        self.post = Post.objects.create(
+            author=self.owner,
+            title="Test Post",
+            description="description"
+        )
+
+        self.url = reverse("posts:add_review", args=[self.post.id])
+
+    def test_not_logged_in(self):
+        # กรณีผู้ใช้ไม่ได้ login => redirect ไปหน้า login
+        response = self.client.get(self.url)
+        
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/login", response.url)
+
+    def test_owner_cannot_review_own_post(self):
+        # เจ้าของโพสต์ไม่สามารถรีวิวตัวเอง
+        self.client.login(username="owner", password="123456")
+        response = self.client.post(self.url, {"rating": 5, "comment": "Nice!"})
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("posts:detail_post", args=[self.post.id]))
+
+        # ไม่มี review ถูกสร้าง
+        self.assertEqual(Review.objects.count(), 0)
+
+    def test_valid_review_created(self):
+        self.client.login(username="reviewer", password="1234567")
+
+        response = self.client.post(self.url, {
+            "rating": 4,
+            "comment": "Good!"
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("posts:detail_post", args=[self.post.id]))
+
+        # Review ถูกสร้าง
+        review = Review.objects.first()
+        # ตรวจสอบว่า review ไม่ใช่ None
+        self.assertIsNotNone(review)
+        # ตรวจสอบว่า review ถูกผูกกับโพสต์ที่ถูกต้อง
+        self.assertEqual(review.post, self.post)
+        # ตรวจสอบว่า review ผู้สร้างคือผู้ใช้ที่ login
+        self.assertEqual(review.author, self.reviewer)
+        # ตรวจสอบว่า ข้อมูล rating และ comment ตรงตามที่ส่งมา
+        self.assertEqual(review.rating, 4)
+        self.assertEqual(review.comment, "Good!")
+
+    def test_invalid_review_not_created(self):
+        self.client.login(username="reviewer", password="1234567")
+
+        # rating ไม่ส่ง → form ไม่ valid
+        response = self.client.post(self.url, {
+            "comment": "Missing rating"
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("posts:detail_post", args=[self.post.id]))
+        self.assertEqual(Review.objects.count(), 0)
+
+    def test_get_request_redirect(self):
+        # กรณีทั้ง valid or invalid review => redirect detail post
+        self.client.login(username="reviewer", password="1234567")
+        response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("posts:detail_post", args=[self.post.id]))
+        
+    def test_rating_out_of_range(self):
+        # ให้ rating มากกว่า 5 คะแนน
+        self.client.login(username="reviewer", password="1234567")
+        
+        response = self.client.post(self.url, {
+            "rating": 10,
+            "comment": "Too high rating"
+        })
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("posts:detail_post", args=[self.post.id]))
+        self.assertEqual(Review.objects.count(), 0)
+
+        
+class BookingViewTests(TestCase):
+
+    def setUp(self):
+        # ผู้ใช้เจ้าของโพสต์
+        self.user = User.objects.create_user(username="user", password="12345")
+        
+        # ผู้ใช้ที่จะใช้ทดสอบการจอง
+        self.test = User.objects.create_user(username="test", password="123456")
+
+        # Category และ Skill
+        self.category = Category.objects.create(name="Test Category")
+        self.skill = Skill.objects.create(name="Python")
+        
+        # สร้างโพสต์
+        # rental post
+        self.rental = RentalPost.objects.create(
+            author=self.user,
+            title="Camera Rent",
+            description="Rent desc",
+            pricePerDay=500,
+            deposit=100,
+        )
+        self.rental.categories.add(self.category)
+
+        # hiring post
+        self.hiring = HiringPost.objects.create(
+            author=self.user,
+            title="Hiring Dev",
+            description="Hire desc",
+            budgetMin=1000,
+            budgetMax=2000,
+        )
+        self.hiring.skills.add(self.skill)
+
+        self.toggle_url_rental = reverse("posts:toggle_booking", args=[self.rental.id])
+        self.toggle_url_hiring = reverse("posts:toggle_booking", args=[self.hiring.id])
+        self.my_booking_url = reverse("posts:mybooking")
+
+    def test_not_logged_in(self):
+        # กรณีผู้ใช้ไม่ได้ login => redirect ไปหน้า login
+        response = self.client.get(self.toggle_url_rental)
+        
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/login", response.url)
+
+    
+    def test_toggle_add_booking(self):
+        # toggle: ยังไม่จอง → จองได้
+        self.client.login(username="test", password="123456")
+
+        response = self.client.get(self.toggle_url_rental, HTTP_REFERER="/previous")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/previous")
+
+        # เช็คว่าผู้ใช้ถูกเพิ่มเข้า bookings ของ rental post จริง
+        self.assertTrue(self.rental.bookings.filter(id=self.test.id).exists())
+
+    def test_toggle_remove_booking(self):
+        # toggle: จองแล้ว → ยกเลิกจอง
+        self.client.login(username="test", password="123456")
+        self.rental.bookings.add(self.test)
+
+        response = self.client.get(self.toggle_url_rental, HTTP_REFERER="/previous")
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/previous")
+
+        # booking ถูกลบ และ redirect กลับ
+        self.assertFalse(self.rental.bookings.filter(id=self.test.id).exists())
+
+    
+    def test_toggle_no_referer_redirect_default(self):
+        # Redirect กลับไปหน้าเดิมที่ user กดมา
+        self.client.login(username="test", password="123456")
+
+        response = self.client.get(self.toggle_url_hiring)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, reverse("posts:hiring"))
+    
+    def test_my_booking_view_has_items(self):
+        # มีการจอง และแสดงโพสต์ที่จองถูกต้อง
+        # user จอง rental/hiring
+        self.rental.bookings.add(self.user)
+        self.hiring.bookings.add(self.user)
+
+        self.client.login(username="user", password="12345")
+        response = self.client.get(self.my_booking_url)
+        
+        items = response.context["booking_items"]
+
+        # ต้องได้ 2 โพสต์
+        self.assertEqual(len(items), 2)
+
+        # ตรวจสอบว่ามี id ของ rental และ hiring
+        returned_ids = [item["id"] for item in items]
+        self.assertIn(self.rental.id, returned_ids)
+        self.assertIn(self.hiring.id, returned_ids)
+        
+    def test_my_booking_view_order_by_newest(self):
+        # โพสต์เรียงจากเก่าไปใหม่
+        # เพิ่ม booking
+        self.rental.bookings.add(self.user)
+        self.hiring.bookings.add(self.user)
+
+        self.client.login(username="user", password="12345")
+        response = self.client.get(self.my_booking_url)
+        items = response.context["booking_items"]
+
+        # ตรวจสอบว่าตามลำดับ id จากมาก → น้อย
+        item_ids = [item["id"] for item in items]
+        self.assertEqual(item_ids, sorted(item_ids, reverse=True))
+
+    def test_my_booking_view_media_attached(self):
+        # my_booking_view รวม media ถูกต้อง 
+        self.client.login(username="test", password="123456")
+
+        # ทำ media ให้ rental post
+        Media.objects.create(post=self.rental, image="test1.jpg")
+        Media.objects.create(post=self.rental, image="test2.jpg")
+
+        self.rental.bookings.add(self.test)
+
+        response = self.client.get(self.my_booking_url)
+        items = response.context["booking_items"]
+
+        # ต้องมีเพียงโพสต์เดียว
+        self.assertEqual(len(items), 1)
+
+        rental_item = items[0]
+
+        # ต้องมี key image_url
+        self.assertIn("image_url", rental_item)
+
+        # ต้องเป็นรูป test1 หรือ test2
+        self.assertTrue(
+            rental_item["image_url"].endswith("test1.jpg")
+            or rental_item["image_url"].endswith("test2.jpg")
+        )

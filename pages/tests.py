@@ -144,8 +144,8 @@ class PagesViewTests(TestCase):
         self.assertEqual(formatted["id"], post.id)
         self.assertIn("title", formatted)
         self.assertIn("image_url", formatted)  # ต้องมี
-        self.assertIn("reviews", formatted)
-        self.assertIn("rating", formatted)
+        self.assertIn("count_reviews", formatted)
+        self.assertIn("avg_rating", formatted)
         self.assertIn("price_detail", formatted)
         
         #นับจำนวนรูปด้วย ว่ามีครบตามที่ระบุจำนวนรูปไปมั้ย
