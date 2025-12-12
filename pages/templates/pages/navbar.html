@@ -3,14 +3,33 @@
 <link rel="stylesheet" href="{% static 'pages/css/navbar.css' %}">
 <nav class="navbar">
 
-  <div class="nav-left">
+  <!-- <div class="nav-left">
     <a href="{% url 'home' %}" class="logo">
       <img src="{% static 'pages/image/lorbmore_logo.png' %}" alt="Lorbmore Logo">
     </a>
+  </div> -->
+  <div class="nav-left">
+    <div class="dropdown">
+        
+        <a href="#" class="logo">
+            <img src="{% static 'pages/image/lorbmore_logo.png' %}" alt="Lorbmore Logo">
+        </a>
+
+        <div class="dropdown-content">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'about' %}">ABOUT US</a>
+            <a href="{% url 'contact' %}">CONTACT US</a>
+        </div>
+        
+    </div>
   </div>
 
   <div class="nav-center">
     <ul class="menu">
+      <li>
+        <a class="nav-item {% if request.path == '/' %}active{% endif %}"
+          href="{% url 'home' %}">HOME</a>
+      </li>
       <li>
         <a class="nav-item {% if request.path == '/posts/hiring/' %}active{% endif %}"
           href="{% url 'posts:hiring' %}">HIRING</a>
@@ -34,8 +53,6 @@
           <a href="{% url 'profile_detail' user.username %}">Profile</a>
           <a href="{% url 'posts:mypost' %}">My Posts</a>
           <a href="{% url 'posts:mybooking' %}">My Bookmark</a>
-          <a href="{% url 'about' %}">ABOUT US</a>
-          <a href="{% url 'contact' %}">CONTACT US</a>
           <form action="{% url 'logout' %}" method="post">
               {% csrf_token %}
               <button type="submit" class="dropdown-logout">Logout</button>

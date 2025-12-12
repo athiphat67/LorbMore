@@ -1,20 +1,20 @@
 :root {
   --nav-bg: #ffffff;
   --active-bg: #C3002F;
-  /* สีแดงเข้มตามที่ขอ */
+
   --text-color: #222222;
   --white: #ffffff;
   --border-color: #000000;
   --navbar-height: 72px;
-  /* กำหนดความสูงบาร์ให้แน่นอน เพื่อทำแถบคาด */
+
 }
 
 .navbar {
   background: var(--nav-bg);
-  /* 1. แก้ Padding: เอาแนวตั้งออก (0) ให้เหลือแค่แนวนอน (32px) */
+
   padding: 0 32px;
 
-  /* 2. กำหนดความสูงให้ Navbar */
+
   height: var(--navbar-height);
 
   display: flex;
@@ -22,20 +22,20 @@
   border-bottom: 1px solid #eee;
 }
 
-/* บังคับขนาดโลโก้ไม่ให้ล้น */
+
 .logo img {
   height: 40px;
-  /* หรือ 48px แล้วแต่ชอบครับ */
+
   width: auto;
-  /* ให้กว้างตามสัดส่วน */
+
   display: block;
   object-fit: contain;
 }
 
-/* จัดให้กล่องด้านซ้ายดันโลโก้ให้อยู่กลาง */
+
 .nav-left {
   flex: 1;
-  /* <--- เพิ่มบรรทัดนี้สำคัญมาก! เพื่อถ่วงน้ำหนักให้เท่าด้านขวา */
+
   display: flex;
   align-items: center;
   height: 100%;
@@ -44,7 +44,7 @@
 .nav-right {
   flex: 1;
   display: flex;
-  /* จัดให้อยู่กึ่งกลางแนวตั้งเสมอ */
+
   align-items: center;
 }
 
@@ -52,12 +52,12 @@
   justify-content: flex-end;
 }
 
-/* ... (ส่วน nav-center) ... */
+
 .nav-center {
   flex: 2;
   display: flex;
   justify-content: center;
-  /* 3. สั่งให้กล่องกลางยืดความสูงให้เต็ม Navbar */
+
   height: 100%;
 }
 
@@ -67,16 +67,16 @@
   padding: 0;
   display: flex;
   gap: 0;
-  /* 4. เอาช่องว่างระหว่างปุ่มออก เพื่อให้แถบมันดูต่อเนื่องกัน (ถ้ามีหลายปุ่ม) */
+
   height: 100%;
-  /* ยืดความสูงให้เต็ม */
+
 }
 
 .menu li {
   height: 100%;
-  /* ยืดความสูง li ให้เต็ม */
+
   display: flex;
-  /* เพื่อจัดลิงก์ข้างใน */
+
 }
 
 .nav-item {
@@ -87,34 +87,34 @@
   font-weight: 500;
   transition: 0.2s;
 
-  /* 5. ปรับโครงสร้างปุ่มให้เป็น "แถบ" */
+
   display: flex;
-  /* ใช้ flex เพื่อจัดตัวหนังสือให้อยู่กลางแนวตั้ง */
+
   align-items: center;
-  /* จัดกลางแนวตั้ง */
+
   padding: 0 24px;
-  /* ใส่ระยะห่างแนวนอนซ้ายขวาให้ดูไม่อึดอัด */
+
   height: 100%;
-  /* ยืดความสูงให้เต็ม Navbar (ชนขอบบนล่าง) */
+
   border-radius: 0;
-  /* เอาความมนออก ให้เป็นเหลี่ยมเหมือน Sketch */
+
 }
 
 .nav-item:hover {
   background-color: #f0f0f0;
 }
 
-/* ACTIVE STATE */
+
 .nav-item.active {
   background-color: var(--active-bg);
-  /* สีแดง #C3002F */
+
   color: var(--white);
   font-weight: 600;
 }
 
-/* --- Login / User Styles --- */
 
-/* ปุ่ม Login แบบมีกรอบ */
+
+
 .btn-login {
   text-decoration: none;
   color: var(--text-color);
@@ -122,7 +122,7 @@
   padding: 6px 16px;
   font-size: 16px;
   transition: 0.2s;
-  /* ทำให้เป็นกล่องสี่เหลี่ยมตามภาพ */
+
   display: inline-block;
 }
 
@@ -131,7 +131,7 @@
   color: #fff;
 }
 
-/* ชื่อ User หลัง Login (ขีดเส้นใต้) */
+
 .user-profile {
   text-decoration: underline;
   color: var(--text-color);
@@ -140,17 +140,17 @@
   cursor: default;
 }
 
-/* 2. CSS สำหรับรูปโปรไฟล์ (Avatar) */
+
 .user-avatar img {
   width: 32px;
   height: 32px;
-  border-radius: 50%; /* ทำเป็นวงกลม */
+  border-radius: 50%;
   object-fit: cover;
   margin-right: 10px;
   border: 1px solid #ccc;
 }
 
-/* 3. CSS สำหรับ Dropdown Menu */
+
 .dropdown {
   position: relative;
   display: inline-block;
@@ -175,18 +175,18 @@
 .dropdown-content {
   display: none;
   position: absolute;
-  top: 100%; /* ให้เริ่มแสดงต่อจากขอบล่างของ Navbar */
+  top: 100%;
   right: 0;
   background-color: #ffffff;
   min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.1);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.1);
   z-index: 1000;
   border: 1px solid #eee;
   border-radius: 0 0 8px 8px;
 }
 
 .dropdown:hover .dropdown-content {
-  display: block; /* แสดงเมนูเมื่อเอาเมาส์ชี้ */
+  display: block;
 }
 
 .dropdown-content a {
@@ -202,14 +202,14 @@
   background-color: #f1f1f1;
 }
 
-/* เส้นคั่นในเมนู */
+
 .dropdown-content hr {
   margin: 0;
   border: 0;
   border-top: 1px solid #eee;
 }
 
-/* ปุ่ม Logout ใน Dropdown */
+
 .dropdown-logout {
   width: 100%;
   text-align: left;
@@ -217,10 +217,23 @@
   border: none;
   padding: 12px 16px;
   cursor: pointer;
-  color: #d9534f; /* สีแดงอ่อนๆ สำหรับปุ่ม Logout */
+  color: #d9534f;
   font-size: 14px;
 }
 
 .dropdown-logout:hover {
   background-color: #fff0f0;
+}
+
+.nav-left .dropdown-content {
+  left: 0;
+  right: auto;
+  text-align: left;
+}
+
+.nav-left .logo {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  height: 100%;
 }
