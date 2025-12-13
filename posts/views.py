@@ -3,9 +3,10 @@ from .models import Post, HiringPost, RentalPost, Media, Review
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .forms import HiringPostForm, RentalPostForm, ReviewForm
+from .forms import HiringPostForm, RentalPostForm
 from .decorators import student_required
-
+from django.db.models import Q 
+from itertools import chain
 
 # Create your views here.
 def hiring_page_view(request):
@@ -369,3 +370,42 @@ def my_booking_view(request):
         "booking_items": formatted_items,
     }
     return render(request, "pages/mybooking.html", context)
+
+def search_view(request):
+    query = request.GET.get('q') 
+    formatted_items = []
+
+    if query:
+        posts_with_media = Prefetch("media", queryset=Media.objects.all(), to_attr="images")
+
+        # 1. ค้นหาใน HiringPost (ค้นหาจาก Title หรือ Description)
+        hiring_results = HiringPost.objects.select_related('author').prefetch_related(posts_with_media).filter(
+            Q(title__icontains=query) | 
+            Q(description__icontains=query) |
+            Q(skills__name__icontains=query) # (Option) ค้นหาจาก Skill ด้วยก็ได้
+        ).distinct()
+
+        # 2. ค้นหาใน RentalPost
+        rental_results = RentalPost.objects.select_related('author').prefetch_related(posts_with_media).filter(
+            Q(title__icontains=query) | 
+            Q(description__icontains=query) |
+            Q(categories__name__icontains=query) # (Option) ค้นหาจาก Category ด้วยก็ได้
+        ).distinct()
+
+        # 3. รวมผลลัพธ์เข้าด้วยกัน (ใช้ chain เพื่อรวม QuerySet 2 ตัว)
+        # หรือจะแปลงเป็น list แล้วบวกกันก็ได้: all_results = list(hiring_results) + list(rental_results)
+        all_results = sorted(
+            list(hiring_results) + list(rental_results), 
+            key=lambda x: x.id, 
+            reverse=True # เรียงจากใหม่ไปเก่า
+        )
+
+        # 4. ใช้ฟังก์ชันเดิมจัดรูปแบบข้อมูล
+        formatted_items = [_format_post_data(post, request.user) for post in all_results]
+
+    context = {
+        "query": query,
+        "search_items": formatted_items,
+        "result_count": len(formatted_items)
+    }
+    return render(request, "pages/search.html", context)

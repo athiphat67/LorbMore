@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h3>ผลการค้นหาสำหรับ: "{{ query }}"</h3>
+    <p>พบทั้งหมด {{ result_count }} รายการ</p>
+    <hr>
+
+    <div class="row">
+        {% if search_items %}
+            {% for post in search_items %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+                    <img src="{{ post.image_url }}" class="card-img-top" alt="{{ post.title }}" style="height: 200px; object-fit: cover;">
+                    
+                    <div class="card-body">
+                        <h5 class="card-title">{{ post.title }}</h5>
+                        
+                        <p class="text-primary fw-bold">{{ post.price_detail }}</p>
+
+                        <div class="d-flex align-items-center mb-2">
+                             <span class="text-warning me-1"><i class="fas fa-star"></i></span>
+                             <span>{{ post.avg_rating|floatformat:1 }} ({{ post.count_reviews }} รีวิว)</span>
+                        </div>
+
+                        <a href="{% url 'posts:detail_post' post.id %}" class="btn btn-outline-primary w-100">ดูรายละเอียด</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center mt-5">
+                <h4 class="text-muted">ไม่พบข้อมูลที่ค้นหา</h4>
+                <a href="{% url 'posts:hiring' %}" class="btn btn-secondary mt-3">กลับไปดูประกาศทั้งหมด</a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

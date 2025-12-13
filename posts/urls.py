@@ -16,5 +16,6 @@ urlpatterns = [
     path('post/<int:post_id>/review/', views.add_review_view, name='add_review'),
     path('mybooking/', views.my_booking_view, name='mybooking'),
     path('post/<int:post_id>/booking/', views.toggle_booking_view, name='toggle_booking'),
+    path('search/', views.search_view, name='search'),
     
 ]
