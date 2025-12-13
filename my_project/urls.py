@@ -29,6 +29,7 @@ urlpatterns = [
     path('profile/edit/', user_views.profile_edit_view, name='profile_edit'),
     path('profile/<str:username>/', user_views.profile_detail_view, name='profile_detail'),
     
+    
 ]
 
 if settings.DEBUG: # pragma: no cover
