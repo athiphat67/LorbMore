@@ -13,9 +13,6 @@ packaging==25.0
 pillow==11.2.1
 ply==3.11
 psycopg2-binary==2.9.10
-PyQt5==5.15.10
-PyQt5-Qt5==5.15.17
-PyQt5_sip==12.17.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.1
 PyYAML==5.3
