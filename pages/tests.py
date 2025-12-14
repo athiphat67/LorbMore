@@ -148,9 +148,6 @@ class PagesViewTests(TestCase):
         self.assertIn("avg_rating", formatted)
         self.assertIn("price_detail", formatted)
         
-        #นับจำนวนรูปด้วย ว่ามีครบตามที่ระบุจำนวนรูปไปมั้ย
-        #self.assertEqual(len(formatted["images"]), 2)
-        
 class StudentRegisterFormTest(TestCase):
     def setUp(self): 
         # กำหนดข้อมูล user 

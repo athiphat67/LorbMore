@@ -771,18 +771,6 @@ class ReviewViewTests(TestCase):
         self.assertEqual(review.rating, 4)
         self.assertEqual(review.comment, "Good!")
 
-    # def test_invalid_review_not_created(self):
-    #     self.client.login(username="reviewer", password="1234567")
-
-    #     # rating ไม่ส่ง → form ไม่ valid
-    #     response = self.client.post(self.url, {
-    #         "comment": "Missing rating"
-    #     })
-
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertEqual(response.url, reverse("posts:detail_post", args=[self.post.id]))
-    #     self.assertEqual(Review.objects.count(), 0)
-
     def test_get_request_redirect(self):
         # กรณีทั้ง valid or invalid review => redirect detail post
         self.client.login(username="reviewer", password="1234567")
@@ -790,20 +778,6 @@ class ReviewViewTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, reverse("posts:detail_post", args=[self.post.id]))
-        
-    # def test_rating_out_of_range(self):
-    #     # ให้ rating มากกว่า 5 คะแนน
-    #     self.client.login(username="reviewer", password="1234567")
-        
-    #     response = self.client.post(self.url, {
-    #         "rating": 10,
-    #         "comment": "Too high rating"
-    #     })
-
-    #     self.assertEqual(response.status_code, 302)
-    #     self.assertEqual(response.url, reverse("posts:detail_post", args=[self.post.id]))
-    #     self.assertEqual(Review.objects.count(), 0)
-
         
 class BookingViewTests(TestCase):
 
