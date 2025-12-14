@@ -538,7 +538,7 @@ class PostViewTests(TestCase):
 
         # request view
         response = self.client.get(self.url_mypost)
-        self.assertEqual(response.status_code, 200)  # ต้อง 200
+        self.assertEqual(response.status_code, 200)  
 
         # ดึง context
         items = response.context["mypost_items"]
