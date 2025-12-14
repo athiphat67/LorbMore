@@ -3,7 +3,7 @@ from .models import Post, HiringPost, RentalPost, Media, Review
 from django.db.models import Prefetch
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
-from .forms import HiringPostForm, RentalPostForm, ReviewForm
+from .forms import HiringPostForm, RentalPostForm
 from .decorators import student_required
 from django.db.models import Q 
 from itertools import chain
@@ -307,32 +307,18 @@ def add_review_view(request, post_id):
         return redirect("posts:detail_post", post_id=post.id)
 
     if request.method == "POST":
-        form = ReviewForm(request.POST)
-
-        if form.is_valid():
-            Review.objects.update_or_create(
-                post=post,
-                author=request.user,
-                defaults={
-                    "rating": form.cleaned_data["rating"],
-                    "comment": form.cleaned_data["comment"],
-                },
-            )
-    # if request.method == "POST":
-    #     rating = request.POST.get("rating")
-    #     comment = request.POST.get("comment")
-    #     form = ReviewForm(request.POST)
-
-    #     # ใช้คำสั่ง update_or_create
-    #     # ความหมาย: ถ้ามี (post+author) นี้อยู่แล้ว ให้ 'อัปเดต' rating/comment
-    #     # ถ้ายังไม่มี ให้ 'สร้างใหม่'
-    #     if form.is_valid():
-    #         Review.objects.update_or_create(
-    #             post=post,
-    #             author=request.user,
-    #             defaults={"rating": rating, "comment": comment},
-    #         )
-        return redirect("posts:detail_post", post_id=post.id)
+        rating = request.POST.get("rating")
+        comment = request.POST.get("comment")
+        
+        # ใช้คำสั่ง update_or_create
+        # ความหมาย: ถ้ามี (post+author) นี้อยู่แล้ว ให้ 'อัปเดต' rating/comment
+        # ถ้ายังไม่มี ให้ 'สร้างใหม่'
+        Review.objects.update_or_create(
+            post=post,
+            author=request.user,
+            defaults={"rating": rating, "comment": comment},
+        )
+            
     # ถ้าไม่ใช่ POST ให้ redirect กลับไปหน้า post detail เลย
     return redirect("posts:detail_post", post_id=post.id)
 
